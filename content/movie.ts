@@ -2,7 +2,7 @@ export const movieWorks = [
   {
     id: '01',
     type: 'video' as const,
-    src: undefined,
+    src: '/media/shogakukan-pr.mp4',
     thumbnail: undefined,
     title: 'マンガ PR 動画 — 小学館',
     description:
