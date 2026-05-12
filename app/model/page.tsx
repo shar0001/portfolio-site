@@ -2,12 +2,25 @@
 import { useState } from 'react'
 import { MediaCard } from '@/components/ui/MediaCard'
 import { WorkModal, type WorkDetail } from '@/components/ui/WorkModal'
+import { VideoModal } from '@/components/ui/VideoModal'
 import { modelArchive as archive } from '@/content/model'
 
+type Item = (typeof archive)[number]
+
 export default function ModelPage() {
-  const [selected, setSelected] = useState<WorkDetail | null>(null)
+  const [workModal,  setWorkModal]  = useState<WorkDetail | null>(null)
+  const [videoModal, setVideoModal] = useState<Item | null>(null)
+
   const featured = archive.find(a => a.featured)!
-  const grid = archive.filter(a => !a.featured)
+  const grid      = archive.filter(a => !a.featured)
+
+  const handleClick = (item: Item) => {
+    if (item.type === 'video' && item.src) {
+      setVideoModal(item)
+    } else {
+      setWorkModal(item)
+    }
+  }
 
   return (
     <main className="min-h-screen px-8 md:px-16 lg:px-24 pt-24 pb-20">
@@ -25,7 +38,7 @@ export default function ModelPage() {
         <MediaCard
           {...featured}
           className="col-span-2 md:col-span-5 row-span-2 min-h-[440px]"
-          onClick={() => setSelected(featured)}
+          onClick={() => handleClick(featured)}
         />
 
         {grid.slice(0, 2).map(item => (
@@ -33,13 +46,13 @@ export default function ModelPage() {
             key={item.id}
             {...item}
             className="col-span-1 md:col-span-4 min-h-[210px]"
-            onClick={() => setSelected(item)}
+            onClick={() => handleClick(item)}
           />
         ))}
         <MediaCard
           {...grid[2]}
           className="col-span-1 md:col-span-3 min-h-[210px]"
-          onClick={() => setSelected(grid[2])}
+          onClick={() => handleClick(grid[2])}
         />
 
         {grid.slice(3).map(item => (
@@ -47,12 +60,19 @@ export default function ModelPage() {
             key={item.id}
             {...item}
             className="col-span-1 md:col-span-4 min-h-[220px]"
-            onClick={() => setSelected(item)}
+            onClick={() => handleClick(item)}
           />
         ))}
       </div>
 
-      <WorkModal work={selected} onClose={() => setSelected(null)} />
+      <WorkModal  work={workModal}  onClose={() => setWorkModal(null)} />
+      <VideoModal
+        src={videoModal?.src}
+        title={videoModal?.title}
+        tag={videoModal?.tag}
+        year={videoModal?.year}
+        onClose={() => setVideoModal(null)}
+      />
     </main>
   )
 }

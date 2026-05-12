@@ -2,12 +2,25 @@
 import { useState } from 'react'
 import { MediaCard } from '@/components/ui/MediaCard'
 import { WorkModal, type WorkDetail } from '@/components/ui/WorkModal'
+import { VideoModal } from '@/components/ui/VideoModal'
 import { movieWorks as works } from '@/content/movie'
 
+type Work = (typeof works)[number]
+
 export default function MoviePage() {
-  const [selected, setSelected] = useState<WorkDetail | null>(null)
+  const [workModal,  setWorkModal]  = useState<WorkDetail | null>(null)
+  const [videoModal, setVideoModal] = useState<Work | null>(null)
+
   const featured = works.find(w => w.featured)
-  const rest = works.filter(w => !w.featured)
+  const rest      = works.filter(w => !w.featured)
+
+  const handleClick = (w: Work) => {
+    if (w.src) {
+      setVideoModal(w)   // has video → play it
+    } else {
+      setWorkModal(w)    // no video yet → show details
+    }
+  }
 
   return (
     <main className="min-h-screen px-8 md:px-16 lg:px-24 pt-24 pb-20">
@@ -26,7 +39,7 @@ export default function MoviePage() {
           <MediaCard
             {...featured}
             className="md:col-span-8 min-h-[380px]"
-            onClick={() => setSelected(featured)}
+            onClick={() => handleClick(featured)}
           />
         )}
 
@@ -36,7 +49,7 @@ export default function MoviePage() {
               key={w.id}
               {...w}
               className="min-h-[180px]"
-              onClick={() => setSelected(w)}
+              onClick={() => handleClick(w)}
             />
           ))}
         </div>
@@ -46,16 +59,23 @@ export default function MoviePage() {
             key={w.id}
             {...w}
             className="md:col-span-6 min-h-[220px]"
-            onClick={() => setSelected(w)}
+            onClick={() => handleClick(w)}
           />
         ))}
       </div>
 
       <p className="mt-8 font-mono text-[10px] text-[#282828] text-center">
-        カードをクリックすると詳細が表示されます
+        タップで再生 · 動画のないカードは詳細を表示
       </p>
 
-      <WorkModal work={selected} onClose={() => setSelected(null)} />
+      <WorkModal  work={workModal}  onClose={() => setWorkModal(null)} />
+      <VideoModal
+        src={videoModal?.src}
+        title={videoModal?.title}
+        tag={videoModal?.tag}
+        year={videoModal?.year}
+        onClose={() => setVideoModal(null)}
+      />
     </main>
   )
 }
