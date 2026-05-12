@@ -79,9 +79,11 @@ export function SceneContent() {
       <FloatingObject />
       <ParticleField />
 
-      <EffectComposer>
-        <Bloom luminanceThreshold={0.25} luminanceSmoothing={0.9} intensity={0.8} />
-      </EffectComposer>
+      {typeof window !== 'undefined' && window.innerWidth >= 768 && (
+        <EffectComposer>
+          <Bloom luminanceThreshold={0.25} luminanceSmoothing={0.9} intensity={0.8} />
+        </EffectComposer>
+      )}
     </>
   )
 }
