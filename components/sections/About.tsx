@@ -2,20 +2,13 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-const timeline = [
-  { year: '2026 —', role: 'Product Manager', org: 'Current' },
-  { year: '2023', role: 'App Developer', org: 'Freelance' },
-  { year: '2021', role: 'Motion Designer', org: 'Agency' },
-  { year: '2018', role: 'Model', org: 'Agency' },
-]
+import { profile } from '@/content/profile'
 
 export function About() {
   const sectionRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     if (!sectionRef.current) return
-
     gsap.from(sectionRef.current.querySelectorAll('.fade-in'), {
       scrollTrigger: { trigger: sectionRef.current, start: 'top 72%' },
       y: 30,
@@ -40,38 +33,41 @@ export function About() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-16 max-w-5xl">
-        <div className="space-y-6">
-          <p className="fade-in text-[#707070] leading-relaxed text-lg">
-            Started as a model, transitioned into motion design and app development.
-            Standing in front of a camera and building what runs behind screens
-            gives me a perspective that&apos;s hard to find in one person.
-          </p>
-          <p className="fade-in text-[#505050] leading-relaxed text-sm">
-            Currently focused on product management and development —
-            bringing aesthetic sensibility to technical decisions,
-            and technical precision to creative direction.
-          </p>
-          <p className="fade-in text-[#404040] leading-relaxed text-sm">
-            Based in Japan. Available for select collaborations.
-          </p>
+        {/* Bio paragraphs from content/profile.ts */}
+        <div className="space-y-5">
+          {profile.bio.map((paragraph, i) => (
+            <p
+              key={i}
+              className={`fade-in leading-[1.85] ${
+                i === 0
+                  ? 'text-[#808080] text-base'
+                  : i === profile.bio.length - 1
+                  ? 'text-[#404040] text-sm'
+                  : 'text-[#585858] text-sm'
+              }`}
+            >
+              {paragraph}
+            </p>
+          ))}
         </div>
 
+        {/* Career timeline from content/profile.ts */}
         <div className="fade-in">
           <div className="border-t border-[var(--border)]">
-            {timeline.map(({ year, role, org }) => (
+            {profile.career.map(({ year, role, org }) => (
               <div
                 key={year}
-                className="flex items-baseline gap-6 py-5 border-b border-[rgba(255,255,255,0.04)] group hover:bg-[rgba(255,255,255,0.01)] transition-colors px-2 -mx-2 rounded"
+                className="flex items-baseline gap-4 py-4 border-b border-[rgba(255,255,255,0.04)] group hover:bg-[rgba(255,255,255,0.01)] transition-colors px-2 -mx-2 rounded"
               >
-                <span className="font-mono text-[10px] text-[#383838] w-16 shrink-0">
+                <span className="font-mono text-[10px] text-[#383838] w-28 shrink-0 leading-relaxed">
                   {year}
                 </span>
-                <span className="text-[#c0c0c0] font-medium text-sm group-hover:text-[#f0f0f0] transition-colors">
-                  {role}
-                </span>
-                <span className="font-mono text-[10px] text-[#383838] ml-auto shrink-0">
-                  {org}
-                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[#c0c0c0] font-medium text-sm group-hover:text-[#f0f0f0] transition-colors">
+                    {role}
+                  </p>
+                  <p className="font-mono text-[10px] text-[#383838] mt-0.5">{org}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -80,18 +76,14 @@ export function About() {
 
       {/* Footer */}
       <div className="mt-24 pt-8 border-t border-[rgba(255,255,255,0.05)] flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div className="space-y-1">
-          <p className="font-mono text-[10px] text-[#303030] tracking-widest uppercase">
-            Open to new opportunities
-          </p>
-          <p className="font-mono text-[10px] text-[#282828]">© 2026</p>
-        </div>
-
+        <p className="font-mono text-[10px] text-[#303030] tracking-widest uppercase">
+          Open to new opportunities
+        </p>
         <a
-          href="mailto:hello@example.com"
+          href={`mailto:${profile.email}`}
           className="font-mono text-sm text-[#606060] hover:text-[#818cf8] transition-colors duration-300 group"
         >
-          hello@example.com{' '}
+          {profile.email}{' '}
           <span className="group-hover:translate-x-1 inline-block transition-transform duration-300">↗</span>
         </a>
       </div>

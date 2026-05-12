@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { profile } from '@/content/profile'
 
 const categories = [
   {
@@ -34,22 +35,21 @@ export default function Home() {
         </p>
 
         <h1 className="text-[clamp(3rem,9vw,7rem)] font-semibold tracking-[-0.02em] leading-[0.92] mb-8 text-[#f0f0f0]">
-          Shusaku<br />
+          {profile.name.split(' ')[0]}<br />
           <span className="text-[#2a2a2a]">——</span>
         </h1>
 
-        <p className="text-base text-[#606060] leading-relaxed mb-6 max-w-sm">
-          PM・アプリ開発者・映像クリエイター・元モデル。<br />
-          テクノロジーとビジュアルの交差点でものを作っています。
+        {/* catchJa の \n を改行として表示 */}
+        <p className="text-base text-[#606060] leading-relaxed mb-6 max-w-sm whitespace-pre-line">
+          {profile.catchJa}
         </p>
 
-        <p className="text-sm text-[#404040] leading-relaxed max-w-sm">
-          Started in front of the camera, now building what runs behind screens.
-          The combination gives me a perspective that is hard to find in one person.
+        <p className="text-sm text-[#404040] leading-relaxed max-w-sm italic">
+          {profile.catchEn}
         </p>
 
         <div className="flex flex-wrap gap-2 mt-8">
-          {['PM', 'App Developer', 'Motion Designer', 'Model'].map((tag) => (
+          {profile.tags.map((tag) => (
             <span
               key={tag}
               className="px-3 py-1.5 text-[11px] font-mono border border-[rgba(255,255,255,0.07)] text-[#505050] rounded-full hover:border-[rgba(255,255,255,0.15)] hover:text-[#808080] transition-all duration-300"
