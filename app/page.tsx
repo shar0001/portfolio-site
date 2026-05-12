@@ -1,65 +1,111 @@
-import Image from "next/image";
+import Link from 'next/link'
+
+const categories = [
+  {
+    href: '/movie',
+    label: 'Movie',
+    sub: 'Motion design & visual effects',
+    color: '#3b82f6',
+    num: '01',
+  },
+  {
+    href: '/apps',
+    label: 'Apps',
+    sub: 'iOS & web application development',
+    color: '#7c3aed',
+    num: '02',
+  },
+  {
+    href: '/model',
+    label: 'Model',
+    sub: 'Visual direction & archive',
+    color: '#f43f5e',
+    num: '03',
+  },
+]
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <main className="min-h-screen flex flex-col justify-center px-8 md:px-16 lg:px-24 pt-24 pb-16">
+      {/* Self-introduction */}
+      <section className="mb-20 max-w-xl">
+        <p className="font-mono text-[10px] tracking-[0.4em] text-[#383838] uppercase mb-8">
+          Self Introduction
+        </p>
+
+        <h1 className="text-[clamp(3rem,9vw,7rem)] font-semibold tracking-[-0.02em] leading-[0.92] mb-8 text-[#f0f0f0]">
+          Shusaku<br />
+          <span className="text-[#2a2a2a]">——</span>
+        </h1>
+
+        <p className="text-base text-[#606060] leading-relaxed mb-6 max-w-sm">
+          PM・アプリ開発者・映像クリエイター・元モデル。<br />
+          テクノロジーとビジュアルの交差点でものを作っています。
+        </p>
+
+        <p className="text-sm text-[#404040] leading-relaxed max-w-sm">
+          Started in front of the camera, now building what runs behind screens.
+          The combination gives me a perspective that is hard to find in one person.
+        </p>
+
+        <div className="flex flex-wrap gap-2 mt-8">
+          {['PM', 'App Developer', 'Motion Designer', 'Model'].map((tag) => (
+            <span
+              key={tag}
+              className="px-3 py-1.5 text-[11px] font-mono border border-[rgba(255,255,255,0.07)] text-[#505050] rounded-full hover:border-[rgba(255,255,255,0.15)] hover:text-[#808080] transition-all duration-300"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              {tag}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* Category cards */}
+      <section>
+        <p className="font-mono text-[10px] tracking-[0.4em] text-[#303030] uppercase mb-6">
+          Work
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-3xl">
+          {categories.map(({ href, label, sub, color, num }) => (
+            <Link
+              key={href}
+              href={href}
+              className="group relative bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 min-h-[180px] flex flex-col justify-between overflow-hidden hover:border-[var(--border-hover)] transition-all duration-500"
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              {/* Hover glow */}
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"
+                style={{ background: `radial-gradient(circle at 30% 30%, ${color}08 0%, transparent 70%)` }}
+              />
+
+              <div className="relative z-10">
+                <p className="font-mono text-[10px] text-[#303030] mb-4">{num}</p>
+                <h2
+                  className="text-2xl font-semibold mb-2 transition-colors duration-300"
+                  style={{ color: '#c0c0c0' }}
+                >
+                  {label}
+                </h2>
+                <p className="text-xs text-[#404040] leading-relaxed">{sub}</p>
+              </div>
+
+              <div
+                className="relative z-10 font-mono text-[10px] transition-colors duration-300 group-hover:opacity-100 opacity-30"
+                style={{ color }}
+              >
+                View →
+              </div>
+
+              {/* Color accent line */}
+              <div
+                className="absolute bottom-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                style={{ background: `linear-gradient(to right, transparent, ${color}50, transparent)` }}
+              />
+            </Link>
+          ))}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+      </section>
+    </main>
+  )
 }
