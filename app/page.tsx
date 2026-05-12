@@ -24,25 +24,17 @@ export default function Home() {
   const [ready, setReady]       = useState(false)
 
   useEffect(() => {
-    if (!sessionStorage.getItem('nierBooted')) {
+    // Show boot every 3rd visit (visit 1, 4, 7, ...)
+    const count = parseInt(localStorage.getItem('bootVisitCount') || '0') + 1
+    localStorage.setItem('bootVisitCount', String(count))
+    if (count % 3 === 1) {
       setShowBoot(true)
     } else {
       setReady(true)
     }
-    // Skip on any keypress
-    const skip = () => {
-      if (showBoot) {
-        sessionStorage.setItem('nierBooted', '1')
-        setShowBoot(false)
-        setReady(true)
-      }
-    }
-    window.addEventListener('keydown', skip)
-    return () => window.removeEventListener('keydown', skip)
-  }, [showBoot])
+  }, [])
 
   const handleBootComplete = useCallback(() => {
-    sessionStorage.setItem('nierBooted', '1')
     setShowBoot(false)
     setReady(true)
   }, [])
