@@ -11,6 +11,7 @@ interface MediaCardProps {
   year?: string
   tag?: string
   className?: string
+  onClick?: () => void
 }
 
 export function MediaCard({
@@ -22,6 +23,7 @@ export function MediaCard({
   year,
   tag,
   className = '',
+  onClick,
 }: MediaCardProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isHovering, setIsHovering] = useState(false)
@@ -44,6 +46,7 @@ export function MediaCard({
       className={`group relative bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 hover:border-[var(--border-hover)] ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={onClick}
     >
       {/* Media area */}
       <div className="relative w-full h-full min-h-[180px] bg-[#0a0a0a]">

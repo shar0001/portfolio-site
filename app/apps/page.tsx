@@ -1,13 +1,16 @@
+'use client'
+import { useState } from 'react'
 import { MediaCard } from '@/components/ui/MediaCard'
-import { appWorks as apps, pmSkills as pmWorks } from '@/content/apps'
+import { WorkModal, type WorkDetail } from '@/components/ui/WorkModal'
+import { appWorks as apps, pmSkills } from '@/content/apps'
 
 export default function AppsPage() {
+  const [selected, setSelected] = useState<WorkDetail | null>(null)
   const featured = apps.find(a => a.featured)!
   const rest = apps.filter(a => !a.featured)
 
   return (
     <main className="min-h-screen px-8 md:px-16 lg:px-24 pt-24 pb-20">
-      {/* Header */}
       <div className="mb-16 max-w-xl">
         <p className="font-mono text-[10px] tracking-[0.4em] text-[#383838] uppercase mb-4">02</p>
         <h1 className="text-4xl md:text-6xl font-semibold tracking-tight text-[#f0f0f0] mb-4">
@@ -20,8 +23,10 @@ export default function AppsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
         {/* Featured app */}
-        <div className="md:col-span-7 bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden flex flex-col min-h-[360px] hover:border-[var(--border-hover)] transition-all duration-500">
-          {/* Screenshot placeholder */}
+        <div
+          className="md:col-span-7 bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden flex flex-col min-h-[360px] hover:border-[var(--border-hover)] transition-all duration-500 cursor-pointer"
+          onClick={() => setSelected(featured)}
+        >
           <div className="relative flex-1">
             <MediaCard
               type={featured.type}
@@ -29,7 +34,6 @@ export default function AppsPage() {
               className="h-full border-0 rounded-none"
             />
           </div>
-          {/* Info */}
           <div className="p-6 border-t border-[var(--border)]">
             <div className="flex items-start justify-between mb-3">
               <div>
@@ -48,17 +52,21 @@ export default function AppsPage() {
                 </span>
               ))}
             </div>
+            <p className="font-mono text-[10px] text-[#383838] mt-4">詳細を見る →</p>
           </div>
         </div>
 
         {/* PM card */}
         <div className="md:col-span-5 flex flex-col gap-3">
           <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 flex-1">
-            <p className="font-mono text-[10px] text-[#383838] uppercase tracking-[0.3em] mb-4">
-              Product Management
+            <p className="font-mono text-[10px] text-[#383838] uppercase tracking-[0.3em] mb-1">
+              現場を知るPM
+            </p>
+            <p className="text-[11px] text-[#404040] mb-5 leading-relaxed">
+              映像もコードも自分で作るからこそ、無理のないスケジュールと精度の高い仕様が出せます。
             </p>
             <div className="space-y-4">
-              {pmWorks.map(w => (
+              {pmSkills.map(w => (
                 <div key={w.label} className="border-b border-[rgba(255,255,255,0.04)] pb-4 last:border-0 last:pb-0">
                   <p className="text-sm text-[#c0c0c0] font-medium mb-1">{w.label}</p>
                   <p className="text-xs text-[#404040]">{w.desc}</p>
@@ -67,11 +75,12 @@ export default function AppsPage() {
             </div>
           </div>
 
-          {/* Second app */}
+          {/* Other apps */}
           {rest.map(app => (
             <div
               key={app.id}
-              className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 hover:border-[var(--border-hover)] transition-all duration-500"
+              className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 hover:border-[var(--border-hover)] transition-all duration-500 cursor-pointer"
+              onClick={() => setSelected(app)}
             >
               <div className="flex items-start justify-between mb-2">
                 <h3 className="text-base font-semibold text-[#f0f0f0]">{app.title}</h3>
@@ -92,9 +101,7 @@ export default function AppsPage() {
         </div>
       </div>
 
-      <p className="mt-8 font-mono text-[10px] text-[#282828] text-center">
-        スクリーンショットを追加するには <code className="text-[#383838]">public/media/</code> に画像を置き src を指定してください
-      </p>
+      <WorkModal work={selected} onClose={() => setSelected(null)} />
     </main>
   )
 }

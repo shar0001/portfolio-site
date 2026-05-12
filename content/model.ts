@@ -1,27 +1,25 @@
-// ============================================================
-//  Model ページのコンテンツ
-//  写真は public/media/ に置いて src を設定してください
-//  featured: true にすると左の大きいコマに表示（1つだけ）
-// ============================================================
-
 export const modelArchive = [
   {
     id: 'P01',
     type: 'photo' as const,
-    src: undefined,           // 例: '/media/paris-editorial.jpg'
+    src: undefined,
     title: 'Paris Collection',
     year: '2023',
     tag: 'Editorial',
     featured: true,
+    description: 'パリ・コレクションへの参加。ビザ申請から現地エージェントとの交渉まで、すべてを自分でマネジメントした。',
+    insight: 'セルフプロデュースで動いた経験が、現在のクリエイティブディレクションにおける「見た目の解像度」の土台になっている。',
   },
   {
     id: 'P02',
     type: 'photo' as const,
-    src: undefined,           // 例: '/media/milan-show.jpg'
+    src: undefined,
     title: 'Milan Fashion Week',
     year: '2023',
     tag: 'Runway',
     featured: false,
+    description: 'ミラノ・ファッションウィークへの参加。ランウェイでのパフォーマンスと現地スタッフとのディレクション調整。',
+    insight: undefined,
   },
   {
     id: 'P03',
@@ -31,6 +29,8 @@ export const modelArchive = [
     year: '2024',
     tag: 'Campaign',
     featured: false,
+    description: '帰国後に参加したコマーシャルキャンペーン。ディレクターとのビジョン共有と、スタッフへの意図伝達を主導。',
+    insight: undefined,
   },
   {
     id: 'P04',
@@ -40,6 +40,8 @@ export const modelArchive = [
     year: '2022',
     tag: 'Portrait',
     featured: false,
+    description: undefined,
+    insight: undefined,
   },
   {
     id: 'P05',
@@ -49,15 +51,19 @@ export const modelArchive = [
     year: '2024',
     tag: 'Lookbook',
     featured: false,
+    description: undefined,
+    insight: undefined,
   },
   {
     id: 'V01',
     type: 'video' as const,
-    src: undefined,           // 例: '/media/runway-video.mp4'
-    thumbnail: undefined,     // 例: '/media/runway-thumb.jpg'
+    src: undefined,
+    thumbnail: undefined,
     title: 'Runway Film',
     year: '2023',
     tag: 'Film',
     featured: false,
+    description: 'ランウェイのドキュメンタリー映像。モデルとして参加しながら、映像視点での記録も同時に担った。',
+    insight: undefined,
   },
 ]

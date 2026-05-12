@@ -1,21 +1,19 @@
-// ============================================================
-//  Movie ページのコンテンツ
-//  動画ファイルは public/media/ に置いて src を設定してください
-// ============================================================
-
 export const movieWorks = [
   {
     id: '01',
     type: 'video' as const,
-    src: undefined,           // 例: '/media/shogakukan-pr.mp4'
-    thumbnail: undefined,     // 例: '/media/shogakukan-pr-thumb.jpg'
+    src: undefined,
+    thumbnail: undefined,
     title: 'マンガ PR 動画 — 小学館',
     description:
       '映像制作体制がゼロの状態から、編集部に自主提案して受注した動画シリーズ。AEでのシェイプアニメーションとExpression制御を活用。',
     year: '2025',
     tag: 'Motion Graphics',
     featured: true,
-    // featured: true にすると一番大きく表示されます（1つだけ）
+    role: 'Direction / Motion Design',
+    tools: ['After Effects', 'Illustrator'],
+    insight:
+      '予算と工数が限られた制約下で、静止画素材とBPM同期のカット割りによる没入感を追求。レーベル全体への映像施策導入の決定打となった。',
   },
   {
     id: '02',
@@ -28,6 +26,10 @@ export const movieWorks = [
     year: '2025',
     tag: 'Typography',
     featured: false,
+    role: 'Direction / Motion Design',
+    tools: ['After Effects'],
+    insight:
+      '「音に引っ張られる文字」を目標に、エクスプレッションで慣性・バウンスを手付けに近い精度で制御。',
   },
   {
     id: '03',
@@ -40,6 +42,10 @@ export const movieWorks = [
     year: '2024',
     tag: 'UI Motion',
     featured: false,
+    role: 'Motion Design',
+    tools: ['After Effects', 'Figma'],
+    insight:
+      'アプリ開発者として実機の挙動を知っているからこそ、「ありえる動き」に絞ったデモを作れた。',
   },
   {
     id: '04',
@@ -52,5 +58,9 @@ export const movieWorks = [
     year: '2026',
     tag: '3D / WIP',
     featured: false,
+    role: 'Modeling / Rendering',
+    tools: ['Blender'],
+    insight:
+      'ゴールより過程を残すことを優先。「完成していないもの」をアーカイブする姿勢自体がポートフォリオの一部。',
   },
 ]

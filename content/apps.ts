@@ -1,27 +1,24 @@
-// ============================================================
-//  Apps ページのコンテンツ
-//  スクリーンショットは public/media/ に置いて src を設定してください
-// ============================================================
-
 export const appWorks = [
   {
     id: '01',
     type: 'photo' as const,
-    src: undefined,           // 例: '/media/neon-mochi-ss.png'
+    src: undefined,
     title: 'Neon Mochi',
     description:
-      '書くことに集中できるミニマルなテキストエディタ。余計な機能を削り、タイピングのリズムを大切にしました。個人的に「こういうアプリがほしい」から作り始めた一本。',
+      '「書くこと」に没入するためのミニマルなテキストエディタ。余計な機能を削り、タイピングのリズムだけを残しました。個人的に「こういうアプリがほしい」から作り始めた一本。',
     year: '2024',
     tag: 'iOS App',
     featured: true,
     tech: ['Swift', 'SwiftUI', 'Firebase'],
     status: 'Released',
-    storeUrl: undefined,      // 例: 'https://apps.apple.com/app/neon-mochi/id...'
+    storeUrl: undefined,
+    insight:
+      'ユーザーが思考を妨げられないよう、UIのノイズを徹底的に削ぎ落とした。「書くこと」だけに集中できる空間を設計することがゴール。',
   },
   {
     id: '02',
     type: 'photo' as const,
-    src: undefined,           // 例: '/media/pittanko-ss.png'
+    src: undefined,
     title: 'ピッタンコ',
     description:
       '割り勘をサクッと計算するアプリ。グループ管理・カスタム比率・精算まで一気通貫。「毎回計算が面倒」という友人の一言がきっかけ。',
@@ -31,6 +28,8 @@ export const appWorks = [
     tech: ['Swift', 'SwiftUI', 'Firebase'],
     status: 'Released',
     storeUrl: undefined,
+    insight:
+      '複雑な比率計算もワンタップで完結するUXを追求。PMとして仕様を自分で決め、エンジニアとして実装まで担った経験が凝縮されている。',
   },
 ]
 
