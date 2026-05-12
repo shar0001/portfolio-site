@@ -11,18 +11,37 @@ import { ParticleField } from './objects/ParticleField'
 export function SceneContent() {
   const { camera } = useThree()
   const pointLightRef = useRef<THREE.PointLight>(null)
-  const prevRouteRef = useRef(sceneState.activeRoute)
+  const prevRouteRef  = useRef(sceneState.activeRoute)
 
-  useFrame(() => {
-    // Scroll-based subtle camera drift (on top of GSAP target)
+  useFrame((state) => {
+    const t = state.clock.elapsedTime
+    const isAbout = sceneState.activeRoute === '/'
+
+    // ── Scroll drift ──
     camera.position.y += (-sceneState.scrollProgress * 1.5 - camera.position.y) * 0.02
 
-    // Detect route change → trigger dramatic GSAP sweep
+    // ── About-only: camera slowly orbits the object ──
+    if (isAbout) {
+      const orbitX = Math.sin(t * 0.045) * 2.2
+      const orbitZ = 6 + Math.cos(t * 0.03)  * 1.2
+      camera.position.x += (orbitX - camera.position.x) * 0.006
+      camera.position.z += (orbitZ - camera.position.z) * 0.006
+    }
+
+    // ── About-only: point light breathes ──
+    if (pointLightRef.current) {
+      if (isAbout) {
+        pointLightRef.current.intensity = 1.2 + Math.sin(t * 0.85) * 0.7
+      }
+    }
+
+    // ── Route change → dramatic GSAP sweep ──
     if (prevRouteRef.current !== sceneState.activeRoute) {
       prevRouteRef.current = sceneState.activeRoute
       const cfg = ROUTE_CONFIGS[sceneState.activeRoute] ?? ROUTE_CONFIGS['/']
 
-      // Camera sweep — dramatic
+      // Only force camera X/Z on non-About routes
+      // (About orbit takes over after GSAP settles)
       gsap.killTweensOf(camera.position)
       gsap.to(camera.position, {
         x: cfg.camera.x,
@@ -31,34 +50,23 @@ export function SceneContent() {
         ease: 'power3.inOut',
       })
 
-      // Object move + scale
       if (sceneState.objectGroupRef) {
         gsap.killTweensOf(sceneState.objectGroupRef.position)
         gsap.killTweensOf(sceneState.objectGroupRef.scale)
         gsap.to(sceneState.objectGroupRef.position, {
-          x: cfg.object.x,
-          y: cfg.object.y,
-          z: cfg.object.z,
-          duration: 1.8,
-          ease: 'power3.inOut',
+          x: cfg.object.x, y: cfg.object.y, z: cfg.object.z,
+          duration: 1.8, ease: 'power3.inOut',
         })
         gsap.to(sceneState.objectGroupRef.scale, {
-          x: cfg.scale,
-          y: cfg.scale,
-          z: cfg.scale,
-          duration: 1.8,
-          ease: 'back.out(1.1)',
+          x: cfg.scale, y: cfg.scale, z: cfg.scale,
+          duration: 1.8, ease: 'back.out(1.1)',
         })
       }
 
-      // Light color shift
       if (pointLightRef.current) {
         gsap.to(pointLightRef.current.color, {
-          r: cfg.lightColor.r,
-          g: cfg.lightColor.g,
-          b: cfg.lightColor.b,
-          duration: 1.5,
-          ease: 'power2.inOut',
+          r: cfg.lightColor.r, g: cfg.lightColor.g, b: cfg.lightColor.b,
+          duration: 1.5, ease: 'power2.inOut',
         })
       }
     }
