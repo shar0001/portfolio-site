@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const BOOT_LINES = [
@@ -60,7 +61,7 @@ export function NierBoot({ onComplete }: Props) {
     return () => window.removeEventListener('keydown', handler)
   }, [done, fireExit])
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {!done && (
         <motion.div
@@ -166,6 +167,7 @@ export function NierBoot({ onComplete }: Props) {
           </div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }

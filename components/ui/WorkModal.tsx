@@ -1,5 +1,6 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export interface WorkDetail {
@@ -22,6 +23,10 @@ interface Props {
 }
 
 export function WorkModal({ work, onClose }: Props) {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => { setMounted(true) }, [])
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     document.addEventListener('keydown', handler)
@@ -30,7 +35,9 @@ export function WorkModal({ work, onClose }: Props) {
 
   const techList = work?.tools ?? work?.tech
 
-  return (
+  if (!mounted) return null
+
+  return createPortal(
     <AnimatePresence>
       {work && (
         /* Backdrop — click outside to close, also centers the panel */
@@ -123,6 +130,7 @@ export function WorkModal({ work, onClose }: Props) {
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }
