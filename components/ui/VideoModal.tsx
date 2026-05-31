@@ -44,7 +44,7 @@ export function VideoModal({ src, title, tag, year, onClose }: Props) {
       {src && (
         <motion.div
           className="fixed inset-0 z-[60] flex flex-col items-center justify-center p-4 md:p-8"
-          style={{ background: 'rgba(0,0,0,0.94)', backdropFilter: 'blur(8px)' }}
+          style={{ background: 'rgba(6,8,20,0.96)', backdropFilter: 'blur(10px)' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -59,35 +59,32 @@ export function VideoModal({ src, title, tag, year, onClose }: Props) {
             transition={{ duration: 0.3, ease: [0.76, 0, 0.24, 1] }}
             onClick={e => e.stopPropagation()}
           >
-            {/* Header */}
             <div className="flex items-center justify-between mb-4 px-1">
               <div>
                 {(tag || year) && (
-                  <p className="font-mono text-[9px] tracking-widest uppercase mb-1" style={{ color: 'rgba(255,255,255,0.25)' }}>
+                  <p className="font-mono text-[9px] tracking-widest uppercase mb-1" style={{ color: '#6070a8' }}>
                     {tag}{tag && year && ' · '}{year}
                   </p>
                 )}
                 {title && (
-                  <p style={{ fontFamily: SERIF, fontWeight: 300, fontSize: '1.1rem', color: 'rgba(255,255,255,0.5)' }}>
+                  <p style={{ fontFamily: SERIF, fontWeight: 300, fontSize: '1.1rem', color: '#c9d1e6' }}>
                     {title}
                   </p>
                 )}
               </div>
 
-              {/* Close — large tap target */}
               <button
                 onClick={handleClose}
                 aria-label="Close video"
                 className="w-10 h-10 flex items-center justify-center transition-colors duration-200"
-                style={{ color: 'rgba(255,255,255,0.3)', border: '1px solid rgba(255,255,255,0.1)' }}
-                onMouseEnter={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.8)' }}
-                onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.3)' }}
+                style={{ color: 'rgba(155,184,255,0.50)', border: '1px solid rgba(155,184,255,0.15)' }}
+                onMouseEnter={e => { e.currentTarget.style.color = 'rgba(232,238,255,0.9)' }}
+                onMouseLeave={e => { e.currentTarget.style.color = 'rgba(155,184,255,0.50)' }}
               >
                 ✕
               </button>
             </div>
 
-            {/* Video */}
             <video
               ref={videoRef}
               src={src ? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}${src}` : undefined}

@@ -27,11 +27,10 @@ export default function AppsPage() {
       className="min-h-screen px-5 md:px-12 lg:px-20 pt-20 pb-24"
       style={{ position: 'relative', zIndex: 1 }}
     >
-      {/* ── Page header ───────────────────────────────────────────────── */}
       <div className="mb-10 md:mb-14">
         <motion.p
           className="font-mono text-[8px] tracking-[0.55em] uppercase mb-5"
-          style={{ color: '#333' }}
+          style={{ color: '#5a6490' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.1 }}
@@ -45,7 +44,7 @@ export default function AppsPage() {
             fontSize: 'clamp(2.5rem, 6vw, 5rem)',
             lineHeight: 0.9,
             letterSpacing: '-0.02em',
-            color: '#c0b8a8',
+            color: '#f0f4ff',
           }}
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -55,14 +54,14 @@ export default function AppsPage() {
         </motion.h1>
         <motion.div
           className="mt-6 mb-5 h-px w-8 origin-left"
-          style={{ background: 'rgba(255,255,255,0.07)' }}
+          style={{ background: 'rgba(155,184,255,0.18)' }}
           initial={{ scaleX: 0, opacity: 0 }}
           animate={{ scaleX: 1, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         />
         <motion.p
           className="text-sm leading-relaxed"
-          style={{ color: '#545250', maxWidth: 380 }}
+          style={{ color: '#96a0bd', maxWidth: 380, lineHeight: 1.8 }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.5 }}
@@ -71,22 +70,19 @@ export default function AppsPage() {
         </motion.p>
       </div>
 
-      {/* ── Content grid ──────────────────────────────────────────────── */}
       <motion.div
         className="grid grid-cols-1 md:grid-cols-12 gap-2.5"
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.6, ease: [0.76, 0, 0.24, 1] }}
       >
-        {/* Featured app */}
         {featured && (
           <div
             className="col-span-1 md:col-span-7 flex flex-col cursor-pointer group"
-            style={{ border: '1px solid rgba(255,255,255,0.07)' }}
+            style={{ border: '1px solid rgba(155,184,255,0.10)' }}
             onClick={() => setSelected(toWorkDetail(featured))}
           >
-            {/* Visual area */}
-            <div className="relative min-h-[200px] md:min-h-[260px] bg-[#090909] flex-1">
+            <div className="relative min-h-[200px] md:min-h-[260px] bg-[#10152a] flex-1">
               {featured.mediaUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -96,34 +92,33 @@ export default function AppsPage() {
                 />
               ) : (
                 <div className="absolute inset-0 flex items-end p-4">
-                  <span className="font-mono text-[8px] text-[#282828] uppercase tracking-widest">
+                  <span className="font-mono text-[8px] uppercase tracking-widest" style={{ color: '#3a4470' }}>
                     {featured.tag}
                   </span>
                 </div>
               )}
             </div>
 
-            {/* Info panel */}
-            <div className="p-5 md:p-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+            <div className="p-5 md:p-6" style={{ borderTop: '1px solid rgba(155,184,255,0.08)' }}>
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <p className="font-mono text-[8px] tracking-widest mb-1.5" style={{ color: '#333' }}>
+                  <p className="font-mono text-[8px] tracking-widest mb-1.5" style={{ color: '#5a6490' }}>
                     {featured.year} · {featured.tag}
                   </p>
-                  <h2 className="text-lg font-medium transition-colors duration-300" style={{ color: '#888278' }}>
+                  <h2 className="text-lg font-medium transition-colors duration-300" style={{ color: '#c9d1e6' }}>
                     {featured.title}
                   </h2>
                 </div>
                 {featured.status && (
                   <span
                     className="font-mono text-[9px] px-2 py-1 shrink-0"
-                    style={{ color: '#383838', border: '1px solid rgba(255,255,255,0.06)' }}
+                    style={{ color: '#6878a8', border: '1px solid rgba(155,184,255,0.12)' }}
                   >
                     {featured.status}
                   </span>
                 )}
               </div>
-              <p className="text-xs leading-relaxed mb-4" style={{ color: '#454240' }}>
+              <p className="text-xs leading-relaxed mb-4" style={{ color: '#8090b8', lineHeight: 1.8 }}>
                 {featured.description}
               </p>
               <div className="flex flex-wrap gap-1.5 mb-4">
@@ -131,15 +126,15 @@ export default function AppsPage() {
                   <span
                     key={t}
                     className="font-mono text-[9px] px-2 py-0.5"
-                    style={{ color: '#484440', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}
+                    style={{ color: '#7888b8', background: 'rgba(155,184,255,0.05)', border: '1px solid rgba(155,184,255,0.10)' }}
                   >
                     {t}
                   </span>
                 ))}
               </div>
               <p
-                className="font-mono text-[9px] tracking-widest transition-colors duration-300 group-hover:text-[#686460]"
-                style={{ color: '#363432' }}
+                className="font-mono text-[9px] tracking-widest transition-colors duration-300 group-hover:text-[#9bb8ff]"
+                style={{ color: '#5060a0' }}
               >
                 詳細を見る →
               </p>
@@ -147,15 +142,12 @@ export default function AppsPage() {
           </div>
         )}
 
-        {/* Right column — PM skills + other apps */}
         <div className="col-span-1 md:col-span-5 flex flex-col gap-2.5">
-
-          {/* PM / Production skills */}
-          <div className="flex-1 p-5 md:p-6" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
-            <p className="font-mono text-[8px] tracking-[0.4em] uppercase mb-1" style={{ color: '#333' }}>
+          <div className="flex-1 p-5 md:p-6" style={{ border: '1px solid rgba(155,184,255,0.10)' }}>
+            <p className="font-mono text-[8px] tracking-[0.4em] uppercase mb-1" style={{ color: '#5a6490' }}>
               PM / Production
             </p>
-            <p className="text-[11px] leading-relaxed mb-5" style={{ color: '#363432' }}>
+            <p className="text-[11px] leading-relaxed mb-5" style={{ color: '#6878a8', lineHeight: 1.8 }}>
               映像もコードも自分で作るからこそ、無理のないスケジュールと精度の高い仕様が出せます。
             </p>
             <div>
@@ -163,43 +155,42 @@ export default function AppsPage() {
                 <div
                   key={s.label}
                   className="py-3.5"
-                  style={{ borderTop: i > 0 ? '1px solid rgba(255,255,255,0.04)' : undefined }}
+                  style={{ borderTop: i > 0 ? '1px solid rgba(155,184,255,0.07)' : undefined }}
                 >
-                  <p className="text-sm mb-1 font-medium" style={{ color: '#7a7268' }}>{s.label}</p>
-                  <p className="text-xs leading-relaxed" style={{ color: '#3c3a38' }}>{s.desc}</p>
+                  <p className="text-sm mb-1 font-medium" style={{ color: '#b0bcd8' }}>{s.label}</p>
+                  <p className="text-xs leading-relaxed" style={{ color: '#7080a8', lineHeight: 1.75 }}>{s.desc}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Other apps */}
           {rest.map(app => (
             <div
               key={app.id}
               className="p-5 cursor-pointer group"
-              style={{ border: '1px solid rgba(255,255,255,0.07)' }}
+              style={{ border: '1px solid rgba(155,184,255,0.10)' }}
               onClick={() => setSelected(toWorkDetail(app))}
             >
               <div className="flex items-start justify-between mb-2">
-                <h3 className="text-base font-medium transition-colors duration-300" style={{ color: '#7a7268' }}>
+                <h3 className="text-base font-medium transition-colors duration-300 group-hover:text-[#e8eeff]" style={{ color: '#c0ccee' }}>
                   {app.title}
                 </h3>
                 {app.status && (
                   <span
                     className="font-mono text-[9px] px-2 py-0.5 shrink-0"
-                    style={{ color: '#333', border: '1px solid rgba(255,255,255,0.05)' }}
+                    style={{ color: '#6878a8', border: '1px solid rgba(155,184,255,0.10)' }}
                   >
                     {app.status}
                   </span>
                 )}
               </div>
-              <p className="text-xs leading-relaxed mb-3" style={{ color: '#3c3a38' }}>{app.description}</p>
+              <p className="text-xs leading-relaxed mb-3" style={{ color: '#8090b8', lineHeight: 1.75 }}>{app.description}</p>
               <div className="flex flex-wrap gap-1.5">
                 {app.tools.map(t => (
                   <span
                     key={t}
                     className="font-mono text-[9px] px-1.5 py-0.5"
-                    style={{ color: '#424040', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}
+                    style={{ color: '#7080a8', background: 'rgba(155,184,255,0.04)', border: '1px solid rgba(155,184,255,0.09)' }}
                   >
                     {t}
                   </span>
