@@ -83,3 +83,13 @@ body {
 ::selection {
   background: rgba(129, 140, 248, 0.2);
 }
+
+/* ── Model Archive palette ── */
+:root {
+  --m-text:    #E7E0CF;
+  --m-muted:   #9C9586;
+  --m-dim:     #6B6350;
+  --m-line:    #3A352B;
+  --m-surface: #131310;
+  --m-accent:  #D8C48A;
+}
