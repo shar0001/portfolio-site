@@ -1,10 +1,8 @@
 'use client'
 import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { VideoModal }        from '@/components/ui/VideoModal'
-import { AmbientBackground } from '@/components/ui/AmbientBackground'
-import { CursorAtmosphere }  from '@/components/ui/CursorAtmosphere'
-import { modelImages }       from '@/content/model'
+import { VideoModal }  from '@/components/ui/VideoModal'
+import { modelImages } from '@/content/model'
 
 // ─────────────────────────── Design tokens ───────────────────────────────────
 // Refined palette — art/fashion archive, not sci-fi terminal
@@ -173,10 +171,6 @@ export default function ModelPage() {
 
   return (
     <>
-      {/* Atmosphere layers — rendered before <main> so they appear below content */}
-      <AmbientBackground />
-      <CursorAtmosphere />
-
       <main
         className="min-h-screen pb-32"
         style={{ position: 'relative', zIndex: 1 }}

@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 
+const SERIF = 'var(--font-cormorant), "EB Garamond", Georgia, serif'
+
 interface Props {
   src: string | undefined
   title?: string
@@ -23,14 +25,10 @@ export function VideoModal({ src, title, tag, year, onClose }: Props) {
     return () => document.removeEventListener('keydown', handler)
   }, [onClose])
 
-  // Auto-play when opened
   useEffect(() => {
-    if (src && videoRef.current) {
-      videoRef.current.play().catch(() => {})
-    }
+    if (src && videoRef.current) videoRef.current.play().catch(() => {})
   }, [src])
 
-  // Pause and reset when closed
   const handleClose = () => {
     if (videoRef.current) {
       videoRef.current.pause()
@@ -45,7 +43,8 @@ export function VideoModal({ src, title, tag, year, onClose }: Props) {
     <AnimatePresence>
       {src && (
         <motion.div
-          className="fixed inset-0 z-[60] flex flex-col items-center justify-center p-4 bg-black/92 backdrop-blur-lg"
+          className="fixed inset-0 z-[60] flex flex-col items-center justify-center p-4 md:p-8"
+          style={{ background: 'rgba(0,0,0,0.94)', backdropFilter: 'blur(8px)' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -54,45 +53,47 @@ export function VideoModal({ src, title, tag, year, onClose }: Props) {
         >
           <motion.div
             className="relative w-full max-w-4xl"
-            initial={{ opacity: 0, scale: 0.94, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 16 }}
             transition={{ duration: 0.3, ease: [0.76, 0, 0.24, 1] }}
             onClick={e => e.stopPropagation()}
           >
-            {/* NieR corner brackets */}
-            <div className="absolute -top-2 -left-2 w-5 h-5 border-t border-l border-white/20" />
-            <div className="absolute -top-2 -right-2 w-5 h-5 border-t border-r border-white/20" />
-            <div className="absolute -bottom-2 -left-2 w-5 h-5 border-b border-l border-white/20" />
-            <div className="absolute -bottom-2 -right-2 w-5 h-5 border-b border-r border-white/20" />
-
             {/* Header */}
-            <div className="flex items-center justify-between mb-3 px-1">
+            <div className="flex items-center justify-between mb-4 px-1">
               <div>
                 {(tag || year) && (
-                  <p className="font-mono text-[10px] text-white/30 tracking-widest uppercase">
+                  <p className="font-mono text-[9px] tracking-widest uppercase mb-1" style={{ color: 'rgba(255,255,255,0.25)' }}>
                     {tag}{tag && year && ' · '}{year}
                   </p>
                 )}
                 {title && (
-                  <p className="font-mono text-sm text-white/60 mt-0.5">{title}</p>
+                  <p style={{ fontFamily: SERIF, fontWeight: 300, fontSize: '1.1rem', color: 'rgba(255,255,255,0.5)' }}>
+                    {title}
+                  </p>
                 )}
               </div>
+
+              {/* Close — large tap target */}
               <button
                 onClick={handleClose}
-                className="font-mono text-[11px] text-white/30 hover:text-white/70 transition-colors"
+                aria-label="Close video"
+                className="w-10 h-10 flex items-center justify-center transition-colors duration-200"
+                style={{ color: 'rgba(255,255,255,0.3)', border: '1px solid rgba(255,255,255,0.1)' }}
+                onMouseEnter={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.8)' }}
+                onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.3)' }}
               >
-                × close
+                ✕
               </button>
             </div>
 
-            {/* Video player */}
+            {/* Video */}
             <video
               ref={videoRef}
               src={src ? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}${src}` : undefined}
               controls
               playsInline
-              className="w-full rounded-xl bg-black shadow-2xl"
+              className="w-full bg-black"
               style={{ maxHeight: '75vh' }}
             >
               お使いのブラウザは動画再生に対応していません。

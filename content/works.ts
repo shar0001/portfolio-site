@@ -1,0 +1,143 @@
+/**
+ * Central portfolio content file.
+ *
+ * HOW TO EDIT:
+ *  1. Go to /admin on the site (mobile-friendly)
+ *  2. Edit works, save draft (stored in localStorage)
+ *  3. Hit "Export JSON" — copies updated array to clipboard
+ *  4. Replace the `defaultWorks` array below with the exported JSON
+ *  5. Commit & push → GitHub Actions deploys automatically
+ *
+ * TO CONNECT A REAL CMS LATER:
+ *  - Replace `defaultWorks` with a fetch from your CMS API
+ *  - The Work type below is the canonical schema; map CMS fields to it
+ *  - Recommended: Sanity, Contentful, or a simple GitHub-backed JSON API
+ */
+
+export type WorkCategory = 'movie' | 'apps' | 'model' | 'marketing' | 'experiment'
+export type MediaType    = 'image' | 'video' | 'embed' | 'placeholder'
+
+export interface Work {
+  id:           string
+  title:        string
+  category:     WorkCategory
+  year:         string
+  tag:          string
+  role:         string
+  tools:        string[]
+  description:  string
+  process?:     string
+  mediaType:    MediaType
+  mediaUrl?:    string
+  thumbnailUrl?: string
+  visible:      boolean
+  featured:     boolean
+  order:        number
+  // Apps-specific
+  status?:      string
+  storeUrl?:    string
+}
+
+// ─────────────────────────── Default works ───────────────────────────────────
+
+export const defaultWorks: Work[] = [
+
+  // ── Movie ──────────────────────────────────────────────────────────────────
+
+  {
+    id:          'movie-01',
+    title:       'マンガ PR 動画 — 小学館',
+    category:    'movie',
+    year:        '2025',
+    tag:         'Motion Graphics',
+    role:        'Direction / Motion Design',
+    tools:       ['After Effects', 'Illustrator'],
+    description: '映像制作体制がゼロの状態から、編集部に自主提案して受注した動画シリーズ。AEでのシェイプアニメーションとExpression制御を活用。',
+    process:     '予算と工数が限られた制約下で、静止画素材とBPM同期のカット割りによる没入感を追求。レーベル全体への映像施策導入の決定打となった。',
+    mediaType:   'video',
+    mediaUrl:    '/media/shogakukan-pr.mp4',
+    visible:     true,
+    featured:    true,
+    order:       0,
+  },
+  {
+    id:          'movie-02',
+    title:       'タイポグラフィ実験作',
+    category:    'movie',
+    year:        '2025',
+    tag:         'Typography',
+    role:        'Direction / Motion Design',
+    tools:       ['After Effects'],
+    description: '音と映像の同期にこだわったパーソナルな実験作。Expressionで文字に物理挙動をつけています。',
+    process:     '「音に引っ張られる文字」を目標に、エクスプレッションで慣性・バウンスを手付けに近い精度で制御。',
+    mediaType:   'placeholder',
+    visible:     true,
+    featured:    false,
+    order:       1,
+  },
+  {
+    id:          'movie-03',
+    title:       'プロダクト UI アニメーション',
+    category:    'movie',
+    year:        '2024',
+    tag:         'UI Motion',
+    role:        'Motion Design',
+    tools:       ['After Effects', 'Figma'],
+    description: 'iOSアプリのデモ用に制作。実機の動作に合わせたモーションデザイン。',
+    process:     'アプリ開発者として実機の挙動を知っているからこそ、「ありえる動き」に絞ったデモを作れた。',
+    mediaType:   'placeholder',
+    visible:     true,
+    featured:    false,
+    order:       2,
+  },
+  {
+    id:          'movie-04',
+    title:       'Blender 習作',
+    category:    'movie',
+    year:        '2026',
+    tag:         '3D / WIP',
+    role:        'Modeling / Rendering',
+    tools:       ['Blender'],
+    description: '3DCGを独学中。まだ途中ですが、その過程も含めて記録しています。',
+    process:     'ゴールより過程を残すことを優先。「完成していないもの」をアーカイブする姿勢自体がポートフォリオの一部。',
+    mediaType:   'placeholder',
+    visible:     true,
+    featured:    false,
+    order:       3,
+  },
+
+  // ── Apps ──────────────────────────────────────────────────────────────────
+
+  {
+    id:          'apps-01',
+    title:       'Neon Mochi',
+    category:    'apps',
+    year:        '2024',
+    tag:         'iOS App',
+    role:        'Design / Development',
+    tools:       ['Swift', 'SwiftUI', 'Firebase'],
+    description: '「書くこと」に没入するためのミニマルなテキストエディタ。余計な機能を削り、タイピングのリズムだけを残しました。個人的に「こういうアプリがほしい」から作り始めた一本。',
+    process:     'ユーザーが思考を妨げられないよう、UIのノイズを徹底的に削ぎ落とした。「書くこと」だけに集中できる空間を設計することがゴール。',
+    mediaType:   'placeholder',
+    visible:     true,
+    featured:    true,
+    order:       0,
+    status:      'Released',
+  },
+  {
+    id:          'apps-02',
+    title:       'ピッタンコ',
+    category:    'apps',
+    year:        '2024',
+    tag:         'iOS App',
+    role:        'Design / Development',
+    tools:       ['Swift', 'SwiftUI', 'Firebase'],
+    description: '割り勘をサクッと計算するアプリ。グループ管理・カスタム比率・精算まで一気通貫。「毎回計算が面倒」という友人の一言がきっかけ。',
+    process:     '複雑な比率計算もワンタップで完結するUXを追求。PMとして仕様を自分で決め、エンジニアとして実装まで担った経験が凝縮されている。',
+    mediaType:   'placeholder',
+    visible:     true,
+    featured:    false,
+    order:       1,
+    status:      'Released',
+  },
+]
