@@ -95,7 +95,7 @@ export function MediaCard({
                 playsInline
                 preload="metadata"
               >
-                <source src={src} type="video/mp4" />
+                <source src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}${src}`} type="video/mp4" />
               </video>
             )}
             {/* Play icon */}
