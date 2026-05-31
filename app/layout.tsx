@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Cormorant_Garamond, Geist, Geist_Mono } from 'next/font/google'
 import { Providers } from '@/components/providers/Providers'
 import { CategoryNav } from '@/components/ui/CategoryNav'
-import { ScanLines } from '@/components/ui/ScanLines'
 import './globals.css'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
@@ -24,7 +23,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ja" className={`${geistSans.variable} ${geistMono.variable} ${cormorant.variable}`}>
       <body>
         <Providers>
-          <ScanLines />
           <CategoryNav />
           {children}
         </Providers>

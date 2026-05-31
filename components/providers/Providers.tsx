@@ -1,24 +1,13 @@
 'use client'
 import { useEffect, type ReactNode } from 'react'
-import { usePathname } from 'next/navigation'
-import dynamic from 'next/dynamic'
 import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { sceneState } from '@/lib/sceneState'
-
-const Scene = dynamic(() => import('../canvas/Scene'), { ssr: false })
+import { AmbientBackground } from '@/components/ui/AmbientBackground'
+import { CursorAtmosphere }  from '@/components/ui/CursorAtmosphere'
 
 export function Providers({ children }: { children: ReactNode }) {
-  const pathname = usePathname()
-
-  // Sync route to shared state for 3D canvas
-  useEffect(() => {
-    sceneState.activeRoute = pathname
-    sceneState.scrollProgress = 0
-  }, [pathname])
-
-  // Lenis smooth scroll + GSAP
+  // Lenis smooth scroll + GSAP ScrollTrigger
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
 
@@ -28,12 +17,7 @@ export function Providers({ children }: { children: ReactNode }) {
       smoothWheel: true,
     })
 
-    const onScroll = (e: { progress: number }) => {
-      sceneState.scrollProgress = e.progress
-      ScrollTrigger.update()
-    }
-
-    lenis.on('scroll', onScroll)
+    lenis.on('scroll', () => { ScrollTrigger.update() })
 
     const rafCallback = (time: number) => lenis.raf(time * 1000)
     gsap.ticker.add(rafCallback)
@@ -47,7 +31,10 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <Scene />
+      {/* Global atmosphere — sits behind all page content (z-index 0) */}
+      <AmbientBackground />
+      {/* Global interactive particles — floats above content (z-index 4) */}
+      <CursorAtmosphere />
       <div style={{ position: 'relative', zIndex: 1 }}>
         {children}
       </div>

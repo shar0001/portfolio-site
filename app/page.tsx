@@ -2,7 +2,6 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { profile } from '@/content/profile'
-import { CursorAtmosphere } from '@/components/ui/CursorAtmosphere'
 
 const SERIF = 'var(--font-cormorant), "EB Garamond", Georgia, serif'
 
@@ -15,8 +14,6 @@ const categories = [
 export default function Home() {
   return (
     <>
-      <CursorAtmosphere />
-
       <main
         className="min-h-screen flex flex-col justify-center px-6 md:px-16 lg:px-24 pt-20 pb-16"
         style={{ position: 'relative', zIndex: 1 }}

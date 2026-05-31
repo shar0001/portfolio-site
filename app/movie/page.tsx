@@ -4,22 +4,35 @@ import { motion } from 'framer-motion'
 import { MediaCard } from '@/components/ui/MediaCard'
 import { WorkModal, type WorkDetail } from '@/components/ui/WorkModal'
 import { VideoModal } from '@/components/ui/VideoModal'
-import { movieWorks as works } from '@/content/movie'
+import { defaultWorks, type Work } from '@/content/works'
 
 const SERIF = 'var(--font-cormorant), "EB Garamond", Georgia, serif'
 
-type Work = (typeof works)[number]
+// Adapt unified Work to the shape MediaCard + WorkModal expect
+function toCard(w: Work) {
+  return {
+    ...w,
+    type:      (w.mediaType === 'video' ? 'video' : 'photo') as 'video' | 'photo',
+    src:       w.mediaUrl,
+    thumbnail: w.thumbnailUrl,
+    insight:   w.process,
+  }
+}
 
 export default function MoviePage() {
   const [workModal,  setWorkModal]  = useState<WorkDetail | null>(null)
   const [videoModal, setVideoModal] = useState<Work | null>(null)
 
-  const featured = works.find(w => w.featured)
-  const rest      = works.filter(w => !w.featured)
+  const allWorks = defaultWorks
+    .filter(w => w.category === 'movie' && w.visible)
+    .sort((a, b) => a.order - b.order)
+
+  const featured = allWorks.find(w => w.featured)
+  const rest      = allWorks.filter(w => !w.featured)
 
   const handleClick = (w: Work) => {
-    if (w.src) setVideoModal(w)
-    else       setWorkModal(w)
+    if (w.mediaUrl) setVideoModal(w)
+    else            setWorkModal(toCard(w))
   }
 
   return (
@@ -38,7 +51,6 @@ export default function MoviePage() {
         >
           01
         </motion.p>
-
         <motion.h1
           style={{
             fontFamily: SERIF,
@@ -54,7 +66,6 @@ export default function MoviePage() {
         >
           Movie
         </motion.h1>
-
         <motion.div
           className="mt-6 mb-5 h-px w-8 origin-left"
           style={{ background: 'rgba(255,255,255,0.07)' }}
@@ -62,7 +73,6 @@ export default function MoviePage() {
           animate={{ scaleX: 1, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         />
-
         <motion.p
           className="text-sm leading-relaxed"
           style={{ color: '#545250', maxWidth: 380 }}
@@ -83,7 +93,7 @@ export default function MoviePage() {
       >
         {featured && (
           <MediaCard
-            {...featured}
+            {...toCard(featured)}
             className="col-span-1 md:col-span-8 min-h-[260px] md:min-h-[380px]"
             onClick={() => handleClick(featured)}
           />
@@ -93,7 +103,7 @@ export default function MoviePage() {
           {rest.slice(0, 2).map(w => (
             <MediaCard
               key={w.id}
-              {...w}
+              {...toCard(w)}
               className="min-h-[160px] md:min-h-[180px]"
               onClick={() => handleClick(w)}
             />
@@ -103,7 +113,7 @@ export default function MoviePage() {
         {rest.slice(2).map(w => (
           <MediaCard
             key={w.id}
-            {...w}
+            {...toCard(w)}
             className="col-span-1 md:col-span-6 min-h-[200px] md:min-h-[220px]"
             onClick={() => handleClick(w)}
           />
@@ -114,9 +124,9 @@ export default function MoviePage() {
         タップで再生 · 動画のないカードは詳細を表示
       </p>
 
-      <WorkModal  work={workModal}  onClose={() => setWorkModal(null)} />
+      <WorkModal work={workModal} onClose={() => setWorkModal(null)} />
       <VideoModal
-        src={videoModal?.src}
+        src={videoModal?.mediaUrl}
         title={videoModal?.title}
         tag={videoModal?.tag}
         year={videoModal?.year}

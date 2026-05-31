@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 
+const SERIF = 'var(--font-cormorant), "EB Garamond", Georgia, serif'
+
 export interface WorkDetail {
   title?: string
   year?: string
@@ -40,93 +42,136 @@ export function WorkModal({ work, onClose }: Props) {
   return createPortal(
     <AnimatePresence>
       {work && (
-        /* Backdrop — click outside to close, also centers the panel */
+        /* Full-screen backdrop — bottom-anchored on mobile, centered on desktop */
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
+          className="fixed inset-0 z-50 flex items-end md:items-center justify-center md:p-6"
+          style={{ background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(4px)' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.25 }}
+          transition={{ duration: 0.2 }}
           onClick={onClose}
         >
-          {/* Panel */}
+          {/* Sheet */}
           <motion.div
-            className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto bg-[#111111] border border-[var(--border)] rounded-2xl p-6 md:p-8 shadow-2xl"
-            initial={{ opacity: 0, scale: 0.96, y: 24 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 24 }}
-            transition={{ duration: 0.3, ease: [0.76, 0, 0.24, 1] }}
+            className="relative w-full md:max-w-lg max-h-[90vh] md:max-h-[80vh] overflow-y-auto"
+            style={{ background: '#0e0d0b' }}
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 24 }}
+            transition={{ duration: 0.32, ease: [0.76, 0, 0.24, 1] }}
             onClick={e => e.stopPropagation()}
           >
-            {/* NieR corner brackets */}
-            <div className="absolute top-3 left-3 w-4 h-4 border-t border-l border-white/15" />
-            <div className="absolute bottom-3 right-3 w-4 h-4 border-b border-r border-white/15" />
+            {/* Drag handle — mobile only */}
+            <div className="flex justify-center pt-3 md:hidden">
+              <div className="w-8 h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.1)' }} />
+            </div>
 
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 font-mono text-[11px] text-[#404040] hover:text-[#808080] transition-colors"
+            {/* Sticky header */}
+            <div
+              className="sticky top-0 z-10 flex items-start justify-between px-6 pt-5 pb-4 md:pt-6"
+              style={{ background: '#0e0d0b', borderBottom: '1px solid rgba(255,255,255,0.04)' }}
             >
-              × close
-            </button>
-
-            <p className="font-mono text-[10px] text-[#383838] tracking-widest uppercase mb-3">
-              {work.tag}{work.tag && work.year && ' · '}{work.year}
-              {work.status && <span className="ml-3 text-[#303030]">— {work.status}</span>}
-            </p>
-
-            <h2 className="text-xl md:text-2xl font-semibold text-[#f0f0f0] mb-5 leading-tight pr-8">
-              {work.title}
-            </h2>
-
-            {work.role && (
-              <div className="mb-4">
-                <p className="font-mono text-[9px] text-[#303030] uppercase tracking-widest mb-1.5">Role</p>
-                <p className="text-sm text-[#808080]">{work.role}</p>
-              </div>
-            )}
-
-            {techList && techList.length > 0 && (
-              <div className="mb-4">
-                <p className="font-mono text-[9px] text-[#303030] uppercase tracking-widest mb-2">Tools</p>
-                <div className="flex flex-wrap gap-2">
-                  {techList.map(t => (
-                    <span
-                      key={t}
-                      className="px-2.5 py-1 text-[10px] font-mono text-[#7c3aed] bg-[rgba(124,58,237,0.08)] rounded-md border border-[rgba(124,58,237,0.15)]"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {work.description && (
-              <div className="mb-4">
-                <p className="font-mono text-[9px] text-[#303030] uppercase tracking-widest mb-1.5">About</p>
-                <p className="text-sm text-[#606060] leading-relaxed">{work.description}</p>
-              </div>
-            )}
-
-            {work.insight && (
-              <div className="pt-4 border-t border-[rgba(255,255,255,0.05)]">
-                <p className="font-mono text-[9px] text-[#303030] uppercase tracking-widest mb-1.5">Process</p>
-                <p className="text-sm text-[#505050] leading-relaxed italic">{work.insight}</p>
-              </div>
-            )}
-
-            {work.storeUrl && (
-              <div className="mt-5">
-                <a
-                  href={work.storeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-mono text-xs text-[#7c3aed] hover:text-[#a78bfa] transition-colors"
+              <div className="flex-1 pr-4">
+                {(work.tag || work.year || work.status) && (
+                  <p className="font-mono text-[8px] text-[#383430] tracking-widest uppercase mb-2">
+                    {work.tag}{work.tag && work.year && ' · '}{work.year}
+                    {work.status && ` · ${work.status}`}
+                  </p>
+                )}
+                <h2
+                  className="leading-tight"
+                  style={{
+                    fontFamily: SERIF,
+                    fontWeight: 300,
+                    fontSize: 'clamp(1.5rem, 5vw, 2rem)',
+                    color: '#c0b8a8',
+                  }}
                 >
-                  App Store で見る →
-                </a>
+                  {work.title}
+                </h2>
               </div>
-            )}
+
+              {/* Close button — large tap target */}
+              <button
+                onClick={onClose}
+                aria-label="Close"
+                className="shrink-0 w-10 h-10 flex items-center justify-center transition-colors duration-200"
+                style={{ color: '#484440', border: '1px solid rgba(255,255,255,0.07)' }}
+                onMouseEnter={e => { e.currentTarget.style.color = '#c0b8a8' }}
+                onMouseLeave={e => { e.currentTarget.style.color = '#484440' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="px-6 pt-5 pb-8 space-y-5">
+              {work.role && (
+                <section>
+                  <p className="font-mono text-[8px] text-[#2e2c2a] uppercase tracking-widest mb-2">Role</p>
+                  <p className="text-sm leading-relaxed" style={{ color: '#6a6860' }}>
+                    {work.role}
+                  </p>
+                </section>
+              )}
+
+              {techList && techList.length > 0 && (
+                <section>
+                  <p className="font-mono text-[8px] text-[#2e2c2a] uppercase tracking-widest mb-2">Tools</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {techList.map(t => (
+                      <span
+                        key={t}
+                        className="font-mono text-[9px] px-2.5 py-1"
+                        style={{
+                          color: '#585450',
+                          background: 'rgba(255,255,255,0.03)',
+                          border: '1px solid rgba(255,255,255,0.06)',
+                        }}
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {work.description && (
+                <section>
+                  <p className="font-mono text-[8px] text-[#2e2c2a] uppercase tracking-widest mb-2">About</p>
+                  <p className="text-sm leading-relaxed" style={{ color: '#5e5c58' }}>
+                    {work.description}
+                  </p>
+                </section>
+              )}
+
+              {work.insight && (
+                <section style={{ paddingTop: '1.25rem', borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+                  <p className="font-mono text-[8px] text-[#2e2c2a] uppercase tracking-widest mb-2">Process</p>
+                  <p className="text-sm leading-relaxed italic" style={{ color: '#504e4a' }}>
+                    {work.insight}
+                  </p>
+                </section>
+              )}
+
+              {work.storeUrl && (
+                <div className="pt-2">
+                  <a
+                    href={work.storeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-[10px] tracking-widest transition-opacity hover:opacity-100"
+                    style={{ color: '#888278', opacity: 0.7 }}
+                  >
+                    App Store で見る →
+                  </a>
+                </div>
+              )}
+            </div>
+
+            {/* iOS safe-area bottom padding */}
+            <div className="h-safe-area-inset-bottom md:h-0" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }} />
           </motion.div>
         </motion.div>
       )}
