@@ -15,26 +15,17 @@ interface MediaCardProps {
 }
 
 export function MediaCard({
-  type,
-  src,
-  thumbnail,
-  title,
-  description,
-  year,
-  tag,
-  className = '',
-  onClick,
+  type, src, thumbnail, title, description, year, tag, className = '', onClick,
 }: MediaCardProps) {
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const [isHovering, setIsHovering] = useState(false)
+  const videoRef    = useRef<HTMLVideoElement>(null)
+  const [hovering, setHovering] = useState(false)
 
-  const handleMouseEnter = () => {
-    setIsHovering(true)
+  const onEnter = () => {
+    setHovering(true)
     if (type === 'video' && videoRef.current && src) videoRef.current.play()
   }
-
-  const handleMouseLeave = () => {
-    setIsHovering(false)
+  const onLeave = () => {
+    setHovering(false)
     if (type === 'video' && videoRef.current) {
       videoRef.current.pause()
       videoRef.current.currentTime = 0
@@ -43,28 +34,20 @@ export function MediaCard({
 
   return (
     <div
-      className={`group relative bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 hover:border-[var(--border-hover)] ${className}`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      className={`group relative overflow-hidden cursor-pointer ${className}`}
+      style={{ border: '1px solid rgba(255,255,255,0.07)', background: '#0a0a0a' }}
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
       onClick={onClick}
     >
-      {/* Media area */}
-      <div className="relative w-full h-full min-h-[180px] bg-[#0a0a0a]">
-        {/* Placeholder when no src */}
+      <div className="relative w-full h-full min-h-[180px]">
+
+        {/* Placeholder */}
         {!src && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center space-y-2">
-              <div className="w-10 h-10 rounded-full border border-[rgba(255,255,255,0.08)] mx-auto flex items-center justify-center">
-                {type === 'video' ? (
-                  <span className="text-[#303030] text-xs">▶</span>
-                ) : (
-                  <span className="text-[#303030] text-xs">⬜</span>
-                )}
-              </div>
-              <p className="font-mono text-[9px] text-[#282828] uppercase tracking-widest">
-                {type === 'video' ? 'Video' : 'Photo'}
-              </p>
-            </div>
+          <div className="absolute inset-0 flex items-end p-4">
+            <p className="font-mono text-[8px] text-[#2a2828] uppercase tracking-widest">
+              {type === 'video' ? 'Video' : 'Image'}
+            </p>
           </div>
         )}
 
@@ -72,7 +55,7 @@ export function MediaCard({
         {type === 'photo' && src && (
           <Image
             src={src}
-            alt={title ?? 'media'}
+            alt={title ?? ''}
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
@@ -81,35 +64,28 @@ export function MediaCard({
         {/* Video */}
         {type === 'video' && (
           <>
-            {thumbnail && !isHovering && (
-              <Image src={thumbnail} alt={title ?? 'video thumbnail'} fill className="object-cover" />
+            {thumbnail && !hovering && (
+              <Image src={thumbnail} alt={title ?? ''} fill className="object-cover" />
             )}
             {src && (
               <video
                 ref={videoRef}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
-                  isHovering ? 'opacity-100' : 'opacity-0'
-                }`}
-                muted
-                loop
-                playsInline
-                preload="metadata"
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${hovering ? 'opacity-100' : 'opacity-0'}`}
+                muted loop playsInline preload="metadata"
               >
                 <source src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}${src}`} type="video/mp4" />
               </video>
             )}
-            {/* Play icon */}
-            {!isHovering && (
+            {!hovering && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-12 h-12 rounded-full border border-[rgba(255,255,255,0.12)] flex items-center justify-center backdrop-blur-sm transition-all duration-300 group-hover:border-[rgba(255,255,255,0.3)] group-hover:scale-110">
+                <div className="w-11 h-11 rounded-full border border-[rgba(255,255,255,0.12)] flex items-center justify-center transition-all duration-300 group-hover:border-[rgba(255,255,255,0.28)]">
                   <div
-                    className="ml-1 opacity-50 group-hover:opacity-90 transition-opacity"
+                    className="ml-0.5 opacity-40 group-hover:opacity-75 transition-opacity"
                     style={{
-                      width: 0,
-                      height: 0,
+                      width: 0, height: 0,
                       borderTop: '5px solid transparent',
                       borderBottom: '5px solid transparent',
-                      borderLeft: '10px solid #f0f0f0',
+                      borderLeft: '9px solid #f0f0f0',
                     }}
                   />
                 </div>
@@ -118,9 +94,9 @@ export function MediaCard({
           </>
         )}
 
-        {/* Gradient overlay */}
+        {/* Gradient overlay for info legibility */}
         {(title || description) && (
-          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#080808] to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#080808] to-transparent pointer-events-none" />
         )}
       </div>
 
@@ -128,17 +104,17 @@ export function MediaCard({
       {(title || description || year || tag) && (
         <div className="absolute bottom-0 left-0 right-0 p-4">
           {(tag || year) && (
-            <p className="font-mono text-[9px] text-[#404040] mb-1 tracking-widest uppercase">
+            <p className="font-mono text-[8px] text-[#383838] mb-1 tracking-widest uppercase">
               {tag}{tag && year && ' · '}{year}
             </p>
           )}
           {title && (
-            <h3 className="text-sm font-medium text-[#d0d0d0] group-hover:text-[#f0f0f0] transition-colors leading-tight">
+            <h3 className="text-sm font-medium text-[#b0b0b0] group-hover:text-[#d8d8d8] transition-colors leading-tight">
               {title}
             </h3>
           )}
           {description && (
-            <p className="text-[11px] text-[#505050] mt-1 leading-relaxed line-clamp-2">{description}</p>
+            <p className="text-[11px] text-[#444] mt-1 leading-relaxed line-clamp-2">{description}</p>
           )}
         </div>
       )}

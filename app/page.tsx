@@ -1,207 +1,149 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { profile } from '@/content/profile'
-import { NierBoot } from '@/components/ui/NierBoot'
-import { GlitchText } from '@/components/ui/GlitchText'
+import { CursorAtmosphere } from '@/components/ui/CursorAtmosphere'
+
+const SERIF = 'var(--font-cormorant), "EB Garamond", Georgia, serif'
 
 const categories = [
-  { href: '/movie', label: 'Movie',  sub: 'Motion design & visual effects',       color: '#3b82f6', num: '01' },
-  { href: '/apps',  label: 'Apps',   sub: 'iOS & web application development',     color: '#7c3aed', num: '02' },
-  { href: '/model', label: 'Model',  sub: 'Visual direction & archive',            color: '#f43f5e', num: '03' },
+  { href: '/movie', label: 'Movie', desc: 'Motion design & visual effects',   num: '01' },
+  { href: '/apps',  label: 'Apps',  desc: 'iOS & web application development', num: '02' },
+  { href: '/model', label: 'Model', desc: 'Visual direction & archive',        num: '03' },
 ]
 
-// stagger helper
-const stagger = (delay: number) => ({
-  initial: { opacity: 0, y: 12 },
-  animate:  { opacity: 1, y: 0  },
-  transition: { delay, duration: 0.45, ease: [0.76, 0, 0.24, 1] as const },
-})
-
 export default function Home() {
-  const [showBoot, setShowBoot] = useState(false)
-  const [ready, setReady]       = useState(false)
-
-  useEffect(() => {
-    // Show boot every 3rd visit (visit 1, 4, 7, ...)
-    const count = parseInt(localStorage.getItem('bootVisitCount') || '0') + 1
-    localStorage.setItem('bootVisitCount', String(count))
-    if (count % 3 === 1) {
-      setShowBoot(true)
-    } else {
-      setReady(true)
-    }
-  }, [])
-
-  const handleBootComplete = useCallback(() => {
-    setShowBoot(false)
-    setReady(true)
-  }, [])
-
   return (
     <>
-      {showBoot && <NierBoot onComplete={handleBootComplete} />}
+      <CursorAtmosphere />
 
-      <main className="min-h-screen flex flex-col justify-center px-8 md:px-16 lg:px-24 pt-24 pb-16">
-
-        {/* ── Self-introduction ── */}
-        <section className="mb-20 max-w-xl relative">
-
-          {/* HUD corner brackets */}
-          <motion.div
-            className="absolute -top-5 -left-5 w-8 h-8 border-t border-l border-white/20"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={ready ? { scale: 1, opacity: 1 } : {}}
-            transition={{ delay: 0.05, duration: 0.35 }}
-          />
-          <motion.div
-            className="absolute -bottom-5 -right-5 w-8 h-8 border-b border-r border-white/20"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={ready ? { scale: 1, opacity: 1 } : {}}
-            transition={{ delay: 0.15, duration: 0.35 }}
-          />
-
-          {/* Section label */}
+      <main
+        className="min-h-screen flex flex-col justify-center px-6 md:px-16 lg:px-24 pt-20 pb-16"
+        style={{ position: 'relative', zIndex: 1 }}
+      >
+        {/* ── Intro ─────────────────────────────────────────────────────── */}
+        <section className="mb-14 md:mb-20">
           <motion.p
-            className="font-mono text-[10px] tracking-[0.4em] text-[#383838] uppercase mb-8"
-            {...(ready ? stagger(0.1) : { initial: { opacity: 0 } })}
+            className="font-mono text-[9px] tracking-[0.5em] uppercase mb-7"
+            style={{ color: '#383838' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
           >
-            {'>'}&nbsp;Profile_Archive
+            Portfolio · 2025
           </motion.p>
 
-          {/* Name with glitch */}
           <motion.h1
-            className="text-[clamp(3rem,9vw,7rem)] font-semibold tracking-[-0.02em] leading-[0.92] mb-8"
-            initial={{ opacity: 0 }}
-            animate={ready ? { opacity: 1 } : {}}
-            transition={{ delay: 0.15, duration: 0.4 }}
+            style={{
+              fontFamily: SERIF,
+              fontWeight: 300,
+              fontSize: 'clamp(3rem, 8.5vw, 7.5rem)',
+              lineHeight: 0.9,
+              letterSpacing: '-0.025em',
+              color: '#c0b8a0',
+            }}
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
           >
-            {ready && (
-              <GlitchText
-                text={profile.name.split(' ')[0]}
-                delay={200}
-                speed={30}
-                className="text-[#f0f0f0]"
-              />
-            )}
-            <br />
-            <span className="text-[#1c1c1c]">——</span>
+            Shusaku<br />
+            <span style={{ color: '#201e1a' }}>Nishiura</span>
           </motion.h1>
 
-          {/* Animated horizontal rule */}
           <motion.div
-            className="h-px bg-white/08 mb-8 origin-left"
+            className="mt-8 mb-7 h-px w-10 origin-left"
+            style={{ background: 'rgba(255,255,255,0.07)' }}
             initial={{ scaleX: 0, opacity: 0 }}
-            animate={ready ? { scaleX: 1, opacity: 1 } : {}}
-            transition={{ delay: 0.3, duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+            animate={{ scaleX: 1, opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.5 }}
           />
 
-          {/* catchJa */}
           <motion.p
-            className="text-base text-[#606060] leading-relaxed mb-6 max-w-sm whitespace-pre-line"
-            {...(ready ? stagger(0.38) : { initial: { opacity: 0 } })}
+            className="text-sm leading-relaxed whitespace-pre-line"
+            style={{ color: '#545250', maxWidth: 340 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
           >
             {profile.catchJa}
           </motion.p>
 
-          {/* catchEn */}
           <motion.p
-            className="text-sm text-[#3a3a3a] leading-relaxed max-w-sm italic"
-            {...(ready ? stagger(0.48) : { initial: { opacity: 0 } })}
+            className="mt-4 text-[12px] leading-relaxed italic"
+            style={{ color: '#323028', fontFamily: SERIF, maxWidth: 340 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.75 }}
           >
             {profile.catchEn}
           </motion.p>
-
-          {/* Tags */}
-          <motion.div
-            className="flex flex-wrap gap-2 mt-8"
-            initial={{ opacity: 0 }}
-            animate={ready ? { opacity: 1 } : {}}
-            transition={{ delay: 0.56, duration: 0.4 }}
-          >
-            {profile.tags.map((tag, i) => (
-              <motion.span
-                key={tag}
-                className="px-3 py-1.5 text-[11px] font-mono border border-[rgba(255,255,255,0.07)] text-[#505050] rounded-full hover:border-[rgba(255,255,255,0.15)] hover:text-[#808080] transition-all duration-300"
-                initial={{ opacity: 0, y: 6 }}
-                animate={ready ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.58 + i * 0.07, duration: 0.3 }}
-              >
-                {tag}
-              </motion.span>
-            ))}
-          </motion.div>
         </section>
 
-        {/* ── Category archive ── */}
-        <section>
+        {/* ── Category entries ──────────────────────────────────────────── */}
+        <nav>
           <motion.p
-            className="font-mono text-[10px] tracking-[0.4em] text-[#303030] uppercase mb-6"
-            {...(ready ? stagger(0.68) : { initial: { opacity: 0 } })}
+            className="font-mono text-[8px] tracking-[0.55em] uppercase mb-4"
+            style={{ color: '#252320' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.88 }}
           >
-            {'>'}&nbsp;Select_Archive
+            Archive
           </motion.p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-3xl">
-            {categories.map(({ href, label, sub, color, num }, i) => (
+          <div style={{ maxWidth: 460 }}>
+            {categories.map(({ href, label, desc, num }, i) => (
               <motion.div
                 key={href}
-                initial={{ opacity: 0, y: 20 }}
-                animate={ready ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.76 + i * 0.1, duration: 0.45 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.94 + i * 0.08, ease: [0.76, 0, 0.24, 1] }}
               >
                 <Link
                   href={href}
-                  className="group relative bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 min-h-[180px] flex flex-col justify-between overflow-hidden hover:border-[var(--border-hover)] transition-all duration-500 block"
+                  className="group flex items-center gap-5 py-5"
+                  style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}
                 >
-                  {/* Hover glow */}
-                  <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"
-                    style={{ background: `radial-gradient(circle at 30% 30%, ${color}0d 0%, transparent 70%)` }}
-                  />
-
-                  {/* NieR corner brackets */}
-                  <div className="absolute top-3 left-3 w-4 h-4 border-t border-l border-white/10 group-hover:border-white/30 transition-colors duration-400" />
-                  <div className="absolute top-3 right-3 w-4 h-4 border-t border-r border-white/10 group-hover:border-white/30 transition-colors duration-400" />
-                  <div className="absolute bottom-3 left-3 w-4 h-4 border-b border-l border-white/10 group-hover:border-white/30 transition-colors duration-400" />
-                  <div className="absolute bottom-3 right-3 w-4 h-4 border-b border-r border-white/10 group-hover:border-white/30 transition-colors duration-400" />
-
-                  {/* Scan line sweep on hover */}
-                  <div
-                    className="absolute inset-x-0 h-px -top-px opacity-0 group-hover:opacity-70 group-hover:top-full pointer-events-none"
-                    style={{
-                      background: `linear-gradient(to right, transparent, ${color}, transparent)`,
-                      boxShadow: `0 0 8px ${color}`,
-                      transition: 'top 0.55s linear, opacity 0.15s',
-                    }}
-                  />
-
-                  <div className="relative z-10">
-                    <p className="font-mono text-[10px] text-[#303030] mb-4">{num}</p>
-                    <h2 className="text-2xl font-semibold mb-2" style={{ color: '#c0c0c0' }}>
-                      {label}
-                    </h2>
-                    <p className="text-xs text-[#404040] leading-relaxed">{sub}</p>
-                  </div>
-
-                  <div
-                    className="relative z-10 font-mono text-[10px] opacity-30 group-hover:opacity-100 transition-all duration-300 tracking-widest"
-                    style={{ color }}
+                  <span
+                    className="font-mono text-[8px] tracking-[0.4em] shrink-0"
+                    style={{ color: '#282624', width: 20 }}
                   >
-                    ENTER ARCHIVE →
+                    {num}
+                  </span>
+
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className="leading-none mb-1.5 transition-colors duration-300"
+                      style={{
+                        fontFamily: SERIF,
+                        fontWeight: 300,
+                        fontSize: 'clamp(1.4rem, 3.5vw, 2.1rem)',
+                        letterSpacing: '-0.01em',
+                        color: '#585248',
+                      }}
+                    >
+                      {label}
+                    </p>
+                    <p
+                      className="text-[11px] leading-none"
+                      style={{ color: '#2e2c2a' }}
+                    >
+                      {desc}
+                    </p>
                   </div>
 
-                  {/* Bottom accent */}
-                  <div
-                    className="absolute bottom-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{ background: `linear-gradient(to right, transparent, ${color}50, transparent)` }}
-                  />
+                  <span
+                    className="font-mono text-[11px] opacity-0 group-hover:opacity-50 transition-opacity duration-300 shrink-0"
+                    style={{ color: '#a89878' }}
+                  >
+                    →
+                  </span>
                 </Link>
               </motion.div>
             ))}
+            <div className="h-px" style={{ background: 'rgba(255,255,255,0.04)' }} />
           </div>
-        </section>
+        </nav>
       </main>
     </>
   )
