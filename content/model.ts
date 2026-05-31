@@ -1,69 +1,26 @@
-export const modelArchive = [
-  {
-    id: 'P01',
-    type: 'photo' as const,
-    src: undefined,
-    title: 'Paris Collection',
-    year: '2023',
-    tag: 'Editorial',
-    featured: true,
-    description: 'パリ・コレクションへの参加。ビザ申請から現地エージェントとの交渉まで、すべてを自分でマネジメントした。',
-    insight: 'セルフプロデュースで動いた経験が、現在のクリエイティブディレクションにおける「見た目の解像度」の土台になっている。',
-  },
-  {
-    id: 'P02',
-    type: 'photo' as const,
-    src: undefined,
-    title: 'Milan Fashion Week',
-    year: '2023',
-    tag: 'Runway',
-    featured: false,
-    description: 'ミラノ・ファッションウィークへの参加。ランウェイでのパフォーマンスと現地スタッフとのディレクション調整。',
-    insight: undefined,
-  },
-  {
-    id: 'P03',
-    type: 'photo' as const,
-    src: undefined,
-    title: 'Commercial Campaign',
-    year: '2024',
-    tag: 'Campaign',
-    featured: false,
-    description: '帰国後に参加したコマーシャルキャンペーン。ディレクターとのビジョン共有と、スタッフへの意図伝達を主導。',
-    insight: undefined,
-  },
-  {
-    id: 'P04',
-    type: 'photo' as const,
-    src: undefined,
-    title: 'Portrait',
-    year: '2022',
-    tag: 'Portrait',
-    featured: false,
-    description: undefined,
-    insight: undefined,
-  },
-  {
-    id: 'P05',
-    type: 'photo' as const,
-    src: undefined,
-    title: 'Lookbook',
-    year: '2024',
-    tag: 'Lookbook',
-    featured: false,
-    description: undefined,
-    insight: undefined,
-  },
-  {
-    id: 'V01',
-    type: 'video' as const,
-    src: undefined,
-    thumbnail: undefined,
-    title: 'Runway Film',
-    year: '2023',
-    tag: 'Film',
-    featured: false,
-    description: 'ランウェイのドキュメンタリー映像。モデルとして参加しながら、映像視点での記録も同時に担った。',
-    insight: undefined,
-  },
-]
+/**
+ * Model Archive — asset paths
+ * Place files in /public/media/ and replace `undefined` with the path.
+ * Example: hero: '/media/model-hero.jpg'
+ */
+export const modelImages = {
+  // ── Hero (tall vertical, left column of split hero) ──────────────────────
+  hero:            undefined as string | undefined,   // → '/media/model-hero.jpg'
+
+  // ── Selected Visuals ─────────────────────────────────────────────────────
+  editorial01:     undefined as string | undefined,   // → '/media/editorial-paris-01.jpg'
+  milan01:         undefined as string | undefined,   // → '/media/runway-milan-01.jpg'
+  commercial01:    undefined as string | undefined,   // → '/media/commercial-01.jpg'
+
+  // ── Commercial / Campaign ────────────────────────────────────────────────
+  lookbook01:      undefined as string | undefined,   // → '/media/lookbook-01.jpg'
+
+  // ── Portrait Archive (3 vertical frames) ─────────────────────────────────
+  portrait01:      undefined as string | undefined,   // → '/media/portrait-01.jpg'
+  portrait02:      undefined as string | undefined,   // → '/media/portrait-02.jpg'
+  portrait03:      undefined as string | undefined,   // → '/media/portrait-03.jpg'
+
+  // ── Motion / Runway Film ─────────────────────────────────────────────────
+  runwayFilm:      undefined as string | undefined,   // → '/media/runway-film.mp4'
+  runwayFilmThumb: undefined as string | undefined,   // → '/media/runway-film-thumb.jpg'
+}
