@@ -86,10 +86,30 @@ body {
 
 /* ── Model Archive palette ── */
 :root {
-  --m-text:    #E7E0CF;
-  --m-muted:   #9C9586;
+  --m-text:    #E8E0CE;
+  --m-muted:   #9A9283;
   --m-dim:     #6B6350;
-  --m-line:    #3A352B;
-  --m-surface: #131310;
-  --m-accent:  #D8C48A;
+  --m-line:    rgba(232, 224, 206, 0.10);
+  --m-surface: rgba(20, 19, 15, 0.55);
+  --m-accent:  #CBB783;
+}
+
+/* ── Ambient background drift animations ── */
+@keyframes ambient-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(5%, 9%) scale(1.06); }
+  66%       { transform: translate(-3%, 4%) scale(0.95); }
+}
+@keyframes ambient-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%       { transform: translate(-7%, -5%) scale(1.08); }
+  75%       { transform: translate(5%, 8%) scale(0.93); }
+}
+@keyframes ambient-drift-3 {
+  0%, 100% { transform: translate(0, 0); }
+  50%       { transform: translate(3%, -6%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [style*="ambient-drift"] { animation: none !important; }
 }
