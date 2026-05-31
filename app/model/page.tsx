@@ -51,7 +51,7 @@ function SectionHead({ num, label }: { num: string; label: string }) {
   return (
     <motion.div
       ref={ref}
-      className="flex items-center gap-5 mb-12"
+      className="flex items-center gap-5 mb-6 md:mb-10"
       initial={{ opacity: 0 }}
       animate={inView ? { opacity: 1 } : {}}
       transition={{ duration: 0.8 }}
@@ -85,9 +85,7 @@ function Frame({ src, alt = '', label, className = '', priority, isVideo, onClic
       ref={ref}
       className={`group relative overflow-hidden ${className} ${onClick ? 'cursor-pointer' : ''}`}
       style={{
-        background: SURFACE,
-        border: `1px solid ${LINE}`,
-        backdropFilter: 'blur(2px)',
+        border: '1px solid rgba(232,224,206,0.07)',
       }}
       initial={{ opacity: 0, y: 24 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -219,10 +217,9 @@ export default function ModelPage() {
 
           {/* Right — editorial copy panel */}
           <div
-            className="col-span-1 md:col-span-2 flex flex-col justify-center px-8 md:px-12 lg:px-16 py-20 md:py-28"
+            className="col-span-1 md:col-span-2 flex flex-col justify-center px-8 md:px-12 lg:px-16 py-12 md:py-28"
             style={{
-              background: 'rgba(8,8,6,0.78)',
-              backdropFilter: 'blur(16px)',
+              background: 'rgba(12,11,9,0.94)',
             }}
           >
             <motion.div
@@ -299,7 +296,7 @@ export default function ModelPage() {
         {/* ══════════════════════════════════════════════════════════════════
             CONTENT SECTIONS
         ══════════════════════════════════════════════════════════════════ */}
-        <div className="px-6 md:px-12 lg:px-20 mt-24 space-y-28">
+        <div className="px-5 md:px-12 lg:px-20 mt-10 md:mt-24 space-y-16 md:space-y-28">
 
           {/* ── 01 · Selected Visuals ─────────────────────────────────────── */}
           <section>
@@ -311,7 +308,7 @@ export default function ModelPage() {
                 src={modelImages.editorial01}
                 alt="Paris editorial, 2023"
                 label="Paris, 2023"
-                className="col-span-2 md:col-span-7 min-h-[300px] md:min-h-[500px]"
+                className="col-span-2 md:col-span-7 min-h-[240px] md:min-h-[500px]"
                 priority
               />
               <div
@@ -404,7 +401,7 @@ export default function ModelPage() {
           {/* ── 03 · Commercial / Campaign ───────────────────────────────── */}
           <section>
             <SectionHead num="03" label="Commercial / Campaign" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-16 items-start">
 
               {/* Text entries */}
               <div>
@@ -464,7 +461,7 @@ export default function ModelPage() {
           {/* ── 04 · Portrait Archive ─────────────────────────────────────── */}
           <section>
             <SectionHead num="04" label="Portrait Archive" />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 mb-10">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 mb-10">
               {[
                 { src: modelImages.portrait01, alt: 'Portrait 2022', label: '2022' },
                 { src: modelImages.portrait02, alt: 'Portrait 2023', label: '2023' },
@@ -475,7 +472,7 @@ export default function ModelPage() {
                   src={src}
                   alt={alt}
                   label={label}
-                  className="min-h-[340px] md:min-h-[460px]"
+                  className="min-h-[200px] md:min-h-[460px]"
                 />
               ))}
             </div>
@@ -531,7 +528,7 @@ export default function ModelPage() {
           {/* ── 06 · Profile ──────────────────────────────────────────────── */}
           <section>
             <SectionHead num="06" label="Profile" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-2xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-2xl">
 
               {/* Info table */}
               <Reveal>
