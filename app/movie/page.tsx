@@ -8,7 +8,6 @@ import { defaultWorks, type Work } from '@/content/works'
 
 const SERIF = 'var(--font-cormorant), "EB Garamond", Georgia, serif'
 
-// Adapt unified Work to the shape MediaCard + WorkModal expect
 function toCard(w: Work) {
   return {
     ...w,
@@ -40,11 +39,10 @@ export default function MoviePage() {
       className="min-h-screen px-5 md:px-12 lg:px-20 pt-20 pb-24"
       style={{ position: 'relative', zIndex: 1 }}
     >
-      {/* ── Page header ───────────────────────────────────────────────── */}
       <div className="mb-10 md:mb-14">
         <motion.p
           className="font-mono text-[8px] tracking-[0.55em] uppercase mb-5"
-          style={{ color: '#333' }}
+          style={{ color: '#5a6490' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.1 }}
@@ -58,7 +56,7 @@ export default function MoviePage() {
             fontSize: 'clamp(2.5rem, 6vw, 5rem)',
             lineHeight: 0.9,
             letterSpacing: '-0.02em',
-            color: '#c0b8a8',
+            color: '#f0f4ff',
           }}
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -68,14 +66,14 @@ export default function MoviePage() {
         </motion.h1>
         <motion.div
           className="mt-6 mb-5 h-px w-8 origin-left"
-          style={{ background: 'rgba(255,255,255,0.07)' }}
+          style={{ background: 'rgba(155,184,255,0.18)' }}
           initial={{ scaleX: 0, opacity: 0 }}
           animate={{ scaleX: 1, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         />
         <motion.p
           className="text-sm leading-relaxed"
-          style={{ color: '#545250', maxWidth: 380 }}
+          style={{ color: '#96a0bd', maxWidth: 380, lineHeight: 1.8 }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.5 }}
@@ -84,7 +82,6 @@ export default function MoviePage() {
         </motion.p>
       </div>
 
-      {/* ── Work grid ─────────────────────────────────────────────────── */}
       <motion.div
         className="grid grid-cols-1 md:grid-cols-12 gap-2.5"
         initial={{ opacity: 0, y: 14 }}
@@ -120,7 +117,7 @@ export default function MoviePage() {
         ))}
       </motion.div>
 
-      <p className="mt-6 font-mono text-[8px] text-[#242220] text-center tracking-widest">
+      <p className="mt-6 font-mono text-[8px] text-center tracking-widest" style={{ color: '#3a4470' }}>
         タップで再生 · 動画のないカードは詳細を表示
       </p>
 
