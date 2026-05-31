@@ -277,10 +277,10 @@ export default function ModelPage() {
                 style={{ borderTop: `1px solid ${LINE}` }}
               >
                 <p className="font-mono text-[9px] tracking-[0.3em]" style={{ color: MUTED }}>
-                  Tokyo / Paris / Milan
+                  Van Cleef &amp; Arpels · MIKIMOTO
                 </p>
                 <p className="font-mono text-[9px] tracking-[0.2em]" style={{ color: DIM }}>
-                  Runway · Campaign · Editorial
+                  Campaign · Editorial · Jewelry
                 </p>
               </div>
             </motion.div>
@@ -300,8 +300,8 @@ export default function ModelPage() {
             <div className="grid grid-cols-2 md:grid-cols-12 gap-2.5 mb-2.5">
               <Frame
                 src={modelImages.editorial01}
-                alt="Paris editorial, 2023"
-                label="Paris, 2023"
+                alt="Van Cleef & Arpels — スー レ ゼトワール"
+                label="Van Cleef &amp; Arpels · 2024"
                 className="col-span-2 md:col-span-7 min-h-[240px] md:min-h-[500px]"
                 priority
               />
@@ -311,14 +311,14 @@ export default function ModelPage() {
               >
                 <Frame
                   src={modelImages.milan01}
-                  alt="Milan runway, 2023"
-                  label="Milan · Runway"
+                  alt="Van Cleef & Arpels — スー レ ゼトワール"
+                  label="VCA · Jewelry"
                   className="min-h-[148px] md:min-h-0"
                 />
                 <Frame
                   src={modelImages.commercial01}
-                  alt="Commercial, 2024"
-                  label="Commercial"
+                  alt="MIKIMOTO Lucky Arrows"
+                  label="MIKIMOTO · Campaign"
                   className="min-h-[148px] md:min-h-0"
                 />
               </div>
@@ -340,8 +340,8 @@ export default function ModelPage() {
               </Reveal>
               <Frame
                 src={modelImages.portrait01}
-                alt="Portrait"
-                label="Portrait · 2022"
+                alt="Van Cleef & Arpels portrait"
+                label="VCA · 2024"
                 className="min-h-[260px]"
               />
             </div>
@@ -457,9 +457,9 @@ export default function ModelPage() {
             <SectionHead num="04" label="Portrait Archive" />
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 mb-10">
               {[
-                { src: modelImages.portrait01, alt: 'Portrait 2022', label: '2022' },
-                { src: modelImages.portrait02, alt: 'Portrait 2023', label: '2023' },
-                { src: modelImages.portrait03, alt: 'Portrait 2024', label: '2024' },
+                { src: modelImages.portrait01, alt: 'Van Cleef & Arpels', label: 'VCA · 2024' },
+                { src: modelImages.portrait02, alt: 'MIKIMOTO Lucky Arrows', label: 'MIKIMOTO · 2024' },
+                { src: modelImages.portrait03, alt: 'Editorial', label: 'Editorial · 2024' },
               ].map(({ src, alt, label }) => (
                 <Frame
                   key={label}
