@@ -89,7 +89,7 @@ export function VideoModal({ src, title, tag, year, onClose }: Props) {
             {/* Video player */}
             <video
               ref={videoRef}
-              src={src}
+              src={src ? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}${src}` : undefined}
               controls
               playsInline
               className="w-full rounded-xl bg-black shadow-2xl"
