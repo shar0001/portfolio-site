@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, type ReactNode } from 'react'
+import { usePathname } from 'next/navigation'
 import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -7,6 +8,9 @@ import { AmbientBackground } from '@/components/ui/AmbientBackground'
 import { CursorAtmosphere }  from '@/components/ui/CursorAtmosphere'
 
 export function Providers({ children }: { children: ReactNode }) {
+  const pathname = usePathname()
+  // The /studio design has its own light-theme atmosphere + cursor.
+  const isStudio = pathname.startsWith('/studio')
   // Lenis smooth scroll + GSAP ScrollTrigger
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -32,9 +36,9 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <>
       {/* Global atmosphere — sits behind all page content (z-index 0) */}
-      <AmbientBackground />
+      {!isStudio && <AmbientBackground />}
       {/* Global interactive particles — floats above content (z-index 4) */}
-      <CursorAtmosphere />
+      {!isStudio && <CursorAtmosphere />}
       <div style={{ position: 'relative', zIndex: 1 }}>
         {children}
       </div>
