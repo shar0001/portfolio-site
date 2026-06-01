@@ -1,10 +1,8 @@
 'use client'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
 import { profile } from '@/content/profile'
-
-const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: false })
+import { GlassHero } from '@/components/ui/GlassHero'
 
 const SERIF = 'var(--font-cormorant), "EB Garamond", Georgia, serif'
 
@@ -16,16 +14,17 @@ const categories = [
 
 export default function Home() {
   return (
-    <>
-      {/* 3D glass sculpture — fixed background, homepage only */}
-      <Scene />
+    <main className="relative min-h-screen overflow-hidden">
+      {/* Pre-rendered glass visual — right side / softly behind the content */}
+      <GlassHero />
 
-      <main
-        className="min-h-screen flex flex-col justify-center px-7 md:px-20 lg:px-28 pt-24 pb-20 md:pt-32 md:pb-28"
-        style={{ position: 'relative', zIndex: 1 }}
+      {/* Content — max-width container, strong side margins, readable left column */}
+      <div
+        className="relative mx-auto flex min-h-screen w-full max-w-[1180px] flex-col justify-center px-7 md:px-12 lg:px-16 pt-24 pb-20 md:pt-28 md:pb-28"
+        style={{ zIndex: 2 }}
       >
         {/* ── Hero name ──────────────────────────────────────────────────── */}
-        <section className="mb-16 md:mb-22">
+        <section className="mb-16 md:mb-20 max-w-[620px]">
           <motion.p
             className="font-mono text-[9px] tracking-[0.55em] uppercase mb-8"
             style={{ color: '#5060a0' }}
@@ -119,7 +118,7 @@ export default function Home() {
           ))}
           <div className="h-px" style={{ background: 'rgba(154,184,255,0.10)' }} />
         </nav>
-      </main>
-    </>
+      </div>
+    </main>
   )
 }
