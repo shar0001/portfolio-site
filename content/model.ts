@@ -12,17 +12,17 @@ export const modelImages = {
   hero:         '/media/ELLE JAPON × Van Cleef & Arpels.jpg',
 
   // ── Selected work grid ───────────────────────────────────────────────────
-  editorial01:  '/media/ELLE JAPONxVan Cleef & Arpels.jpg',   // large left
-  milan01:      '/media/20240311_Shusaku.414_1.jpeg',          // right top
-  commercial01: '/media/IMAGE_4.jpg',                          // right bottom
-  lookbook01:   '/media/資料.jpg',                              // wide bottom
+  editorial01:  '/media/ELLE JAPON×Van Cleef & Arpels.jpg',   // large left
+  milan01:      '/media/MIKIMOTO.jpg',                         // right top
+  commercial01: '/media/韓国.jpeg',                            // right bottom
+  lookbook01:   '/media/素材01.jpg',                           // wide bottom
 
   // ── Profile portrait ─────────────────────────────────────────────────────
-  portrait01:   '/media/20240311_Shusaku.414_1.jpeg',
+  portrait01:   '/media/MIKIMOTO.jpg',
   portrait02:   undefined as string | undefined,
   portrait03:   undefined as string | undefined,
 
   // ── Motion / Runway Film ─────────────────────────────────────────────────
-  runwayFilm:      undefined as string | undefined,
-  runwayFilmThumb: undefined as string | undefined,
+  runwayFilm:      '/media/MIKIMOTO.mp4',
+  runwayFilmThumb: '/media/MIKIMOTO.jpg',
 }
