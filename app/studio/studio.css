@@ -1,19 +1,19 @@
 /* ════════════════════════════════════════════════════════════════════════════
-   /studio — light premium digital-studio theme (Immersive Garden-inspired).
+   /studio — dark premium digital-studio theme (Immersive Garden-inspired).
    Fully scoped under .studio-theme so the existing dark site is untouched.
    ════════════════════════════════════════════════════════════════════════════ */
 
 .studio-theme {
-  /* ── Light premium palette ─────────────────────────────────────────────── */
-  --s-bg-main:   #f4f3ef;
-  --s-bg-soft:   #ebe8e1;
-  --s-text-main: #121212;
-  --s-text-soft: #55534d;
-  --s-text-muted:#9a968c;
-  --s-line-soft: rgba(18, 18, 18, 0.12);
-  --s-line-faint:rgba(18, 18, 18, 0.06);
-  --s-accent:    #1f1f1f;
-  --s-surface:   rgba(255, 255, 255, 0.48);
+  /* ── Dark premium palette ──────────────────────────────────────────────── */
+  --s-bg-main:   #060606;
+  --s-bg-soft:   #0e0e0e;
+  --s-text-main: #f0eeea;
+  --s-text-soft: #888884;
+  --s-text-muted:#5a5a56;
+  --s-line-soft: rgba(240, 238, 234, 0.10);
+  --s-line-faint:rgba(240, 238, 234, 0.04);
+  --s-accent:    #f0eeea;
+  --s-surface:   rgba(255, 255, 255, 0.06);
 
   /* ── Editorial type stacks ─────────────────────────────────────────────── */
   --s-serif: var(--font-cormorant), "EB Garamond", Georgia, serif;
@@ -22,17 +22,17 @@
 
   /* ── Layout tokens ─────────────────────────────────────────────────────── */
   --s-max:     1440px;
-  --s-pad:     clamp(20px, 5vw, 96px); /* responsive side padding */
+  --s-pad:     clamp(20px, 5vw, 96px);
 
   position: relative;
   min-height: 100vh;
   background: var(--s-bg-main);
   color: var(--s-text-main);
   font-family: var(--s-sans);
-  cursor: none; /* custom cursor replaces the system pointer (desktop) */
+  cursor: none;
 }
 
-/* Paper grain — barely-there tooth on the off-white field */
+/* Subtle noise grain on the dark field */
 .studio-theme::before {
   content: "";
   position: fixed;
@@ -41,8 +41,8 @@
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 180px 180px;
-  opacity: 0.04;
-  mix-blend-mode: multiply;
+  opacity: 0.055;
+  mix-blend-mode: overlay;
 }
 
 .studio-theme a { cursor: none; }
@@ -66,7 +66,7 @@
   height: 72px;
   display: flex;
   align-items: center;
-  mix-blend-mode: difference; /* stays legible over light & dark visuals */
+  mix-blend-mode: difference;
 }
 .studio-nav__inner {
   width: 100%;
@@ -76,7 +76,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #ffffff; /* difference-blended → reads as dark on light bg */
+  color: #ffffff;
 }
 .studio-nav__logo {
   font-family: var(--s-mono);
@@ -95,7 +95,7 @@
   text-transform: uppercase;
   position: relative;
   padding-block: 6px;
-  opacity: 0.7;
+  opacity: 0.55;
   transition: opacity 0.4s ease;
 }
 .studio-nav__link:hover,
@@ -129,7 +129,7 @@
   font-size: 11px;
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: var(--s-text-muted);
+  color: var(--s-text-soft);
   margin-bottom: clamp(28px, 5vw, 56px);
 }
 .studio-hero__title {
@@ -221,41 +221,39 @@
   color: var(--s-text-muted);
   white-space: nowrap;
 }
-/* hover: title eases right, siblings dim, edges split into a prism */
 @media (hover: hover) {
-  .studio-index[data-hovering="true"] .studio-row__title { opacity: 0.4; }
+  .studio-index[data-hovering="true"] .studio-row__title { opacity: 0.22; }
   .studio-row:hover .studio-row__title {
     opacity: 1;
     transform: translateX(28px);
     text-shadow:
-       0.018em 0    rgba(255, 0, 90, 0.55),
-      -0.018em 0    rgba(0, 170, 255, 0.55),
-       0       0.01em rgba(80, 255, 140, 0.35);
+       0.022em 0     rgba(255, 30,  80, 0.75),
+      -0.022em 0     rgba(30,  160, 255, 0.75),
+       0       0.014em rgba(100, 255, 160, 0.5);
   }
-  .studio-row:hover .studio-row__cat { color: var(--s-text-main); }
+  .studio-row:hover .studio-row__cat { color: var(--s-text-soft); }
 }
 
 /* Floating hover preview that follows the cursor.
-   Built from 3 channel-separated layers (R/G/B) screen-blended over black so
-   it reconstructs the full-colour image at rest, and fringes into a prism
-   (chromatic aberration) as the cursor moves or as it emerges / dissolves. */
+   3 channel-separated layers (R/G/B) screen-blended over black reconstruct
+   the full-colour image at rest, fringing into a prism as the cursor moves. */
 .studio-preview {
   position: fixed;
   top: 0; left: 0;
   z-index: 30;
-  width: clamp(220px, 22vw, 340px);
-  aspect-ratio: 4 / 5;
+  width: clamp(260px, 30vw, 460px);
+  aspect-ratio: 3 / 4;
   pointer-events: none;
   overflow: hidden;
   border-radius: 2px;
-  background: #000;          /* base for screen blending */
-  isolation: isolate;        /* keep blend modes self-contained */
+  background: #000;
+  isolation: isolate;
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.92);
-  transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  box-shadow: 0 30px 80px rgba(18, 18, 18, 0.20);
+  transform: translate(-50%, -50%) scale(0.9);
+  transition: opacity 0.5s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.04);
   will-change: transform, opacity;
-  --sx: 0px;   /* horizontal channel split, driven by JS (velocity) */
+  --sx: 0px;
   --sy: 0px;
 }
 .studio-preview[data-show="true"] {
@@ -272,7 +270,6 @@
   object-fit: cover;
   display: block;
 }
-/* green = base (drawn on black); red/blue screen-blend on top, offset apart */
 .studio-preview__layer--g { filter: url(#s-green); }
 .studio-preview__layer--r {
   filter: url(#s-red);
@@ -314,33 +311,48 @@
   text-decoration: none;
   border-bottom: 1px solid var(--s-line-soft);
   padding-bottom: 3px;
+  transition: color 0.35s ease;
 }
+.studio-footer__contact:hover { color: var(--s-text-main); }
 
-/* ── Custom cursor ─────────────────────────────────────────────────────────── */
+/* ── Custom cursor — 3 RGB channel dots + lagging ring ─────────────────────── */
+/* On a dark background, screen-blending R+G+B dots produces white when
+   overlapping (resting) and separates into coloured fringes when moving — the
+   chromatic-aberration / prism cursor seen in Immersive Garden.              */
 .studio-cursor {
   position: fixed;
   top: 0; left: 0;
   z-index: 60;
   pointer-events: none;
   border-radius: 50%;
-  mix-blend-mode: difference;
 }
-.studio-cursor--dot {
-  width: 7px; height: 7px;
-  background: #ffffff;
-  transform: translate(-50%, -50%);
+.studio-cursor--r {
+  width: 11px; height: 11px;
+  background: #ff2255;
+  mix-blend-mode: screen;
+}
+.studio-cursor--g {
+  width: 11px; height: 11px;
+  background: #22ff88;
+  mix-blend-mode: screen;
+}
+.studio-cursor--b {
+  width: 11px; height: 11px;
+  background: #2255ff;
+  mix-blend-mode: screen;
 }
 .studio-cursor--ring {
-  width: 40px; height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  width: 44px; height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  mix-blend-mode: difference;
   transform: translate(-50%, -50%);
-  transition: width 0.32s ease, height 0.32s ease, opacity 0.32s ease;
+  transition: width 0.30s ease, height 0.30s ease, opacity 0.30s ease;
 }
 @media (hover: none) {
   .studio-cursor { display: none; }
 }
 
-/* ── Atmosphere (pale drifting blobs) ──────────────────────────────────────── */
+/* ── Atmosphere (coloured drifting glows on dark) ──────────────────────────── */
 .studio-atmos {
   position: fixed;
   inset: 0;
@@ -351,12 +363,12 @@
 .studio-atmos__blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(70px);
+  filter: blur(80px);
   will-change: transform;
-  opacity: 0.3;
+  opacity: 0.55;
 }
 
-/* ── Scroll reveal primitive ───────────────────────────────────────────────── */
+/* ── Scroll reveal ─────────────────────────────────────────────────────────── */
 .s-reveal {
   opacity: 0;
   transform: translateY(26px);
