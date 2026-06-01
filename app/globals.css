@@ -1,24 +1,39 @@
 @import "tailwindcss";
 
 :root {
-  --bg:          #0e1220;
-  --surface:     #161b2f;
-  --surface-2:   #202845;
-  --text:        #f5f7ff;
-  --text-soft:   #c9d1e6;
-  --text-muted:  #96a0bd;
-  --accent:      #9bb8ff;
-  --accent-2:    #c8b6ff;
-  --accent-3:    #a7f0ff;
+  /* ── Luminous atmospheric palette ───────────────────────────────────────── */
+  --bg-main:       #0d1324;
+  --bg-soft:       #161f38;
+  --bg-glow:       #223154;
+  --bg-light:      #2f4268;
+  --text-primary:  #f5f8ff;
+  --text-secondary:#d9e3f7;
+  --text-muted:    #a5b3d1;
+  --accent-blue:   #9ab8ff;
+  --accent-cyan:   #a7efff;
+  --accent-violet: #d0c2ff;
+  --glass-bg:      rgba(255,255,255,0.06);
+  --glass-border:  rgba(255,255,255,0.14);
+
+  /* ── Legacy aliases (keeps existing components working) ─────────────────── */
+  --bg:          #0d1324;
+  --surface:     #161f38;
+  --surface-2:   #223154;
+  --text:        #f5f8ff;
+  --text-soft:   #d9e3f7;
+  --accent:      #9ab8ff;
+  --accent-2:    #d0c2ff;
+  --accent-3:    #a7efff;
   --line-soft:   rgba(255,255,255,0.10);
   --card-bg:     rgba(255,255,255,0.06);
   --card-border: rgba(255,255,255,0.14);
-  /* Model archive palette */
+
+  /* ── Model archive palette (warm editorial, unchanged) ───────────────────── */
   --m-text:    #E8E0CE;
   --m-muted:   #9A9283;
   --m-dim:     #6B6350;
-  --m-line:    rgba(232, 224, 206, 0.10);
-  --m-surface: rgba(20, 19, 15, 0.55);
+  --m-line:    rgba(232,224,206,0.10);
+  --m-surface: rgba(20,19,15,0.55);
   --m-accent:  #CBB783;
 }
 
@@ -28,18 +43,20 @@
 }
 
 html {
-  background-color: var(--bg);
-  color: var(--text);
+  background-color: var(--bg-main);
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   overflow-x: hidden;
+  line-height: 1.7;
 }
 
-::-webkit-scrollbar       { width: 3px; }
+::-webkit-scrollbar       { width: 2px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(155,184,255,0.18); border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: rgba(154,184,255,0.22); border-radius: 2px; }
 
-::selection { background: rgba(155,184,255,0.25); }
+::selection { background: rgba(154,184,255,0.28); }

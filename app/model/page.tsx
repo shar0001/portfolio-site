@@ -1,20 +1,62 @@
 'use client'
-import { useRef, useState } from 'react'
-import { motion, useInView } from 'framer-motion'
-import { VideoModal } from '@/components/ui/VideoModal'
+import { useRef, useState, useEffect } from 'react'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { modelImages } from '@/content/model'
 
 const SERIF = 'var(--font-cormorant), "EB Garamond", Georgia, serif'
 const TEXT  = '#E8E0CE'
 const MUTED = '#9A9283'
 const DIM   = '#6B6350'
-const LINE  = 'rgba(232, 224, 206, 0.08)'
+const LINE  = 'rgba(232,224,206,0.08)'
 const BASE  = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
 
-// URL-encode each path segment so filenames with spaces / × / & / 日本語 load correctly
 const enc = (p?: string) =>
   p ? p.split('/').map(encodeURIComponent).join('/') : p
 
+// ── Lightbox ──────────────────────────────────────────────────────────────────
+function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
+  useEffect(() => {
+    const fn = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', fn)
+    return () => window.removeEventListener('keydown', fn)
+  }, [onClose])
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-[60] flex items-center justify-center"
+      style={{ background: 'rgba(3,4,8,0.96)', backdropFilter: 'blur(14px)' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.28 }}
+      onClick={onClose}
+    >
+      <motion.img
+        // eslint-disable-next-line @next/next/no-img-element
+        src={src}
+        alt={alt}
+        className="max-w-[92vw] max-h-[88vh]"
+        style={{ objectFit: 'contain', boxShadow: '0 0 80px rgba(0,0,0,0.8)' }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.32 }}
+        onClick={e => e.stopPropagation()}
+      />
+      <button
+        className="absolute top-5 right-6 font-mono text-[10px] tracking-[0.35em] uppercase transition-colors duration-200"
+        style={{ color: 'rgba(232,224,206,0.40)' }}
+        onClick={onClose}
+        onMouseEnter={e => { e.currentTarget.style.color = 'rgba(232,224,206,0.85)' }}
+        onMouseLeave={e => { e.currentTarget.style.color = 'rgba(232,224,206,0.40)' }}
+      >
+        Close ✕
+      </button>
+    </motion.div>
+  )
+}
+
+// ── Animated reveal ───────────────────────────────────────────────────────────
 function Reveal({ children, delay = 0, className = '' }: {
   children: React.ReactNode; delay?: number; className?: string
 }) {
@@ -24,74 +66,56 @@ function Reveal({ children, delay = 0, className = '' }: {
     <motion.div
       ref={ref}
       className={className}
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 14 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.9, delay, ease: [0.76, 0, 0.24, 1] }}
+      transition={{ duration: 1.0, delay, ease: [0.76, 0, 0.24, 1] }}
     >
       {children}
     </motion.div>
   )
 }
 
-function Frame({ src, alt = '', label, className = '', priority = false, onClick, isVideo }: {
-  src?: string; alt?: string; label?: string; className?: string
-  priority?: boolean; onClick?: () => void; isVideo?: boolean
+// ── Photo frame ───────────────────────────────────────────────────────────────
+function Frame({
+  src, alt = '', className = '',
+  priority = false, position = 'center center',
+  onOpen,
+}: {
+  src?: string; alt?: string; className?: string
+  priority?: boolean; position?: string
+  onOpen?: (src: string, alt: string) => void
 }) {
   const ref    = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
+  const hasSrc = !!src
+
   return (
     <motion.div
       ref={ref}
-      className={`group relative overflow-hidden ${className} ${onClick ? 'cursor-pointer' : ''}`}
-      style={{ border: `1px solid ${LINE}`, background: 'rgba(10,9,7,0.6)' }}
-      initial={{ opacity: 0, y: 20 }}
+      className={`group relative overflow-hidden ${className} ${hasSrc && onOpen ? 'cursor-zoom-in' : ''}`}
+      style={{ background: 'rgba(8,7,5,0.7)' }}
+      initial={{ opacity: 0, y: 24 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 1.1, ease: [0.76, 0, 0.24, 1] }}
-      onClick={onClick}
+      transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
+      onClick={() => hasSrc && onOpen?.(enc(src)!, alt)}
     >
-      {src && (
+      {hasSrc && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={`${BASE}${enc(src)}`}
           alt={alt}
-          className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-[1.02]"
-          style={{ filter: 'saturate(0.88)', transition: 'transform 0.7s ease, filter 0.7s ease' }}
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.025]"
+          style={{ objectPosition: position, filter: 'saturate(0.90)' }}
           onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.filter = 'saturate(1.0)' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.filter = 'saturate(0.88)' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.filter = 'saturate(0.90)' }}
           loading={priority ? 'eager' : 'lazy'}
         />
-      )}
-
-      {!src && (
-        <div className="absolute inset-0 flex items-end p-4">
-          <span className="font-mono text-[7px] tracking-[0.3em] uppercase" style={{ color: 'rgba(232,224,206,0.12)' }}>
-            {label ?? '—'}
-          </span>
-        </div>
-      )}
-
-      {isVideo && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="flex items-center justify-center transition-transform duration-400 group-hover:scale-105"
-            style={{ width: 40, height: 40, borderRadius: '50%', border: '1px solid rgba(232,224,206,0.22)', background: 'rgba(8,8,6,0.55)', backdropFilter: 'blur(6px)' }}>
-            <div style={{ width: 0, height: 0, marginLeft: 2, borderTop: '4px solid transparent', borderBottom: '4px solid transparent', borderLeft: '8px solid rgba(232,224,206,0.45)' }} />
-          </div>
-        </div>
-      )}
-
-      {label && src && (
-        <div className="absolute bottom-0 inset-x-0 px-4 pb-3.5 pointer-events-none"
-          style={{ background: 'linear-gradient(to top, rgba(5,5,4,0.55) 0%, transparent 100%)', paddingTop: '2rem' }}>
-          <span className="font-mono text-[7px] tracking-[0.38em] uppercase" style={{ color: 'rgba(232,224,206,0.35)' }}>
-            {label}
-          </span>
-        </div>
       )}
     </motion.div>
   )
 }
 
-// ── Credit row ────────────────────────────────────────────────────────────────
+// ── Credit block ──────────────────────────────────────────────────────────────
 function CreditBlock({ client, campaign, year, credits }: {
   client: string; campaign?: string; year: string
   credits: { role: string; name: string }[]
@@ -112,7 +136,7 @@ function CreditBlock({ client, campaign, year, credits }: {
           </div>
           <p className="font-mono text-[8px] tracking-[0.4em]" style={{ color: DIM }}>{year}</p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-2.5">
           {credits.map(({ role, name }) => (
             <div key={role} className="flex gap-2 items-baseline">
               <span className="font-mono text-[7px] tracking-[0.3em] uppercase shrink-0" style={{ color: DIM, width: 56 }}>
@@ -127,105 +151,114 @@ function CreditBlock({ client, campaign, year, credits }: {
   )
 }
 
-// ─────────────────────────── Page ────────────────────────────────────────────
-
+// ── Page ──────────────────────────────────────────────────────────────────────
 export default function ModelPage() {
-  const [videoSrc,  setVideoSrc]  = useState<string | undefined>()
-  const [videoMeta, setVideoMeta] = useState<{ title?: string; tag?: string; year?: string } | null>(null)
+  const [lightboxSrc, setLightboxSrc] = useState('')
+  const [lightboxAlt, setLightboxAlt] = useState('')
+
+  const openLightbox = (src: string, alt: string) => {
+    setLightboxSrc(src)
+    setLightboxAlt(alt)
+  }
 
   return (
     <>
       <main className="min-h-screen" style={{ position: 'relative', zIndex: 1 }}>
 
-        {/* ── HERO — full-screen image ───────────────────────────────────── */}
-        <section className="relative min-h-screen flex items-end">
+        {/* ── HERO — full-screen photo ───────────────────────────────────── */}
+        <section
+          className="relative min-h-screen flex items-end cursor-zoom-in"
+          onClick={() => modelImages.hero && openLightbox(enc(modelImages.hero)!, 'Shusaku Nishiura')}
+        >
           {modelImages.hero ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={`${BASE}${enc(modelImages.hero)}`}
               alt="Shusaku Nishiura"
               className="absolute inset-0 w-full h-full object-cover"
-              style={{ filter: 'saturate(0.92)' }}
+              style={{ objectPosition: 'center 18%', filter: 'saturate(0.90)' }}
               loading="eager"
             />
           ) : (
-            <div className="absolute inset-0" style={{ background: 'rgba(10,9,7,0.8)' }} />
+            <div className="absolute inset-0" style={{ background: '#080706' }} />
           )}
 
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 pointer-events-none"
-            style={{ background: 'linear-gradient(to top, rgba(5,5,4,0.72) 0%, rgba(5,5,4,0.12) 40%, transparent 70%)' }}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: 'linear-gradient(to top, rgba(4,4,3,0.78) 0%, rgba(4,4,3,0.06) 44%, transparent 70%)' }}
           />
 
-          {/* Name overlay */}
           <motion.div
-            className="relative px-6 md:px-12 pb-12 md:pb-16 w-full"
-            initial={{ opacity: 0, y: 16 }}
+            className="relative px-7 md:px-14 pb-14 md:pb-20 w-full pointer-events-none"
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.4, ease: [0.76, 0, 0.24, 1] }}
+            transition={{ duration: 1.3, delay: 0.35, ease: [0.76, 0, 0.24, 1] }}
           >
-            <p className="font-mono text-[8px] tracking-[0.6em] mb-4" style={{ color: 'rgba(232,224,206,0.38)' }}>
-              03 · Model
-            </p>
             <h1
               className="leading-none"
               style={{
                 fontFamily: SERIF,
                 fontWeight: 300,
-                fontSize: 'clamp(3rem, 8vw, 6.5rem)',
+                fontSize: 'clamp(3.2rem, 8.5vw, 7rem)',
                 letterSpacing: '-0.02em',
                 color: TEXT,
               }}
             >
               Shusaku<br />Nishiura
             </h1>
-            <p className="font-mono text-[9px] tracking-[0.35em] mt-4" style={{ color: 'rgba(232,224,206,0.35)' }}>
+            <p className="font-mono text-[9px] tracking-[0.38em] mt-5" style={{ color: 'rgba(232,224,206,0.32)' }}>
               Campaign · Editorial · Jewelry
             </p>
           </motion.div>
         </section>
 
-        {/* ── SELECTED WORK ─────────────────────────────────────────────── */}
-        <section className="px-5 md:px-12 lg:px-16 pt-3 pb-3">
+        {/* ── WORK GRID ─────────────────────────────────────────────────── */}
+        <section className="px-4 md:px-10 lg:px-14 pt-4 pb-4">
 
-          {/* Main grid: large left + stacked right */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-2.5">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
+            {/* Large left — portrait orientation, show upper body */}
             <Frame
               src={modelImages.editorial01}
               alt="Van Cleef & Arpels"
-              label="Van Cleef &amp; Arpels · 2024"
-              className="col-span-1 md:col-span-7 min-h-[70vw] md:min-h-[680px]"
+              className="col-span-1 md:col-span-7 min-h-[75vw] md:min-h-[700px]"
               priority
+              position="center 18%"
+              onOpen={openLightbox}
             />
-            <div className="col-span-1 md:col-span-5 flex flex-col gap-2.5">
+
+            {/* Right column — two stacked images */}
+            <div className="col-span-1 md:col-span-5 flex flex-col gap-3">
               <Frame
                 src={modelImages.milan01}
                 alt="Van Cleef & Arpels"
-                label="Van Cleef &amp; Arpels · 2024"
-                className="flex-1 min-h-[45vw] md:min-h-0"
+                className="flex-1 min-h-[46vw] md:min-h-0"
+                position="center 22%"
+                onOpen={openLightbox}
               />
               <Frame
                 src={modelImages.commercial01}
                 alt="MIKIMOTO"
-                label="MIKIMOTO · 2024"
-                className="flex-1 min-h-[45vw] md:min-h-0"
+                className="flex-1 min-h-[46vw] md:min-h-0"
+                position="center 25%"
+                onOpen={openLightbox}
               />
             </div>
           </div>
 
-          {/* Bottom row: single wide frame */}
-          <div className="mt-2.5">
+          {/* Wide bottom — landscape */}
+          <div className="mt-3">
             <Frame
               src={modelImages.lookbook01}
               alt="Editorial"
-              label="Editorial · 2024"
-              className="w-full min-h-[50vw] md:min-h-[420px]"
+              className="w-full min-h-[52vw] md:min-h-[420px]"
+              position="center center"
+              onOpen={openLightbox}
             />
           </div>
         </section>
 
         {/* ── CREDITS ───────────────────────────────────────────────────── */}
-        <section className="px-5 md:px-12 lg:px-16 pt-16 pb-12">
+        <section className="px-7 md:px-14 lg:px-18 pt-16 pb-10">
           <Reveal>
             <p className="font-mono text-[8px] tracking-[0.5em] uppercase mb-2" style={{ color: DIM }}>
               Credits
@@ -237,12 +270,12 @@ export default function ModelPage() {
             campaign="スー レ ゼトワール〈星空の下で〉"
             year="2024"
             credits={[
-              { role: 'Photo',      name: 'Masanori Akao (white stout)' },
-              { role: 'Styling',    name: 'Mika Nagasawa' },
-              { role: 'Hair',       name: 'Kenshin (epo tabo)' },
-              { role: 'Makeup',     name: 'Asami Taguchi (home agency)' },
-              { role: 'Realize',    name: 'Shiho Amano' },
-              { role: 'Model',      name: 'Shusaku Nishiura (bravo)' },
+              { role: 'Photo',   name: 'Masanori Akao (white stout)' },
+              { role: 'Styling', name: 'Mika Nagasawa' },
+              { role: 'Hair',    name: 'Kenshin (epo tabo)' },
+              { role: 'Makeup',  name: 'Asami Taguchi (home agency)' },
+              { role: 'Realize', name: 'Shiho Amano' },
+              { role: 'Model',   name: 'Shusaku Nishiura (bravo)' },
             ]}
           />
 
@@ -257,10 +290,9 @@ export default function ModelPage() {
         </section>
 
         {/* ── PROFILE ───────────────────────────────────────────────────── */}
-        <section className="px-5 md:px-12 lg:px-16 py-16" style={{ borderTop: `1px solid ${LINE}` }}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
+        <section className="px-7 md:px-14 lg:px-18 py-16" style={{ borderTop: `1px solid ${LINE}` }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start">
 
-            {/* Stats table */}
             <Reveal>
               <p className="font-mono text-[8px] tracking-[0.5em] uppercase mb-8" style={{ color: DIM }}>
                 Profile
@@ -274,7 +306,7 @@ export default function ModelPage() {
                   ['Markets',    'Japan · France · Italy'],
                   ['Categories', 'Campaign · Editorial · Runway'],
                 ] as [string, string][]).map(([label, value]) => (
-                  <div key={label} className="flex gap-6 py-3.5" style={{ borderBottom: `1px solid ${LINE}` }}>
+                  <div key={label} className="flex gap-6 py-4" style={{ borderBottom: `1px solid ${LINE}` }}>
                     <span className="font-mono text-[8px] tracking-[0.35em] uppercase shrink-0 pt-0.5" style={{ color: DIM, width: 80 }}>
                       {label}
                     </span>
@@ -282,9 +314,9 @@ export default function ModelPage() {
                   </div>
                 ))}
               </div>
-              <div className="mt-8">
+              <div className="mt-9">
                 <a
-                  href="mailto:hello@example.com"
+                  href="mailto:shusaku.bbb@gmail.com"
                   className="font-mono text-[9px] tracking-[0.3em] transition-opacity duration-200 inline-block"
                   style={{ color: '#CBB783' }}
                   onMouseEnter={e => { e.currentTarget.style.opacity = '0.5' }}
@@ -295,24 +327,28 @@ export default function ModelPage() {
               </div>
             </Reveal>
 
-            {/* Portrait image */}
+            {/* Portrait — show face / upper body */}
             <Frame
               src={modelImages.portrait01}
               alt="Portrait"
-              className="min-h-[80vw] md:min-h-[560px]"
+              className="min-h-[90vw] md:min-h-[580px]"
+              position="center 12%"
+              onOpen={openLightbox}
             />
           </div>
         </section>
 
       </main>
 
-      <VideoModal
-        src={videoSrc}
-        title={videoMeta?.title}
-        tag={videoMeta?.tag}
-        year={videoMeta?.year}
-        onClose={() => { setVideoSrc(undefined); setVideoMeta(null) }}
-      />
+      <AnimatePresence>
+        {lightboxSrc && (
+          <Lightbox
+            src={lightboxSrc}
+            alt={lightboxAlt}
+            onClose={() => setLightboxSrc('')}
+          />
+        )}
+      </AnimatePresence>
     </>
   )
 }
