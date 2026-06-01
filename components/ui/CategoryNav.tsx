@@ -18,29 +18,42 @@ export function CategoryNav() {
     <nav
       className="fixed top-0 left-0 right-0 z-50 px-5 md:px-12 h-14 flex items-center justify-between"
       style={{
-        background: 'linear-gradient(to bottom, rgba(10,13,28,0.92) 0%, rgba(10,13,28,0) 100%)',
-        backdropFilter: 'blur(8px)',
+        background: 'linear-gradient(to bottom, rgba(8,12,26,0.88) 0%, rgba(8,12,26,0) 100%)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
       }}
     >
+      {/* Logo */}
       <Link
         href="/"
-        className="font-mono text-[11px] tracking-[0.25em] transition-colors duration-300"
-        style={{ color: '#7080b0' }}
-        onMouseEnter={e => { e.currentTarget.style.color = '#b0c4f0' }}
-        onMouseLeave={e => { e.currentTarget.style.color = '#7080b0' }}
+        className="font-mono text-[11px] tracking-[0.28em] transition-colors duration-300"
+        style={{ color: '#8090c8' }}
+        onMouseEnter={e => { e.currentTarget.style.color = '#c8d8f8' }}
+        onMouseLeave={e => { e.currentTarget.style.color = '#8090c8' }}
       >
         SHR
       </Link>
 
-      <div className="flex items-center">
+      {/* Links */}
+      <div className="flex items-center gap-1">
         {LINKS.map(({ href, label }) => {
           const isActive = pathname === href
           return (
             <Link
               key={href}
               href={href}
-              className="px-3 py-2 font-mono text-[10px] tracking-[0.15em] uppercase transition-colors duration-300"
-              style={{ color: isActive ? '#e8eeff' : '#6878a8' }}
+              className="relative px-3.5 py-1.5 font-mono text-[10px] tracking-[0.18em] uppercase transition-all duration-300 rounded-full"
+              style={{
+                color: isActive ? '#f0f5ff' : '#8090c0',
+                background: isActive ? 'rgba(154,184,255,0.12)' : 'transparent',
+                border: isActive ? '1px solid rgba(154,184,255,0.20)' : '1px solid transparent',
+              }}
+              onMouseEnter={e => {
+                if (!isActive) e.currentTarget.style.color = '#c0d0f0'
+              }}
+              onMouseLeave={e => {
+                if (!isActive) e.currentTarget.style.color = '#8090c0'
+              }}
             >
               {label}
             </Link>
@@ -48,12 +61,13 @@ export function CategoryNav() {
         })}
       </div>
 
+      {/* Contact — right side */}
       <a
-        href="mailto:hello@example.com"
-        className="hidden md:block font-mono text-[9px] tracking-widest transition-opacity duration-300"
-        style={{ color: '#6878a8', opacity: 0.7 }}
-        onMouseEnter={e => { e.currentTarget.style.opacity = '1' }}
-        onMouseLeave={e => { e.currentTarget.style.opacity = '0.7' }}
+        href="mailto:shusaku.bbb@gmail.com"
+        className="hidden md:block font-mono text-[9px] tracking-[0.25em] transition-colors duration-300"
+        style={{ color: '#6070a8' }}
+        onMouseEnter={e => { e.currentTarget.style.color = '#a0b4e0' }}
+        onMouseLeave={e => { e.currentTarget.style.color = '#6070a8' }}
       >
         Contact ↗
       </a>
