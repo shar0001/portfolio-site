@@ -1,5 +1,6 @@
 'use client'
 import { Canvas } from '@react-three/fiber'
+import * as THREE from 'three'
 import { SceneContent } from './SceneContent'
 
 export default function Scene() {
@@ -16,13 +17,15 @@ export default function Scene() {
         zIndex: 0,
         pointerEvents: 'none',
       }}
-      camera={{ position: [0, 0, 6], fov: 70 }}
+      camera={{ position: [0, 0, 5.4], fov: 42 }}
       gl={{
-        antialias: !mobile,
+        antialias: true,
         alpha: true,
         powerPreference: 'high-performance',
+        toneMapping: THREE.ACESFilmicToneMapping,
+        toneMappingExposure: 1.15,
       }}
-      dpr={[1, mobile ? 1 : 1.5]}
+      dpr={[1, mobile ? 1.5 : 2]}
       performance={{ min: 0.5 }}
     >
       <SceneContent />

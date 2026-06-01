@@ -1,38 +1,71 @@
 'use client'
-import { Suspense } from 'react'
+import { Suspense, useMemo } from 'react'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
-import { Environment } from '@react-three/drei'
+import { Environment, Lightformer } from '@react-three/drei'
 import { GlassSculpture } from './objects/GlassSculpture'
 
 export function SceneContent() {
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+  const isMobile = useMemo(
+    () => typeof window !== 'undefined' && window.innerWidth < 768,
+    [],
+  )
 
   return (
     <>
-      {/* Soft ambient fill */}
-      <ambientLight intensity={0.55} color="#b0c8ff" />
-      <directionalLight position={[5, 8, 5]} intensity={0.5} color="#c8deff" />
+      {/* Soft ambient fill — keeps dark areas from going pure flat black */}
+      <ambientLight intensity={0.35} color="#9fb6ff" />
 
-      {/* Colored point lights for dramatic iridescent reflections */}
-      <pointLight position={[ 4,  4,  2]} color="#6080ff" intensity={6}  distance={14} />
-      <pointLight position={[-3, -2,  3]} color="#50d8ff" intensity={5}  distance={12} />
-      <pointLight position={[ 0,  5, -4]} color="#b080ff" intensity={3.5} distance={12} />
-      <pointLight position={[-2,  3,  2]} color="#ffffff" intensity={2.5} distance={10} />
-      <pointLight position={[ 3, -3,  1]} color="#80c0ff" intensity={2}  distance={10} />
+      {/* Cool blue key + warm spectral accent + rim */}
+      <directionalLight position={[ 4,  6,  4]} intensity={1.1} color="#cfe0ff" />
+      <directionalLight position={[-5,  2, -3]} intensity={0.7} color="#7a86ff" />
+      <pointLight       position={[ 3, -3,  2]} intensity={2.0} color="#ffd9a8" distance={12} />
 
-      {/* Environment map drives the iridescence shimmer */}
+      {/* Environment drives reflections + the iridescent shimmer.
+          Built from soft area lights (Lightformers) on a dark stage. */}
       <Suspense fallback={null}>
-        <Environment preset="studio" background={false} />
-        <GlassSculpture />
+        <Environment resolution={isMobile ? 256 : 512} background={false}>
+          {/* Big soft key panel */}
+          <Lightformer
+            form="rect" intensity={3.0} color="#dce8ff"
+            position={[5, 4, 3]} scale={[10, 12, 1]} target={[0, 0, 0]}
+          />
+          {/* Cool fill from the left */}
+          <Lightformer
+            form="rect" intensity={1.6} color="#6f86ff"
+            position={[-6, 1, -2]} scale={[8, 10, 1]} target={[0, 0, 0]}
+          />
+          {/* Bright rim streak — high contrast highlight edge */}
+          <Lightformer
+            form="rect" intensity={5.0} color="#ffffff"
+            position={[2, 5, -5]} scale={[12, 0.7, 1]} target={[0, 0, 0]}
+          />
+          {/* Warm spectral accent */}
+          <Lightformer
+            form="circle" intensity={2.2} color="#ffc99a"
+            position={[-3, -3, 4]} scale={[4, 4, 1]} target={[0, 0, 0]}
+          />
+          {/* Cyan/violet kicks for rainbow edges */}
+          <Lightformer
+            form="circle" intensity={1.8} color="#9affff"
+            position={[4, -2, 3]} scale={[3, 3, 1]} target={[0, 0, 0]}
+          />
+          <Lightformer
+            form="circle" intensity={1.6} color="#c9a8ff"
+            position={[-4, 4, 2]} scale={[3, 3, 1]} target={[0, 0, 0]}
+          />
+        </Environment>
+
+        <GlassSculpture mobile={isMobile} />
       </Suspense>
 
-      {/* Bloom — very subtle, just softens bright highlights */}
+      {/* Bloom — only the brightest highlights bloom, body stays dark/clear */}
       {!isMobile && (
         <EffectComposer>
           <Bloom
-            luminanceThreshold={0.28}
-            luminanceSmoothing={0.88}
-            intensity={0.55}
+            luminanceThreshold={0.62}
+            luminanceSmoothing={0.85}
+            intensity={0.5}
+            mipmapBlur
           />
         </EffectComposer>
       )}
