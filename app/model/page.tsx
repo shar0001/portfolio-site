@@ -11,6 +11,10 @@ const DIM   = '#6B6350'
 const LINE  = 'rgba(232, 224, 206, 0.08)'
 const BASE  = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
 
+// URL-encode each path segment so filenames with spaces / × / & / 日本語 load correctly
+const enc = (p?: string) =>
+  p ? p.split('/').map(encodeURIComponent).join('/') : p
+
 function Reveal({ children, delay = 0, className = '' }: {
   children: React.ReactNode; delay?: number; className?: string
 }) {
@@ -48,7 +52,7 @@ function Frame({ src, alt = '', label, className = '', priority = false, onClick
       {src && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={`${BASE}${src}`}
+          src={`${BASE}${enc(src)}`}
           alt={alt}
           className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-[1.02]"
           style={{ filter: 'saturate(0.88)', transition: 'transform 0.7s ease, filter 0.7s ease' }}
@@ -138,7 +142,7 @@ export default function ModelPage() {
           {modelImages.hero ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={`${BASE}${modelImages.hero}`}
+              src={`${BASE}${enc(modelImages.hero)}`}
               alt="Shusaku Nishiura"
               className="absolute inset-0 w-full h-full object-cover"
               style={{ filter: 'saturate(0.92)' }}

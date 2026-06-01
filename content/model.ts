@@ -1,31 +1,26 @@
 /**
  * Model Archive — asset paths
  *
- * Upload files to /public/media/ in the repository, then the paths below
- * will be picked up automatically on the next deploy.
+ * These point to the files uploaded to /public/media/ (exact names, including
+ * spaces / special characters). The page URL-encodes them at render time, so
+ * the readable names below are fine to keep as-is.
  *
- * File names expected (upload these 4 images via GitHub web UI or git):
- *   /public/media/vcarpels-01.jpg   → Van Cleef & Arpels p.193 (ring + necklace)
- *   /public/media/vcarpels-02.jpg   → Van Cleef & Arpels p.192 (eyes closed)
- *   /public/media/mikimoto-01.jpg   → MIKIMOTO Lucky Arrows (B&W)
- *   /public/media/editorial-01.jpg  → Black blazer × red bag (outdoor)
+ * To swap which photo appears where, just move a filename to a different slot.
  */
 export const modelImages = {
-  // ── Hero (tall vertical, left column of split hero) ──────────────────────
-  hero:         '/media/vcarpels-01.jpg',
+  // ── Hero (full-screen top image) ─────────────────────────────────────────
+  hero:         '/media/ELLE JAPON × Van Cleef & Arpels.jpg',
 
-  // ── Selected Visuals ─────────────────────────────────────────────────────
-  editorial01:  '/media/vcarpels-01.jpg',   // large left — VCA p.193
-  milan01:      '/media/vcarpels-02.jpg',   // small right top — VCA p.192
-  commercial01: '/media/mikimoto-01.jpg',   // small right bottom — MIKIMOTO
+  // ── Selected work grid ───────────────────────────────────────────────────
+  editorial01:  '/media/ELLE JAPONxVan Cleef & Arpels.jpg',   // large left
+  milan01:      '/media/20240311_Shusaku.414_1.jpeg',          // right top
+  commercial01: '/media/IMAGE_4.jpg',                          // right bottom
+  lookbook01:   '/media/資料.jpg',                              // wide bottom
 
-  // ── Commercial / Campaign ────────────────────────────────────────────────
-  lookbook01:   '/media/editorial-01.jpg',  // black blazer × red bag
-
-  // ── Portrait Archive (3 vertical frames) ─────────────────────────────────
-  portrait01:   '/media/vcarpels-02.jpg',   // VCA eyes closed
-  portrait02:   '/media/mikimoto-01.jpg',   // MIKIMOTO B&W
-  portrait03:   '/media/editorial-01.jpg',  // outdoor editorial
+  // ── Profile portrait ─────────────────────────────────────────────────────
+  portrait01:   '/media/20240311_Shusaku.414_1.jpeg',
+  portrait02:   undefined as string | undefined,
+  portrait03:   undefined as string | undefined,
 
   // ── Motion / Runway Film ─────────────────────────────────────────────────
   runwayFilm:      undefined as string | undefined,
