@@ -12,13 +12,13 @@ export function SceneContent() {
 
   return (
     <>
-      {/* Soft ambient fill — keeps dark areas from going pure flat black */}
-      <ambientLight intensity={0.35} color="#9fb6ff" />
+      {/* Very dim ambient — reference is near-black with only edge highlights */}
+      <ambientLight intensity={0.12} color="#8090c0" />
 
-      {/* Cool blue key + warm spectral accent + rim */}
-      <directionalLight position={[ 4,  6,  4]} intensity={1.1} color="#cfe0ff" />
-      <directionalLight position={[-5,  2, -3]} intensity={0.7} color="#7a86ff" />
-      <pointLight       position={[ 3, -3,  2]} intensity={2.0} color="#ffd9a8" distance={12} />
+      {/* Sharp directional keys for crisp specular on the ribbon edges */}
+      <directionalLight position={[ 3,  5,  3]} intensity={1.4} color="#d0e4ff" />
+      <directionalLight position={[-4,  1, -4]} intensity={0.9} color="#6070ff" />
+      <pointLight       position={[ 2, -4,  3]} intensity={2.5} color="#ffd0a0" distance={14} />
 
       {/* Environment drives reflections + the iridescent shimmer.
           Built from soft area lights (Lightformers) on a dark stage. */}

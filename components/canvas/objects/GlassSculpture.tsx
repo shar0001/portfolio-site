@@ -5,23 +5,19 @@ import { MeshTransmissionMaterial } from '@react-three/drei'
 import * as THREE from 'three'
 
 /**
- * Dense toroidal-helix ribbon.
+ * Dense toroidal-helix ribbon — matching reference:
+ * clear donut hole, ~8 ribbon bands wrapping the tube surface,
+ * dark blue steel body, extreme chromatic dispersion on every edge.
  *
- * The path winds `loops` times around the minor circle of a torus for every
- * single revolution around the major axis. With 10 loops and ribbon width
- * nearly equal to the inter-loop spacing, the bands pack tightly into a
- * compact sphere-like mass — matching the reference's layered glass coil.
- *
- * Material: full transmission glass, chromatic dispersion (rainbow edges),
- * iridescence (thin-film colour shifts). No emissive glow.
+ * Key geometry:  R=1.15 (major), r=0.52 (minor) → inner hole radius 0.63
+ * (clearly visible). 8 minor-circle windings pack ribbon bands edge-to-edge.
  */
 
-// ── Toroidal helix centerline ─────────────────────────────────────────────────
 function createHelixCurve(): THREE.CatmullRomCurve3 {
-  const R     = 0.82   // major radius
-  const r     = 0.72   // minor radius — large → compact, sphere-like mass
-  const loops = 10     // minor-circle windings per major revolution
-  const N     = 600    // pre-sample density
+  const R     = 1.15   // major radius — larger → visible hole in centre
+  const r     = 0.52   // minor radius — smaller → compact tube with clear ring
+  const loops = 8      // ribbon bands visible around the ring
+  const N     = 512
 
   const pts: THREE.Vector3[] = []
   for (let i = 0; i < N; i++) {
@@ -33,11 +29,9 @@ function createHelixCurve(): THREE.CatmullRomCurve3 {
       (R + r * Math.cos(phi)) * Math.sin(u),
     ))
   }
-  // closed=true — last point wraps cleanly back to first (both at u=0)
   return new THREE.CatmullRomCurve3(pts, true, 'catmullrom', 0.5)
 }
 
-// ── Swept ribbon geometry ─────────────────────────────────────────────────────
 function buildRibbon(
   curve: THREE.CatmullRomCurve3,
   segments: number,
@@ -50,17 +44,14 @@ function buildRibbon(
   const uvs:       number[] = []
   const indices:   number[] = []
 
-  // Thin-rectangle cross-section: 4 corners (widthDir × thickDir)
   const corners = [[-1,  1], [ 1,  1], [ 1, -1], [-1, -1]] as const
 
   for (let i = 0; i < segments; i++) {
     const t        = i / segments
     const p        = curve.getPointAt(t)
-    const tangent  = frames.tangents[i]
     const normal   = frames.normals[i]
     const binormal = frames.binormals[i]
 
-    // Rotate the cross-section frame around the tangent
     const angle = twists * Math.PI * 2 * t
     const cos   = Math.cos(angle)
     const sin   = Math.sin(angle)
@@ -72,8 +63,8 @@ function buildRibbon(
       .addScaledVector(binormal, -sin)
       .addScaledVector(normal,    cos)
 
-    // Gentle taper for organic silhouette
-    const hw = width     * 0.5 * (0.85 + 0.15 * Math.sin(t * Math.PI * 8))
+    // Subtle taper — keeps silhouette organic
+    const hw = width     * 0.5 * (0.88 + 0.12 * Math.sin(t * Math.PI * 10))
     const ht = thickness * 0.5
 
     for (const [u, v] of corners) {
@@ -86,7 +77,6 @@ function buildRibbon(
     }
   }
 
-  // Connect consecutive rings: 4 quads per ring pair
   for (let i = 0; i < segments; i++) {
     const i0 = i * 4
     const i1 = ((i + 1) % segments) * 4
@@ -116,10 +106,10 @@ export function GlassSculpture({ mobile = false }: { mobile?: boolean }) {
   const geo = useMemo(
     () => buildRibbon(
       createHelixCurve(),
-      mobile ? 360 : 720,  // segments — heavier on desktop
-      0.44,                // wide flat ribbon
-      0.038,               // very thin (sharp visible edges)
-      2.0,                 // extra twist on top of natural Frenet rotation
+      mobile ? 320 : 640,
+      0.42,    // wide ribbon — fills ~95% of inter-band spacing
+      0.034,   // very thin sharp edge
+      1.0,     // slight extra twist on top of Frenet frame rotation
     ),
     [mobile],
   )
@@ -138,66 +128,64 @@ export function GlassSculpture({ mobile = false }: { mobile?: boolean }) {
     lag.current.x += (pointer.y * -0.45 - lag.current.x) * 0.04
     lag.current.y += (pointer.x *  0.50 - lag.current.y) * 0.04
 
-    // Pre-rotated start angle → nicer initial composition
-    groupRef.current.rotation.x = t * 0.038 + lag.current.x + 0.42
-    groupRef.current.rotation.y = t * 0.062 + lag.current.y + 0.65
-    groupRef.current.rotation.z = Math.sin(t * 0.15) * 0.08
+    // Tilt so the ring hole is visible from the start (~28° forward, ~17° side)
+    groupRef.current.rotation.x = t * 0.036 + lag.current.x + 0.50
+    groupRef.current.rotation.y = t * 0.058 + lag.current.y + 0.30
+    groupRef.current.rotation.z = Math.sin(t * 0.14) * 0.07
 
     pulse.current = Math.max(0, pulse.current - delta * 1.6)
     const breathe = 1 + Math.sin(t * 0.4) * 0.010
     const kick    = pulse.current * 0.04
-    groupRef.current.scale.setScalar((mobile ? 1.65 : 2.2) * (breathe + kick))
+    groupRef.current.scale.setScalar((mobile ? 1.45 : 1.90) * (breathe + kick))
   })
 
   return (
     <group
       ref={groupRef}
-      position={[mobile ? 0.30 : 0.60, 0, 0]}
-      scale={mobile ? 1.65 : 2.2}
+      position={[mobile ? 0.20 : 0.40, -0.10, 0]}
+      scale={mobile ? 1.45 : 1.90}
     >
       <mesh geometry={geo}>
         {mobile ? (
-          // Mobile: lighter physical glass (no buffer render)
           <meshPhysicalMaterial
-            color="#5565a8"
+            color="#3a4890"
             metalness={0}
-            roughness={0.04}
-            transmission={0.92}
+            roughness={0.03}
+            transmission={0.94}
             thickness={0.7}
             ior={1.50}
             iridescence={1}
-            iridescenceIOR={1.80}
-            iridescenceThicknessRange={[80, 760]}
-            envMapIntensity={3.0}
-            attenuationColor="#1020a8"
-            attenuationDistance={0.9}
+            iridescenceIOR={1.90}
+            iridescenceThicknessRange={[60, 820]}
+            envMapIntensity={3.5}
+            attenuationColor="#0a18a0"
+            attenuationDistance={0.75}
             clearcoat={1}
-            clearcoatRoughness={0.03}
+            clearcoatRoughness={0.02}
           />
         ) : (
-          // Desktop: full transmission + chromatic dispersion + iridescence
           <MeshTransmissionMaterial
             samples={12}
             resolution={1024}
             transmission={1}
-            thickness={0.6}
-            roughness={0.03}
-            ior={1.52}
-            chromaticAberration={1.3}
-            anisotropicBlur={0.06}
-            distortion={0.10}
-            distortionScale={0.22}
-            temporalDistortion={0.05}
+            thickness={0.55}
+            roughness={0.02}
+            ior={1.54}
+            chromaticAberration={1.6}
+            anisotropicBlur={0.04}
+            distortion={0.08}
+            distortionScale={0.18}
+            temporalDistortion={0.04}
             iridescence={1}
-            iridescenceIOR={1.82}
-            iridescenceThicknessRange={[80, 820]}
-            envMapIntensity={3.2}
-            color="#6070b0"
-            attenuationColor="#1020b0"
-            attenuationDistance={0.85}
-            background={new THREE.Color('#000008')}
+            iridescenceIOR={1.92}
+            iridescenceThicknessRange={[60, 900]}
+            envMapIntensity={3.5}
+            color="#3a4890"
+            attenuationColor="#0a18a0"
+            attenuationDistance={0.72}
+            background={new THREE.Color('#000005')}
             clearcoat={1}
-            clearcoatRoughness={0.02}
+            clearcoatRoughness={0.01}
           />
         )}
       </mesh>
