@@ -12,7 +12,7 @@ export const modelImages = {
   hero:         '/media/ELLE JAPON × Van Cleef & Arpels.jpg',
 
   // ── Selected work grid ───────────────────────────────────────────────────
-  editorial01:  '/media/ELLE JAPONxVan Cleef & Arpels.jpg',   // large left
+  editorial01:  '/media/ELLE JAPON×Van Cleef & Arpels.jpg',   // large left
   milan01:      '/media/MIKIMOTO.jpg',                         // right top
   commercial01: '/media/韓国.jpeg',                            // right bottom
   lookbook01:   '/media/素材01.jpg',                           // wide bottom
