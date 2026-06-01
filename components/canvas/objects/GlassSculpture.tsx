@@ -5,33 +5,39 @@ import { MeshTransmissionMaterial } from '@react-three/drei'
 import * as THREE from 'three'
 
 /**
- * ─── Twisted iridescent glass RIBBON ───────────────────────────────────────
+ * Dense toroidal-helix ribbon.
  *
- * Geometry: a custom BufferGeometry, NOT a tube. A 3D spline centerline is
- * sampled, Frenet frames are computed, and a thin rectangular cross-section
- * (wide + shallow) is swept along the path while twisting — producing a flat
- * folded glass strip with real width, slight thickness, and sharp edges.
+ * The path winds `loops` times around the minor circle of a torus for every
+ * single revolution around the major axis. With 10 loops and ribbon width
+ * nearly equal to the inter-loop spacing, the bands pack tightly into a
+ * compact sphere-like mass — matching the reference's layered glass coil.
  *
- * Material: glass via transmission + refraction, rainbow via chromatic
- * dispersion (chromaticAberration) and thin-film iridescence. No self-emission.
+ * Material: full transmission glass, chromatic dispersion (rainbow edges),
+ * iridescence (thin-film colour shifts). No emissive glow.
  */
 
-// ── Centerline: an organic, asymmetric, folding loop ──────────────────────────
-function createRibbonCurve(): THREE.CatmullRomCurve3 {
-  const pts = [
-    new THREE.Vector3(-1.65, -1.75, 0.05),
-    new THREE.Vector3(-0.35, -1.25, 0.95),
-    new THREE.Vector3( 0.95, -0.35, -0.45),
-    new THREE.Vector3( 0.65,  0.95, 0.75),
-    new THREE.Vector3(-0.55,  1.55, -0.35),
-    new THREE.Vector3(-1.45,  0.60, 0.65),
-    new THREE.Vector3(-0.90, -0.50, -0.70),
-    new THREE.Vector3( 0.25, -1.05, 0.30),
-  ]
-  return new THREE.CatmullRomCurve3(pts, true, 'catmullrom', 0.55)
+// ── Toroidal helix centerline ─────────────────────────────────────────────────
+function createHelixCurve(): THREE.CatmullRomCurve3 {
+  const R     = 0.82   // major radius
+  const r     = 0.72   // minor radius — large → compact, sphere-like mass
+  const loops = 10     // minor-circle windings per major revolution
+  const N     = 600    // pre-sample density
+
+  const pts: THREE.Vector3[] = []
+  for (let i = 0; i < N; i++) {
+    const u   = (i / N) * Math.PI * 2
+    const phi = loops * u
+    pts.push(new THREE.Vector3(
+      (R + r * Math.cos(phi)) * Math.cos(u),
+       r * Math.sin(phi),
+      (R + r * Math.cos(phi)) * Math.sin(u),
+    ))
+  }
+  // closed=true — last point wraps cleanly back to first (both at u=0)
+  return new THREE.CatmullRomCurve3(pts, true, 'catmullrom', 0.5)
 }
 
-// ── Build the ribbon as a swept, twisting flat strip ──────────────────────────
+// ── Swept ribbon geometry ─────────────────────────────────────────────────────
 function buildRibbon(
   curve: THREE.CatmullRomCurve3,
   segments: number,
@@ -39,57 +45,51 @@ function buildRibbon(
   thickness: number,
   twists: number,
 ): THREE.BufferGeometry {
-  const closed = true
-  const frames = curve.computeFrenetFrames(segments, closed)
+  const frames = curve.computeFrenetFrames(segments, true)
   const positions: number[] = []
-  const uvs: number[] = []
-  const indices: number[] = []
+  const uvs:       number[] = []
+  const indices:   number[] = []
 
-  // Thin rectangle cross-section corners in (widthDir, thickDir): u, v ∈ {-1,1}
-  const corners = [
-    [-1,  1], [ 1,  1], [ 1, -1], [-1, -1],
-  ]
+  // Thin-rectangle cross-section: 4 corners (widthDir × thickDir)
+  const corners = [[-1,  1], [ 1,  1], [ 1, -1], [-1, -1]] as const
 
-  const rings = closed ? segments : segments + 1
+  for (let i = 0; i < segments; i++) {
+    const t        = i / segments
+    const p        = curve.getPointAt(t)
+    const tangent  = frames.tangents[i]
+    const normal   = frames.normals[i]
+    const binormal = frames.binormals[i]
 
-  for (let i = 0; i < rings; i++) {
-    const t = i / segments
-    const p = curve.getPointAt(t % 1)
-    const tangent  = frames.tangents[i % frames.tangents.length]
-    const normal   = frames.normals[i % frames.normals.length]
-    const binormal = frames.binormals[i % frames.binormals.length]
-
-    // Twist the cross-section frame around the tangent as we travel
+    // Rotate the cross-section frame around the tangent
     const angle = twists * Math.PI * 2 * t
-    const cos = Math.cos(angle), sin = Math.sin(angle)
-    const widthDir = new THREE.Vector3()
-      .addScaledVector(binormal, cos)
-      .addScaledVector(normal,   sin)
-    const thickDir = new THREE.Vector3()
+    const cos   = Math.cos(angle)
+    const sin   = Math.sin(angle)
+
+    const wDir = new THREE.Vector3()
+      .addScaledVector(binormal,  cos)
+      .addScaledVector(normal,    sin)
+    const tDir = new THREE.Vector3()
       .addScaledVector(binormal, -sin)
       .addScaledVector(normal,    cos)
 
-    // Width tapers gently along the path for an organic silhouette
-    const hw = width  * 0.5 * (0.78 + 0.22 * Math.sin(t * Math.PI * 2 + 0.6))
+    // Gentle taper for organic silhouette
+    const hw = width     * 0.5 * (0.85 + 0.15 * Math.sin(t * Math.PI * 8))
     const ht = thickness * 0.5
 
-    for (let c = 0; c < 4; c++) {
-      const [u, v] = corners[c]
+    for (const [u, v] of corners) {
       positions.push(
-        p.x + widthDir.x * hw * u + thickDir.x * ht * v,
-        p.y + widthDir.y * hw * u + thickDir.y * ht * v,
-        p.z + widthDir.z * hw * u + thickDir.z * ht * v,
+        p.x + wDir.x * hw * u + tDir.x * ht * v,
+        p.y + wDir.y * hw * u + tDir.y * ht * v,
+        p.z + wDir.z * hw * u + tDir.z * ht * v,
       )
-      uvs.push(t, c / 4)
+      uvs.push(t, (u + 1) * 0.5)
     }
   }
 
-  // Connect consecutive rings → 4 quads each (top, edge, bottom, edge)
-  const ringCount = rings
-  const limit = closed ? ringCount : ringCount - 1
-  for (let i = 0; i < limit; i++) {
+  // Connect consecutive rings: 4 quads per ring pair
+  for (let i = 0; i < segments; i++) {
     const i0 = i * 4
-    const i1 = ((i + 1) % ringCount) * 4
+    const i1 = ((i + 1) % segments) * 4
     for (let c = 0; c < 4; c++) {
       const a = i0 + c
       const b = i0 + ((c + 1) % 4)
@@ -101,7 +101,7 @@ function buildRibbon(
 
   const geo = new THREE.BufferGeometry()
   geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
-  geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2))
+  geo.setAttribute('uv',       new THREE.Float32BufferAttribute(uvs, 2))
   geo.setIndex(indices)
   geo.computeVertexNormals()
   return geo
@@ -111,22 +111,20 @@ export function GlassSculpture({ mobile = false }: { mobile?: boolean }) {
   const groupRef = useRef<THREE.Group>(null)
   const { pointer } = useThree()
   const lag   = useRef({ x: 0, y: 0 })
-  const pulse = useRef(0)   // 0..1, decays — click reaction
+  const pulse = useRef(0)
 
-  // Geometry — heavier on desktop, lighter on mobile
   const geo = useMemo(
     () => buildRibbon(
-      createRibbonCurve(),
-      mobile ? 220 : 440,   // path segments
-      0.62,                 // width
-      0.055,                // thickness
-      2.5,                  // number of twists along the loop
+      createHelixCurve(),
+      mobile ? 360 : 720,  // segments — heavier on desktop
+      0.44,                // wide flat ribbon
+      0.038,               // very thin (sharp visible edges)
+      2.0,                 // extra twist on top of natural Frenet rotation
     ),
     [mobile],
   )
   useEffect(() => () => geo.dispose(), [geo])
 
-  // Click / tap → brief pulse + spectral intensify
   useEffect(() => {
     const trigger = () => { pulse.current = 1 }
     window.addEventListener('pointerdown', trigger, { passive: true })
@@ -137,66 +135,69 @@ export function GlassSculpture({ mobile = false }: { mobile?: boolean }) {
     if (!groupRef.current) return
     const t = clock.elapsedTime
 
-    // Pointer-reactive rotation — object turns toward the cursor with inertia
-    lag.current.x += (pointer.y * -0.45 - lag.current.x) * 0.045
-    lag.current.y += (pointer.x *  0.55 - lag.current.y) * 0.045
+    lag.current.x += (pointer.y * -0.45 - lag.current.x) * 0.04
+    lag.current.y += (pointer.x *  0.50 - lag.current.y) * 0.04
 
-    groupRef.current.rotation.x = t * 0.045 + lag.current.x
-    groupRef.current.rotation.y = t * 0.075 + lag.current.y
-    groupRef.current.rotation.z = Math.sin(t * 0.18) * 0.10
+    // Pre-rotated start angle → nicer initial composition
+    groupRef.current.rotation.x = t * 0.038 + lag.current.x + 0.42
+    groupRef.current.rotation.y = t * 0.062 + lag.current.y + 0.65
+    groupRef.current.rotation.z = Math.sin(t * 0.15) * 0.08
 
-    // Decay click pulse → subtle breathing scale
     pulse.current = Math.max(0, pulse.current - delta * 1.6)
-    const breathe = 1 + Math.sin(t * 0.4) * 0.012
-    const kick = pulse.current * 0.05
-    groupRef.current.scale.setScalar((mobile ? 1.5 : 1.85) * (breathe + kick))
+    const breathe = 1 + Math.sin(t * 0.4) * 0.010
+    const kick    = pulse.current * 0.04
+    groupRef.current.scale.setScalar((mobile ? 1.65 : 2.2) * (breathe + kick))
   })
 
   return (
-    <group ref={groupRef} position={[mobile ? 0.4 : 1.15, 0.05, 0]} scale={mobile ? 1.5 : 1.85}>
+    <group
+      ref={groupRef}
+      position={[mobile ? 0.30 : 0.60, 0, 0]}
+      scale={mobile ? 1.65 : 2.2}
+    >
       <mesh geometry={geo}>
         {mobile ? (
           // Mobile: lighter physical glass (no buffer render)
           <meshPhysicalMaterial
-            color="#aac4ff"
+            color="#5565a8"
             metalness={0}
-            roughness={0.06}
+            roughness={0.04}
             transmission={0.92}
-            thickness={0.6}
-            ior={1.46}
+            thickness={0.7}
+            ior={1.50}
             iridescence={1}
-            iridescenceIOR={1.6}
-            iridescenceThicknessRange={[120, 560]}
-            envMapIntensity={2.2}
-            attenuationColor="#5e76d8"
-            attenuationDistance={1.4}
+            iridescenceIOR={1.80}
+            iridescenceThicknessRange={[80, 760]}
+            envMapIntensity={3.0}
+            attenuationColor="#1020a8"
+            attenuationDistance={0.9}
             clearcoat={1}
-            clearcoatRoughness={0.05}
+            clearcoatRoughness={0.03}
           />
         ) : (
           // Desktop: full transmission + chromatic dispersion + iridescence
           <MeshTransmissionMaterial
-            samples={10}
+            samples={12}
             resolution={1024}
             transmission={1}
-            thickness={0.55}
-            roughness={0.04}
-            ior={1.5}
-            chromaticAberration={0.85}     // ← rainbow dispersion strength
-            anisotropicBlur={0.12}
-            distortion={0.18}
-            distortionScale={0.4}
-            temporalDistortion={0.08}
+            thickness={0.6}
+            roughness={0.03}
+            ior={1.52}
+            chromaticAberration={1.3}
+            anisotropicBlur={0.06}
+            distortion={0.10}
+            distortionScale={0.22}
+            temporalDistortion={0.05}
             iridescence={1}
-            iridescenceIOR={1.65}
-            iridescenceThicknessRange={[120, 600]}
-            envMapIntensity={2.4}
-            color="#cfe0ff"
-            attenuationColor="#6076d8"
-            attenuationDistance={1.6}
-            background={new THREE.Color('#05070f')}
+            iridescenceIOR={1.82}
+            iridescenceThicknessRange={[80, 820]}
+            envMapIntensity={3.2}
+            color="#6070b0"
+            attenuationColor="#1020b0"
+            attenuationDistance={0.85}
+            background={new THREE.Color('#000008')}
             clearcoat={1}
-            clearcoatRoughness={0.04}
+            clearcoatRoughness={0.02}
           />
         )}
       </mesh>

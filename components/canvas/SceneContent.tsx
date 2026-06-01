@@ -36,8 +36,13 @@ export function SceneContent() {
           />
           {/* Bright rim streak — high contrast highlight edge */}
           <Lightformer
-            form="rect" intensity={5.0} color="#ffffff"
+            form="rect" intensity={7.5} color="#ffffff"
             position={[2, 5, -5]} scale={[12, 0.7, 1]} target={[0, 0, 0]}
+          />
+          {/* Counter-rim from below — crisp underside edge catch */}
+          <Lightformer
+            form="rect" intensity={3.5} color="#c8e0ff"
+            position={[-2, -5, -4]} scale={[10, 0.6, 1]} target={[0, 0, 0]}
           />
           {/* Warm spectral accent */}
           <Lightformer
