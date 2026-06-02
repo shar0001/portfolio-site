@@ -36,8 +36,8 @@ export default function MoviePage() {
 
   return (
     <main
-      className="min-h-screen px-5 md:px-12 lg:px-20 pt-20 pb-24"
-      style={{ position: 'relative', zIndex: 1 }}
+      className="relative mx-auto min-h-screen w-full max-w-[1180px] px-7 md:px-12 lg:px-16 pt-24 pb-20 md:pt-28 md:pb-28"
+      style={{ zIndex: 1 }}
     >
       <div className="mb-10 md:mb-14">
         <motion.p

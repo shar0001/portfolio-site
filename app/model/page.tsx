@@ -169,11 +169,13 @@ export default function ModelPage() {
 
   return (
     <>
-      <main className="min-h-screen" style={{ position: 'relative', zIndex: 1 }}>
-
+      <main
+        className="relative mx-auto min-h-screen w-full max-w-[1180px] px-7 md:px-12 lg:px-16 pt-24 pb-20 md:pt-28 md:pb-28"
+        style={{ zIndex: 1 }}
+      >
         {/* ── HERO — contained editorial frame (never full-bleed) ─────────── */}
-        <section className="px-6 md:px-12 pt-24 md:pt-28 pb-10 md:pb-16">
-          <div className="mx-auto" style={{ maxWidth: 1180 }}>
+        <section className="pb-10 md:pb-16">
+          <div className="mx-auto">
 
             {/* Name + minimal meta, ABOVE the image — never over the face */}
             <motion.div
@@ -225,10 +227,10 @@ export default function ModelPage() {
         </section>
 
         {/* ── GALLERY — masonry columns, each image at its natural ratio ──── */}
-        <section className="px-4 md:px-10 lg:px-14 pb-6">
+        <section className="pb-6">
           <div
             className="mx-auto [column-fill:_balance]"
-            style={{ maxWidth: 1180, columnGap: '0.75rem' }}
+            style={{ columnGap: '0.75rem' }}
           >
             <style>{`
               .model-masonry { columns: 1; }
@@ -245,7 +247,7 @@ export default function ModelPage() {
         </section>
 
         {/* ── CREDITS ───────────────────────────────────────────────────── */}
-        <section className="px-7 md:px-14 lg:px-18 pt-12 pb-10 mx-auto" style={{ maxWidth: 1180 }}>
+        <section className="pt-12 pb-10 mx-auto">
           <Reveal>
             <p className="font-mono text-[8px] tracking-[0.5em] uppercase mb-2" style={{ color: DIM }}>
               Credits
