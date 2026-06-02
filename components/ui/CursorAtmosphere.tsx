@@ -168,9 +168,9 @@ export function CursorAtmosphere() {
         haloPos.current.y += (curPos.current.y - haloPos.current.y) * 0.4
 
         if (curPos.current.x > -1000) {
-          // Exactly matching raw coordinates to perfectly center with the dot cursor
-          const hx = haloPos.current.x
-          const hy = haloPos.current.y
+          // Apply a negative offset to shift the halo up and left, centering it with the dot
+          const hx = haloPos.current.x - 12
+          const hy = haloPos.current.y - 12
 
           // Outer atmosphere halo (130px)
           const g1 = ctx.createRadialGradient(hx, hy, 0, hx, hy, 130)
