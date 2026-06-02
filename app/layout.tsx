@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Cormorant_Garamond, Albert_Sans, Geist_Mono } from 'next/font/google'
 import { Providers } from '@/components/providers/Providers'
 import { CategoryNav } from '@/components/ui/CategoryNav'
-import { CustomCursor } from '@/components/ui/CustomCursor'
 import './globals.css'
 
 const albertSans = Albert_Sans({ variable: '--font-geist-sans', subsets: ['latin'] })
@@ -23,7 +22,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ja" className={`${albertSans.variable} ${geistMono.variable} ${cormorant.variable}`}>
       <body>
         <div className="noise-overlay" />
-        <CustomCursor />
         <Providers>
           <CategoryNav />
           {children}
