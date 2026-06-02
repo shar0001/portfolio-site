@@ -19,7 +19,7 @@ export default function AppsPage() {
   const [rotateX, setRotateX] = useState(0)
   const [rotateY, setRotateY] = useState(0)
 
-  // Active slide index for Pitanko Wari-kan showcase (0: Top/Bear, 1: Diagram, 2: Input, 3: Room)
+  // Active slide index for Pitanko Wari-kan showcase (0: Top/Bear, 1: Diagram, 2: RoomDetail, 3: RoomCreate, 4: Input)
   const [activeTab, setActiveTab] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
 
@@ -27,7 +27,7 @@ export default function AppsPage() {
   useEffect(() => {
     if (isHovered) return
     const timer = setInterval(() => {
-      setActiveTab((prev) => (prev + 1) % 4)
+      setActiveTab((prev) => (prev + 1) % 5)
     }, 4500)
     return () => clearInterval(timer)
   }, [isHovered])
@@ -174,16 +174,16 @@ export default function AppsPage() {
                 <div 
                   className="flex gap-3 p-3 rounded-xl transition-all duration-300 cursor-pointer"
                   style={{
-                    background: activeTab === 2 ? 'rgba(155,184,255,0.05)' : 'transparent',
-                    border: activeTab === 2 ? '1px solid rgba(0, 189, 166, 0.2)' : '1px solid transparent',
-                    opacity: activeTab === 0 ? 0.85 : (activeTab === 2 ? 1 : 0.5)
+                    background: activeTab === 4 ? 'rgba(155,184,255,0.05)' : 'transparent',
+                    border: activeTab === 4 ? '1px solid rgba(0, 189, 166, 0.2)' : '1px solid transparent',
+                    opacity: activeTab === 0 ? 0.85 : (activeTab === 4 ? 1 : 0.5)
                   }}
-                  onClick={() => setActiveTab(2)}
+                  onClick={() => setActiveTab(4)}
                 >
-                  <span className="text-[#00bda6] font-mono text-xs mt-0.5">{activeTab === 2 ? '🟢' : '👇'}</span>
+                  <span className="text-[#00bda6] font-mono text-xs mt-0.5">{activeTab === 4 ? '🟢' : '👇'}</span>
                   <div>
                     <h4 className="text-xs font-semibold text-[#ffffff] uppercase tracking-wide">タップでかんたん入力</h4>
-                    <p className="text-[11px] mt-0.5" style={{ color: activeTab === 2 ? '#b0c0e8' : '#7080a8' }}>
+                    <p className="text-[11px] mt-0.5" style={{ color: activeTab === 4 ? '#b0c0e8' : '#7080a8' }}>
                       誰の分か、誰が払ったかをタップするだけのスムーズ入力。メンバーを選ぶだけで、複雑な立て替えも割り勘もスムーズに登録完了。
                     </p>
                   </div>
@@ -193,16 +193,16 @@ export default function AppsPage() {
                 <div 
                   className="flex gap-3 p-3 rounded-xl transition-all duration-300 cursor-pointer"
                   style={{
-                    background: activeTab === 3 ? 'rgba(155,184,255,0.05)' : 'transparent',
-                    border: activeTab === 3 ? '1px solid rgba(0, 189, 166, 0.2)' : '1px solid transparent',
-                    opacity: activeTab === 0 ? 0.85 : (activeTab === 3 ? 1 : 0.5)
+                    background: (activeTab === 2 || activeTab === 3) ? 'rgba(155,184,255,0.05)' : 'transparent',
+                    border: (activeTab === 2 || activeTab === 3) ? '1px solid rgba(0, 189, 166, 0.2)' : '1px solid transparent',
+                    opacity: activeTab === 0 ? 0.85 : ((activeTab === 2 || activeTab === 3) ? 1 : 0.5)
                   }}
                   onClick={() => setActiveTab(3)}
                 >
-                  <span className="text-[#00bda6] font-mono text-xs mt-0.5">{activeTab === 3 ? '🟢' : '🏠'}</span>
+                  <span className="text-[#00bda6] font-mono text-xs mt-0.5">{(activeTab === 2 || activeTab === 3) ? '🟢' : '🏠'}</span>
                   <div>
                     <h4 className="text-xs font-semibold text-[#ffffff] uppercase tracking-wide">部屋を作ってすぐスタート</h4>
-                    <p className="text-[11px] mt-0.5" style={{ color: activeTab === 3 ? '#b0c0e8' : '#7080a8' }}>
+                    <p className="text-[11px] mt-0.5" style={{ color: (activeTab === 2 || activeTab === 3) ? '#b0c0e8' : '#7080a8' }}>
                       飲み会・旅行・同棲など、シーンに合わせてかんたん作成。招待コードを共有すれば、ダウンロード不要（Web版）でもすぐ集まれます。
                     </p>
                   </div>
