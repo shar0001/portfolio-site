@@ -4,7 +4,7 @@ import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { AmbientBackground } from '@/components/ui/AmbientBackground'
-import { CursorAtmosphere }  from '@/components/ui/CursorAtmosphere'
+import { SimpleCursor }  from '@/components/ui/SimpleCursor'
 
 export function Providers({ children }: { children: ReactNode }) {
   // Lenis smooth scroll + GSAP ScrollTrigger
@@ -33,8 +33,8 @@ export function Providers({ children }: { children: ReactNode }) {
     <>
       {/* Global atmosphere — sits behind all page content (z-index 0) */}
       <AmbientBackground />
-      {/* Global interactive particles — floats above content (z-index 4) */}
-      <CursorAtmosphere />
+      {/* Simple dot cursor as requested */}
+      <SimpleCursor />
       <div style={{ position: 'relative', zIndex: 1 }}>
         {children}
       </div>

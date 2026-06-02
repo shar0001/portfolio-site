@@ -17,16 +17,12 @@ export function CategoryNav() {
   return (
     <nav
       className="fixed top-0 left-0 right-0 z-50 px-5 md:px-12 h-14 flex items-center justify-between"
-      style={{
-        background: 'linear-gradient(to bottom, rgba(8,12,26,0.88) 0%, rgba(8,12,26,0) 100%)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-      }}
+      style={{ pointerEvents: 'none' }}
     >
       {/* Logo */}
       <Link
         href="/"
-        className="font-mono text-[11px] tracking-[0.28em] transition-colors duration-300"
+        className="font-mono text-[11px] tracking-[0.28em] transition-colors duration-300 pointer-events-auto"
         style={{ color: '#8090c8' }}
         onMouseEnter={e => { e.currentTarget.style.color = '#c8d8f8' }}
         onMouseLeave={e => { e.currentTarget.style.color = '#8090c8' }}
@@ -42,10 +38,11 @@ export function CategoryNav() {
             <Link
               key={href}
               href={href}
-              className="relative px-3.5 py-1.5 font-mono text-[10px] tracking-[0.18em] uppercase transition-all duration-300 rounded-full"
+              className="relative px-3.5 py-1.5 font-mono text-[10px] tracking-[0.18em] uppercase transition-all duration-300 rounded-full pointer-events-auto"
               style={{
-                color: isActive ? '#ffffff' : '#8090c0',
-                textShadow: isActive ? '0 0 12px rgba(154,184,255,0.4)' : 'none',
+                color: isActive ? '#f0f5ff' : '#8090c0',
+                background: isActive ? 'rgba(154,184,255,0.12)' : 'transparent',
+                border: isActive ? '1px solid rgba(154,184,255,0.20)' : '1px solid transparent',
               }}
               onMouseEnter={e => {
                 if (!isActive) e.currentTarget.style.color = '#c0d0f0'
