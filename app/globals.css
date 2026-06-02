@@ -1,27 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  /* ── Ethereal Depth / Organic Sculpture palette ─────────────────────────── */
-  --bg-main:       #EBE8E3;
-  --bg-soft:       #E2DFDA;
-  --text-primary:  #2A2A28;
-  --text-secondary:#5B5B56;
-  --text-muted:    #8C8C85;
-  --accent:        #1E1D1C;
-  --line-soft:     rgba(42,42,40,0.10);
-  --glass-bg:      rgba(235,232,227,0.4);
-  --glass-border:  rgba(42,42,40,0.05);
+  /* ── Luminous atmospheric palette ───────────────────────────────────────── */
+  --bg-main:       #0d1324;
+  --bg-soft:       #161f38;
+  --bg-glow:       #223154;
+  --bg-light:      #2f4268;
+  --text-primary:  #f5f8ff;
+  --text-secondary:#d9e3f7;
+  --text-muted:    #a5b3d1;
+  --accent-blue:   #9ab8ff;
+  --accent-cyan:   #a7efff;
+  --accent-violet: #d0c2ff;
+  --glass-bg:      rgba(255,255,255,0.06);
+  --glass-border:  rgba(255,255,255,0.14);
 
   /* ── Legacy aliases (keeps existing components working) ─────────────────── */
-  --bg:          var(--bg-main);
-  --surface:     var(--bg-soft);
-  --surface-2:   #D9D6D1;
-  --text:        var(--text-primary);
-  --text-soft:   var(--text-secondary);
-  --accent-2:    #4A4A45;
-  --accent-3:    #6B6B65;
-  --card-bg:     var(--glass-bg);
-  --card-border: var(--glass-border);
+  --bg:          #0d1324;
+  --surface:     #161f38;
+  --surface-2:   #223154;
+  --text:        #f5f8ff;
+  --text-soft:   #d9e3f7;
+  --accent:      #9ab8ff;
+  --accent-2:    #d0c2ff;
+  --accent-3:    #a7efff;
+  --line-soft:   rgba(255,255,255,0.10);
+  --card-bg:     rgba(255,255,255,0.06);
+  --card-border: rgba(255,255,255,0.14);
 
   --m-text:    var(--text-primary);
   --m-muted:   var(--text-secondary);
