@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface Particle {
   x: number; y: number
@@ -27,26 +27,22 @@ const PALETTE = [
 ]
 function pick() { return PALETTE[Math.floor(Math.random() * PALETTE.length)] }
 
-/**
- * Strong luminous cursor atmosphere — 3 particle layers + expanding halo + click ripple.
- *
- * Layer 0 — tiny sparks:    2–5 px, alpha 0.25–0.45, life 30–75 frames
- * Layer 1 — medium clouds:  6–14 px, alpha 0.12–0.24, life 70–140 frames
- * Layer 2 — glow bubbles:   15–36 px, alpha 0.06–0.12, life 100–220 frames
- *
- * Halo:  outer 130px (0.18 alpha) + inner 42px (0.28 alpha), easing 0.075
- * Click: burst + expanding ripple ring
- * Tap:   same burst on mobile
- */
 export function CursorAtmosphere() {
   const canvasRef  = useRef<HTMLCanvasElement>(null)
+  const dotRef     = useRef<HTMLDivElement>(null)
   const particles  = useRef<Particle[]>([])
   const ripples    = useRef<Ripple[]>([])
   const curPos     = useRef({ x: -2000, y: -2000 })
   const haloPos    = useRef({ x: -2000, y: -2000 })
   const rafId      = useRef<number>(0)
 
+  const [hovering, setHovering] = useState(false)
+  const [isTouchDevice, setIsTouchDevice] = useState(false)
+
   useEffect(() => {
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    setIsTouchDevice(isTouch)
+
     const canvas = canvasRef.current
     if (!canvas) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -129,6 +125,13 @@ export function CursorAtmosphere() {
     let lastSpawn = 0
     const onMove = (e: MouseEvent) => {
       curPos.current = { x: e.clientX, y: e.clientY }
+      
+      // Initialize position if not set
+      if (haloPos.current.x < -1000) {
+        haloPos.current.x = e.clientX
+        haloPos.current.y = e.clientY
+      }
+
       const now = performance.now()
       if (now - lastSpawn < 22) return
       lastSpawn = now
@@ -140,6 +143,21 @@ export function CursorAtmosphere() {
 
     const onClick = (e: MouseEvent) => spawnBurst(e.clientX, e.clientY)
 
+    const onMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      if (
+        target.tagName.toLowerCase() === 'a' ||
+        target.tagName.toLowerCase() === 'button' ||
+        target.closest('a') ||
+        target.closest('button') ||
+        target.closest('[data-cursor="hover"]')
+      ) {
+        setHovering(true)
+      } else {
+        setHovering(false)
+      }
+    }
+
     // ── Mobile: tap burst ──────────────────────────────────────────────────
     const onTouch = (e: TouchEvent) => {
       for (let i = 0; i < e.changedTouches.length; i++) {
@@ -149,12 +167,12 @@ export function CursorAtmosphere() {
       }
     }
 
-    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
     if (isTouch) {
       window.addEventListener('touchstart', onTouch, { passive: true })
     } else {
-      window.addEventListener('mousemove', onMove,  { passive: true })
-      window.addEventListener('click',     onClick, { passive: true })
+      window.addEventListener('mousemove', onMove,       { passive: true })
+      window.addEventListener('click',     onClick,      { passive: true })
+      window.addEventListener('mouseover', onMouseOver,  { passive: true })
     }
 
     // ── Render loop ────────────────────────────────────────────────────────
@@ -163,14 +181,20 @@ export function CursorAtmosphere() {
 
       // ── Halo — lagging cursor glow (desktop only) ──
       if (!isTouch) {
-        // Increase tracking speed to ensure it sticks tightly to the dot without lagging
-        haloPos.current.x += (curPos.current.x - haloPos.current.x) * 0.4
-        haloPos.current.y += (curPos.current.y - haloPos.current.y) * 0.4
-
+        // Easing interpolation for ultra-smooth movement (0.15 matches typical mouse transition nicely)
+        const ease = 0.15
         if (curPos.current.x > -1000) {
-          // Offset by -4px vertically to align with SimpleCursor's translate(-50%,-50%) on its 8px dot
+          if (haloPos.current.x < -1000) {
+            haloPos.current.x = curPos.current.x
+            haloPos.current.y = curPos.current.y
+          } else {
+            haloPos.current.x += (curPos.current.x - haloPos.current.x) * ease
+            haloPos.current.y += (curPos.current.y - haloPos.current.y) * ease
+          }
+
+          // Both dot and glow use EXACTLY the same coordinates - NO offset to keep them centered
           const hx = haloPos.current.x
-          const hy = haloPos.current.y - 4
+          const hy = haloPos.current.y
 
           // Outer atmosphere halo (130px)
           const g1 = ctx.createRadialGradient(hx, hy, 0, hx, hy, 130)
@@ -202,6 +226,11 @@ export function CursorAtmosphere() {
           ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)'
           ctx.lineWidth = 1
           ctx.stroke()
+
+          // Move the dot div in complete sync with the canvas drawing coordinates
+          if (dotRef.current) {
+            dotRef.current.style.transform = `translate3d(${hx}px, ${hy}px, 0) translate(-50%, -50%)`
+          }
         }
       }
 
@@ -264,17 +293,37 @@ export function CursorAtmosphere() {
       window.removeEventListener('resize',     resize)
       window.removeEventListener('mousemove',  onMove)
       window.removeEventListener('click',      onClick)
+      window.removeEventListener('mouseover',  onMouseOver)
       window.removeEventListener('touchstart', onTouch)
       cancelAnimationFrame(rafId.current)
     }
   }, [])
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 4 }}
-      aria-hidden="true"
-    />
+    <>
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 pointer-events-none"
+        style={{ zIndex: 4 }}
+        aria-hidden="true"
+      />
+      {/* Show the simple dot cursor on desktop, styled exactly like the original SimpleCursor */}
+      {!isTouchDevice && (
+        <div
+          ref={dotRef}
+          className="fixed top-0 left-0 pointer-events-none rounded-full transition-all duration-150 ease-out"
+          style={{
+            width: hovering ? '20px' : '8px',
+            height: hovering ? '20px' : '8px',
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            mixBlendMode: 'difference',
+            zIndex: 9999,
+            transform: 'translate3d(-100px, -100px, 0) translate(-50%, -50%)',
+            willChange: 'transform, width, height',
+          }}
+          aria-hidden="true"
+        />
+      )}
+    </>
   )
 }
