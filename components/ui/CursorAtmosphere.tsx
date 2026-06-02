@@ -163,11 +163,14 @@ export function CursorAtmosphere() {
 
       // ── Halo — lagging cursor glow (desktop only) ──
       if (!isTouch) {
-        haloPos.current.x += (curPos.current.x - haloPos.current.x) * 0.075
-        haloPos.current.y += (curPos.current.y - haloPos.current.y) * 0.075
+        // Increase tracking speed slightly so it feels more responsive and centered
+        haloPos.current.x += (curPos.current.x - haloPos.current.x) * 0.15
+        haloPos.current.y += (curPos.current.y - haloPos.current.y) * 0.15
 
         if (curPos.current.x > -1000) {
-          const hx = haloPos.current.x, hy = haloPos.current.y
+          // Add a small offset (e.g. +4px X, +6px Y) to perfectly center the glow behind the dot
+          const hx = haloPos.current.x + 4
+          const hy = haloPos.current.y + 6
 
           // Outer atmosphere halo (130px)
           const g1 = ctx.createRadialGradient(hx, hy, 0, hx, hy, 130)
