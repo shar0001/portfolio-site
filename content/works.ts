@@ -117,7 +117,7 @@ export const defaultWorks: Work[] = [
     process:     'モデル経験で培った「構図の美しさ」を活かした静と動のコントラスト設計。生成AI動画素材をカラーグレーディング、マスク処理、タイムリマップでシームレスに統合し、クライマックスではキネティックタイポグラフィとトンネル効果で没入感を最大化しています。また、冒頭のあしらいにはExpressionによる制御を採用しました。',
     mediaType:   'video',
     mediaUrl:    'https://youtu.be/haIGEgohfM4?si=hKysMcJShMCjR6ST',
-    thumbnailUrl: 'https://img.youtube.com/vi/haIGEgohfM4/maxresdefault.jpg',
+    thumbnailUrl: 'https://img.youtube.com/vi/haIGEgohfM4/sddefault.jpg',
     visible:     true,
     featured:    false,
     order:       4,
