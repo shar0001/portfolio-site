@@ -588,26 +588,26 @@ export default function AdminPage() {
               <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   type="button" onClick={() => toggleVisible(work.id)}
-                  className="w-9 h-9 flex items-center justify-center text-sm transition-colors"
+                  className="w-9 h-9 flex items-center justify-center text-base transition-colors"
                   style={{ color: work.visible ? '#9bb8ff' : '#3a4470' }}
                   title={work.visible ? '公開中' : '非公開'}
                 >
-                  {work.visible ? '◉ 公開' : '○ 非公'}
+                  {work.visible ? '◉' : '○'}
                 </button>
                 <button
                   type="button" onClick={() => toggleFeatured(work.id)}
-                  className="w-9 h-9 flex items-center justify-center text-sm transition-colors"
+                  className="w-9 h-9 flex items-center justify-center text-base transition-colors"
                   style={{ color: work.featured ? '#c8b6ff' : '#3a4470' }}
                   title={work.featured ? '注目作品解除' : '注目作品に設定'}
                 >
-                  {work.featured ? '★ 注目' : '☆ 通常'}
+                  {work.featured ? '★' : '☆'}
                 </button>
                 <button
                   type="button" onClick={() => setEditingId(work.id)}
-                  className="px-3 h-9 font-mono text-[9px] hover:text-white transition-colors"
+                  className="px-3 h-9 font-mono text-[9px] hover:text-white transition-colors whitespace-nowrap"
                   style={{ color: '#7080b0', border: '1px solid rgba(155,184,255,0.12)' }}
                 >
-                  Edit (編集)
+                  Edit
                 </button>
               </div>
             </div>
