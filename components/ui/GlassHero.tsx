@@ -45,17 +45,21 @@ export function GlassHero() {
     // Mobile / reduced-motion: keep the static visual, skip cursor effects.
     if (reduce || touch) return
 
+    // We want the glow position in absolute pixels to avoid vertical alignment shifts
+    // when the container height is greater than 100vh.
     const aim     = { x: 0, y: 0 }       // target, normalised -1..1
     const cur     = { x: 0, y: 0 }       // eased parallax
-    const gAim    = { x: 0.62, y: 0.4 }  // target glow centre, 0..1
-    const gCur    = { x: 0.62, y: 0.4 }  // eased glow centre
+    
+    // Using pixel-based positioning
+    const gAim    = { x: typeof window !== 'undefined' ? window.innerWidth * 0.62 : 0, y: typeof window !== 'undefined' ? window.innerHeight * 0.4 : 0 }
+    const gCur    = { x: typeof window !== 'undefined' ? window.innerWidth * 0.62 : 0, y: typeof window !== 'undefined' ? window.innerHeight * 0.4 : 0 }
     let raf = 0
 
     const onMove = (e: MouseEvent) => {
       aim.x = (e.clientX / window.innerWidth)  * 2 - 1
       aim.y = (e.clientY / window.innerHeight) * 2 - 1
-      gAim.x = e.clientX / window.innerWidth
-      gAim.y = e.clientY / window.innerHeight
+      gAim.x = e.clientX
+      gAim.y = e.clientY
     }
     window.addEventListener('mousemove', onMove, { passive: true })
 
@@ -70,19 +74,25 @@ export function GlassHero() {
           `scale(1.08) translate3d(${cur.x * PARALLAX_PX}px, ${cur.y * PARALLAX_PX}px, 0)` +
           ` rotateX(${cur.y * -TILT_DEG}deg) rotateY(${cur.x * TILT_DEG}deg)`
       }
-      const gx = (gCur.x * 100).toFixed(1)
-      const gy = (gCur.y * 100).toFixed(1)
+      
+      const gx = gCur.x.toFixed(1)
+      const gy = (gCur.y + window.scrollY).toFixed(1) // Adjust for vertical scroll offset
+      
       if (glowRef.current) {
         glowRef.current.style.background =
-          `radial-gradient(circle at ${gx}% ${gy}%,` +
+          `radial-gradient(circle at ${gx}px ${gy}px,` +
           ` rgba(200,218,255,0.26), rgba(150,180,255,0.06) 20%, transparent 42%)`
       }
       if (prismRef.current) {
-        // offset rainbow smear → "light splitting through glass"
+        // offset rainbow smear (approx 20px) → "light splitting through glass"
+        const gxMinus20 = (gCur.x - 20).toFixed(1)
+        const gxPlus20  = (gCur.x + 20).toFixed(1)
+        const gyPlus20  = (gCur.y + 20 + window.scrollY).toFixed(1)
+        
         prismRef.current.style.background =
-          `radial-gradient(circle at ${(gCur.x * 100 - 2).toFixed(1)}% ${gy}%, rgba(255,80,150,0.12), transparent 26%),` +
-          `radial-gradient(circle at ${(gCur.x * 100 + 2).toFixed(1)}% ${gy}%, rgba(90,200,255,0.12), transparent 26%),` +
-          `radial-gradient(circle at ${gx}% ${(gCur.y * 100 + 2).toFixed(1)}%, rgba(130,255,190,0.10), transparent 24%)`
+          `radial-gradient(circle at ${gxMinus20}px ${gy}px, rgba(255,80,150,0.12), transparent 26%),` +
+          `radial-gradient(circle at ${gxPlus20}px ${gy}px, rgba(90,200,255,0.12), transparent 26%),` +
+          `radial-gradient(circle at ${gx}px ${gyPlus20}px, rgba(130,255,190,0.10), transparent 24%)`
       }
       raf = requestAnimationFrame(tick)
     }
