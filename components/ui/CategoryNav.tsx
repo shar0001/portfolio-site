@@ -13,8 +13,8 @@ export function CategoryNav() {
   const pathname = usePathname()
 
   if (pathname.startsWith('/admin')) return null
-  // The /studio design ships its own light-theme nav.
-  if (pathname.startsWith('/studio')) return null
+  // The root / is the studio design — it ships its own light-theme nav.
+  if (pathname === '/') return null
 
   return (
     <nav

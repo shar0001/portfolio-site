@@ -5,11 +5,12 @@ import { usePathname } from 'next/navigation'
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
-  // /studio renders its own reveal animations and relies on position:fixed
-  // overlays (custom cursor, prism preview, atmosphere). A transform/filter
-  // wrapper here would become their containing block and break fixed
-  // positioning, so skip it for studio. The dark site keeps its transition.
-  if (pathname.startsWith('/studio')) return <>{children}</>
+  // The root (/) is the studio design: it renders its own reveal animations
+  // and relies on position:fixed overlays (cursor, preview, atmosphere).
+  // A transform/filter wrapper here would become their containing block and
+  // break fixed positioning, so skip it for /. All other routes keep the
+  // framer-motion page transition.
+  if (pathname === '/') return <>{children}</>
 
   return (
     <motion.div

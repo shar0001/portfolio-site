@@ -9,8 +9,8 @@ import { CursorAtmosphere }  from '@/components/ui/CursorAtmosphere'
 
 export function Providers({ children }: { children: ReactNode }) {
   const pathname = usePathname()
-  // The /studio design has its own light-theme atmosphere + cursor.
-  const isStudio = pathname.startsWith('/studio')
+  // The root / is the studio design — it has its own light-theme atmosphere + cursor.
+  const isStudio = pathname === '/'
   // Lenis smooth scroll + GSAP ScrollTrigger
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)

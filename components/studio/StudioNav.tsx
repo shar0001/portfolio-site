@@ -2,11 +2,11 @@
 import Link from 'next/link'
 
 const LINKS = [
-  { href: '/studio#about',   label: 'About',   hideMobile: false },
-  { href: '/movie',          label: 'Movie',   hideMobile: false },
-  { href: '/apps',           label: 'Apps',    hideMobile: false },
-  { href: '/model',          label: 'Model',   hideMobile: false },
-  { href: '/studio#contact', label: 'Contact', hideMobile: true  },
+  { href: '/#about',   label: 'About',   hideMobile: false },
+  { href: '/movie',    label: 'Movie',   hideMobile: false },
+  { href: '/apps',     label: 'Apps',    hideMobile: false },
+  { href: '/model',    label: 'Model',   hideMobile: false },
+  { href: '/#contact', label: 'Contact', hideMobile: true  },
 ]
 
 /**
@@ -17,7 +17,7 @@ export function StudioNav() {
   return (
     <nav className="studio-nav" aria-label="Studio">
       <div className="studio-nav__inner">
-        <Link href="/studio" className="studio-nav__logo">SHR</Link>
+        <Link href="/" className="studio-nav__logo">SHR</Link>
         <div className="studio-nav__links">
           {LINKS.map(({ href, label, hideMobile }) => (
             <Link
