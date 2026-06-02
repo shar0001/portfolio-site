@@ -4,7 +4,15 @@ import Link from 'next/link'
 import { defaultWorks, type Work, type WorkCategory, type MediaType } from '@/content/works'
 
 const DRAFT_KEY = 'portfolio_draft'
+const GIT_SETTINGS_KEY = 'portfolio_git_settings'
 type Tab = 'all' | WorkCategory
+
+interface GitHubSettings {
+  token: string
+  owner: string
+  repo: string
+  branch: string
+}
 
 function loadDraft(): Work[] {
   try {
@@ -276,12 +284,33 @@ export default function AdminPage() {
   const [tab,       setTab]       = useState<Tab>('all')
   const [copied,    setCopied]    = useState(false)
   const [savedMsg,  setSavedMsg]  = useState(false)
+  
+  // GitHub integration states
+  const [showGitPanel, setShowGitPanel] = useState(false)
+  const [gitSettings, setGitSettings]   = useState<GitHubSettings>({
+    token: '',
+    owner: 'shar0001',
+    repo: 'portfolio-site',
+    branch: 'main'
+  })
+  const [publishStatus, setPublishStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [publishError, setPublishError]   = useState('')
+
   const exportRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
+    // Load draft
     const draft = localStorage.getItem(DRAFT_KEY)
     setWorks(draft ? JSON.parse(draft) : defaultWorks)
     setHasDraft(!!draft)
+
+    // Load GitHub settings if stored
+    const storedGit = localStorage.getItem(GIT_SETTINGS_KEY)
+    if (storedGit) {
+      try {
+        setGitSettings(JSON.parse(storedGit))
+      } catch {}
+    }
   }, [])
 
   const handleSaveDraft = () => {
@@ -304,6 +333,82 @@ export default function AdminPage() {
     }
     setCopied(true)
     setTimeout(() => setCopied(false), 2200)
+  }
+
+  // GitHub Auto-Commit function
+  const handlePublishToGitHub = async () => {
+    if (!gitSettings.token) {
+      setPublishStatus('error')
+      setPublishError('GitHub アクセストークンを入力してください。')
+      return
+    }
+
+    setPublishStatus('loading')
+    setPublishError('')
+
+    try {
+      const { token, owner, repo, branch } = gitSettings
+      const path = 'content/works.json'
+      const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
+
+      // 1. Get current file SHA
+      const getRes = await fetch(`${url}?ref=${branch}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
+      })
+
+      let sha = ''
+      if (getRes.status === 200) {
+        const data = await getRes.json()
+        sha = data.sha
+      } else if (getRes.status !== 404) {
+        throw new Error(`リポジトリ情報の取得に失敗しました。オーナー名やリポジトリ名が正しいかご確認ください。 (Status: ${getRes.status})`)
+      }
+
+      // 2. Prepare content
+      const jsonContent = JSON.stringify(works, null, 2)
+      // UTF-8 base64 encoding support for Japanese characters
+      const base64Content = btoa(unescape(encodeURIComponent(jsonContent)))
+
+      // 3. Push commit
+      const putRes = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'content: update works via admin dashboard',
+          content: base64Content,
+          sha: sha || undefined,
+          branch: branch
+        })
+      })
+
+      if (!putRes.ok) {
+        const errData = await putRes.json().catch(() => ({}))
+        throw new Error(errData.message || `GitHubへのコミットに失敗しました。 (Status: ${putRes.status})`)
+      }
+
+      setPublishStatus('success')
+      // Save settings
+      localStorage.setItem(GIT_SETTINGS_KEY, JSON.stringify(gitSettings))
+      setTimeout(() => setPublishStatus('idle'), 4000)
+    } catch (err: any) {
+      setPublishStatus('error')
+      setPublishError(err.message || '予期せぬエラーが発生しました。')
+    }
+  }
+
+  const handleSaveGitSettings = (e: React.FormEvent) => {
+    e.preventDefault()
+    localStorage.setItem(GIT_SETTINGS_KEY, JSON.stringify(gitSettings))
+    alert('GitHub 連携設定をブラウザに一時保存しました！')
   }
 
   const toggleVisible  = (id: string) => setWorks(p => p.map(w => w.id === id ? { ...w, visible:  !w.visible  } : w))
@@ -339,7 +444,7 @@ export default function AdminPage() {
   const filtered = works.filter(w => tab === 'all' || w.category === tab).sort((a, b) => a.order - b.order)
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: '#0e1220' }}>
+    <div className="min-h-screen pb-44" style={{ background: '#0e1220' }}>
       {/* Header (Width limited & Centered) */}
       <div
         className="sticky top-0 z-10 flex items-center h-14 px-5"
@@ -358,7 +463,7 @@ export default function AdminPage() {
         {/* Draft notice */}
         {hasDraft && (
           <div
-            className="flex items-center justify-between px-3 py-2 mb-4"
+            className="flex items-center justify-between px-3 py-2.5 mb-4"
             style={{ background: 'rgba(155,184,255,0.05)', border: '1px dashed rgba(155,184,255,0.15)' }}
           >
             <span className="font-mono text-[9px]" style={{ color: '#9bb8ff' }}>● Draft saved locally (一時保存中)</span>
@@ -372,6 +477,70 @@ export default function AdminPage() {
             </button>
           </div>
         )}
+
+        {/* GitHub Integration Panel Button */}
+        <div className="mb-4">
+          <button
+            type="button"
+            onClick={() => setShowGitPanel(!showGitPanel)}
+            className="w-full py-2.5 px-3 font-mono text-[9px] tracking-widest text-left flex items-center justify-between transition-colors"
+            style={{
+              background: 'rgba(155,184,255,0.03)',
+              border: '1px solid rgba(155,184,255,0.10)',
+              color: '#7080b0'
+            }}
+          >
+            <span>⚙ {showGitPanel ? 'GITHUB 連携設定を閉じる' : 'GITHUB 連携設定を開く (スマホ更新用)'}</span>
+            <span>{showGitPanel ? '▲' : '▼'}</span>
+          </button>
+
+          {showGitPanel && (
+            <form onSubmit={handleSaveGitSettings} className="p-4 space-y-3 mt-1" style={{ background: 'rgba(15,20,38,0.5)', border: '1px solid rgba(155,184,255,0.08)' }}>
+              <p className="text-[10px] leading-relaxed mb-2" style={{ color: '#6070a0' }}>
+                GitHubアクセストークンを入力すると、この管理画面からボタンひとつで本番サイトへ直接変更を書き込み、自動ビルド・公開ができるようになります（スマホからも更新可能です）。
+              </p>
+              <Field label="GitHub Personal Access Token (PAT)" hint="トークンはブラウザのセキュア領域にのみ保存されます。GitHubの Developer settings ➔ Personal access tokens ➔ Tokens (classic) で「repo」スコープを付与したトークンを作成してください。">
+                <input
+                  type="password"
+                  style={inp}
+                  value={gitSettings.token}
+                  onChange={e => setGitSettings(p => ({ ...p, token: e.target.value }))}
+                  placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                />
+              </Field>
+              <div className="grid grid-cols-3 gap-3">
+                <Field label="Owner (アカウント名)">
+                  <input
+                    style={inp}
+                    value={gitSettings.owner}
+                    onChange={e => setGitSettings(p => ({ ...p, owner: e.target.value }))}
+                  />
+                </Field>
+                <Field label="Repo (リポジトリ名)">
+                  <input
+                    style={inp}
+                    value={gitSettings.repo}
+                    onChange={e => setGitSettings(p => ({ ...p, repo: e.target.value }))}
+                  />
+                </Field>
+                <Field label="Branch (ブランチ)">
+                  <input
+                    style={inp}
+                    value={gitSettings.branch}
+                    onChange={e => setGitSettings(p => ({ ...p, branch: e.target.value }))}
+                  />
+                </Field>
+              </div>
+              <button
+                type="submit"
+                className="w-full py-2 font-mono text-[9px] tracking-widest mt-2 transition-colors"
+                style={{ background: 'rgba(155,184,255,0.08)', border: '1px solid rgba(155,184,255,0.15)', color: '#9bb8ff' }}
+              >
+                設定を保存する
+              </button>
+            </form>
+          )}
+        </div>
 
         {/* Tabs */}
         <div className="flex items-center gap-1 mb-4 border-b" style={{ borderColor: 'rgba(155,184,255,0.08)' }}>
@@ -456,32 +625,60 @@ export default function AdminPage() {
 
       {/* Bottom bar (Width limited & Centered) */}
       <div
-        className="fixed bottom-0 left-0 right-0 py-4 z-10"
-        style={{ background: 'rgba(14,18,32,0.96)', borderTop: '1px solid rgba(155,184,255,0.10)', backdropFilter: 'blur(8px)' }}
+        className="fixed bottom-0 left-0 right-0 z-10 py-4 space-y-3"
+        style={{
+          background: 'rgba(14,18,32,0.96)',
+          borderTop: '1px solid rgba(155,184,255,0.10)',
+          backdropFilter: 'blur(8px)',
+          boxShadow: '0 -10px 30px rgba(0,0,0,0.5)'
+        }}
       >
-        <div className="max-w-2xl mx-auto px-5 flex items-center gap-2.5">
-          <button
-            type="button" onClick={handleSaveDraft}
-            className="flex-1 py-3.5 font-mono text-[10px] tracking-widest transition-all duration-300"
-            style={{
-              background: savedMsg ? 'rgba(155,184,255,0.18)' : 'rgba(155,184,255,0.06)',
-              border: '1px solid rgba(155,184,255,0.15)',
-              color: savedMsg ? '#ffffff' : '#7888b8',
-            }}
-          >
-            {savedMsg ? '✓ Saved (下書きを保存しました)' : 'Save Draft (一時保存)'}
-          </button>
-          <button
-            type="button" onClick={handleExport}
-            className="flex-1 py-3.5 font-mono text-[10px] tracking-widest transition-all duration-300"
-            style={{
-              background: 'rgba(155,184,255,0.03)',
-              border: '1px solid rgba(155,184,255,0.10)',
-              color: copied ? '#c8b6ff' : '#5a6490',
-            }}
-          >
-            {copied ? '✓ JSON Copied! (コピー完了)' : 'Export JSON (JSON出力)'}
-          </button>
+        <div className="max-w-2xl mx-auto px-5">
+          {/* Status message for publishing */}
+          {publishStatus === 'loading' && (
+            <p className="text-center font-mono text-[10px] text-[#9bb8ff] animate-pulse mb-3">
+              ⏳ GitHubへコミット送信中... (本番サイト自動ビルドをリクエスト中)
+            </p>
+          )}
+          {publishStatus === 'success' && (
+            <p className="text-center font-mono text-[10px] text-[#80f0c0] mb-3">
+              ✅ コミット送信成功！数分で本番サイトが自動更新されます。
+            </p>
+          )}
+          {publishStatus === 'error' && (
+            <p className="text-center font-mono text-[10px] text-[#e08080] mb-3">
+              ❌ エラー: {publishError}
+            </p>
+          )}
+
+          <div className="flex items-center gap-2.5">
+            <button
+              type="button" onClick={handleSaveDraft}
+              className="flex-1 py-3.5 font-mono text-[10px] tracking-widest transition-all duration-300"
+              style={{
+                background: savedMsg ? 'rgba(155,184,255,0.18)' : 'rgba(155,184,255,0.06)',
+                border: '1px solid rgba(155,184,255,0.15)',
+                color: savedMsg ? '#ffffff' : '#7888b8',
+              }}
+            >
+              {savedMsg ? '✓ Saved (下書き保存完了)' : 'Save Draft (下書き保存)'}
+            </button>
+
+            <button
+              type="button" onClick={handlePublishToGitHub}
+              disabled={publishStatus === 'loading'}
+              className="flex-1 py-3.5 font-mono text-[10px] tracking-widest transition-all duration-300"
+              style={{
+                background: 'linear-gradient(135deg, rgba(155,184,255,0.2), rgba(200,194,255,0.2))',
+                border: '1px solid rgba(155,184,255,0.3)',
+                color: '#e8eeff',
+                opacity: publishStatus === 'loading' ? 0.5 : 1,
+                cursor: publishStatus === 'loading' ? 'not-allowed' : 'pointer'
+              }}
+            >
+              🚀 Publish to GitHub (本番に反映)
+            </button>
+          </div>
         </div>
       </div>
 
