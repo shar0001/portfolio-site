@@ -161,8 +161,72 @@ export function CursorAtmosphere() {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // ── Halo and Ripple rings removed to use SimpleCursor instead ──
+      // ── Halo — lagging cursor glow (desktop only) ──
+      if (!isTouch) {
+        haloPos.current.x += (curPos.current.x - haloPos.current.x) * 0.075
+        haloPos.current.y += (curPos.current.y - haloPos.current.y) * 0.075
 
+        if (curPos.current.x > -1000) {
+          const hx = haloPos.current.x, hy = haloPos.current.y
+
+          // Outer atmosphere halo (130px)
+          const g1 = ctx.createRadialGradient(hx, hy, 0, hx, hy, 130)
+          g1.addColorStop(0,   'rgba(154,184,255,0.18)')
+          g1.addColorStop(0.3, 'rgba(154,184,255,0.07)')
+          g1.addColorStop(0.7, 'rgba(154,184,255,0.02)')
+          g1.addColorStop(1,   'rgba(154,184,255,0)')
+          ctx.beginPath(); ctx.arc(hx, hy, 130, 0, Math.PI * 2)
+          ctx.fillStyle = g1; ctx.fill()
+
+          // Mid glow ring (68px)
+          const g3 = ctx.createRadialGradient(hx, hy, 0, hx, hy, 68)
+          g3.addColorStop(0,   'rgba(167,239,255,0.12)')
+          g3.addColorStop(0.5, 'rgba(167,239,255,0.04)')
+          g3.addColorStop(1,   'rgba(167,239,255,0)')
+          ctx.beginPath(); ctx.arc(hx, hy, 68, 0, Math.PI * 2)
+          ctx.fillStyle = g3; ctx.fill()
+
+          // Inner bright core (42px)
+          const g2 = ctx.createRadialGradient(hx, hy, 0, hx, hy, 42)
+          g2.addColorStop(0,   'rgba(235,242,255,0.28)')
+          g2.addColorStop(0.4, 'rgba(220,234,255,0.10)')
+          g2.addColorStop(1,   'rgba(220,234,255,0)')
+          ctx.beginPath(); ctx.arc(hx, hy, 42, 0, Math.PI * 2)
+          ctx.fillStyle = g2; ctx.fill()
+
+          // Subtle glowing edge (cursor border)
+          ctx.beginPath(); ctx.arc(hx, hy, 16, 0, Math.PI * 2)
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)'
+          ctx.lineWidth = 1
+          ctx.stroke()
+        }
+      }
+
+      // ── Ripple rings ──
+      ripples.current = ripples.current.filter(r => r.life < r.maxLife)
+      for (const r of ripples.current) {
+        const t = r.life / r.maxLife
+        r.r = r.maxR * (1 - Math.pow(1 - t, 2.2))
+        const alpha = r.alpha * (1 - t) * (1 - t)
+        if (alpha > 0.003) {
+          ctx.beginPath()
+          ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2)
+          ctx.strokeStyle = `rgba(154,184,255,${alpha})`
+          ctx.lineWidth = Math.max(0.5, 2 - t * 1.8)
+          ctx.stroke()
+          // secondary inner ripple
+          const r2 = r.r * 0.55
+          const a2 = alpha * 0.45
+          if (a2 > 0.002 && r2 > 4) {
+            ctx.beginPath()
+            ctx.arc(r.x, r.y, r2, 0, Math.PI * 2)
+            ctx.strokeStyle = `rgba(167,239,255,${a2})`
+            ctx.lineWidth = Math.max(0.4, 1.4 - t)
+            ctx.stroke()
+          }
+        }
+        r.life++
+      }
 
       // ── Particles ──
       particles.current = particles.current.filter(p => p.life < p.maxLife)
