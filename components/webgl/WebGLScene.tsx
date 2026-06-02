@@ -27,10 +27,13 @@ export function WebGLScene({ scrollRef }: WebGLSceneProps) {
         dpr={[1, 1.5]}
         style={{ background: '#0a0a0a', width: '100%', height: '100%' }}
       >
-        {/* Lights */}
-        <ambientLight intensity={0.25} />
-        <pointLight position={[200, 300, 400]} intensity={1.4} color="#fff8f0" />
-        <pointLight position={[-250, -200, 200]} intensity={0.5} color="#c8b99a" />
+        {/* Lights — directional lights have no distance falloff (the scene
+            works in pixel-units so point lights would decay to nothing). */}
+        <ambientLight intensity={0.7} />
+        <directionalLight position={[300, 400, 500]} intensity={2.8} color="#fff8f0" />
+        <directionalLight position={[-350, -250, 300]} intensity={1.3} color="#c8b99a" />
+        {/* Cool rim light from behind for sculptural edge definition */}
+        <directionalLight position={[0, 200, -400]} intensity={1.6} color="#aeb8d0" />
 
         {/* Camera and scene contents */}
         <CameraRig scrollRef={scrollRef} />

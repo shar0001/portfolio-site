@@ -91,8 +91,10 @@ export function HeroObjects({ scrollRef }: HeroObjectsProps) {
         <icosahedronGeometry args={[140, 1]} />
         <meshPhysicalMaterial
           color="#f4f4f0"
-          roughness={0.12}
-          metalness={0.04}
+          roughness={0.42}
+          metalness={0}
+          clearcoat={0.6}
+          clearcoatRoughness={0.35}
         />
       </mesh>
 
@@ -101,8 +103,10 @@ export function HeroObjects({ scrollRef }: HeroObjectsProps) {
         <torusKnotGeometry args={[70, 22, 128, 16]} />
         <meshPhysicalMaterial
           color="#ece8e0"
-          roughness={0.20}
-          metalness={0.02}
+          roughness={0.5}
+          metalness={0}
+          clearcoat={0.5}
+          clearcoatRoughness={0.4}
         />
       </mesh>
 
@@ -111,8 +115,10 @@ export function HeroObjects({ scrollRef }: HeroObjectsProps) {
         <sphereGeometry args={[55, 32, 32]} />
         <meshPhysicalMaterial
           color="#f0ece4"
-          roughness={0.08}
-          metalness={0.06}
+          roughness={0.3}
+          metalness={0}
+          clearcoat={0.7}
+          clearcoatRoughness={0.25}
         />
       </mesh>
     </group>
