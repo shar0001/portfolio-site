@@ -1,23 +1,23 @@
 'use client'
 import { useRef, useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
 import {
   heroImage, galleryImages, aspectFor,
   type ModelImage,
 } from '@/content/model'
 
 const SERIF = 'var(--font-cormorant), "EB Garamond", Georgia, serif'
-const TEXT  = 'var(--text-primary)'
-const MUTED = 'var(--text-secondary)'
-const DIM   = 'var(--text-muted)'
-const LINE  = 'var(--line-soft)'
+const TEXT  = '#E8E0CE'
+const MUTED = '#9A9283'
+const DIM   = '#6B6350'
+const LINE  = 'rgba(232,224,206,0.08)'
 const BASE  = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
 
+// URL-encode each path segment (spaces / × / & / 日本語 → valid URL)
 const enc = (p: string) => p.split('/').map(encodeURIComponent).join('/')
 const url = (p: string) => `${BASE}${enc(p)}`
 
+// ── Lightbox ──────────────────────────────────────────────────────────────────
 function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
   useEffect(() => {
     const fn = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -55,6 +55,8 @@ function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: ()
         className="absolute top-5 right-6 font-mono text-[10px] tracking-[0.35em] uppercase transition-colors duration-200"
         style={{ color: 'rgba(232,224,206,0.42)' }}
         onClick={onClose}
+        onMouseEnter={e => { e.currentTarget.style.color = 'rgba(232,224,206,0.85)' }}
+        onMouseLeave={e => { e.currentTarget.style.color = 'rgba(232,224,206,0.42)' }}
       >
         Close ✕
       </button>
@@ -62,138 +64,260 @@ function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: ()
   )
 }
 
-function ParallaxImage({ img, onOpen }: { img: ModelImage; onOpen: (src: string, alt: string) => void }) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const imageRef = useRef<HTMLImageElement>(null)
-  
-  useEffect(() => {
-    const container = containerRef.current
-    const image = imageRef.current
-    if (!container || !image) return
-    
-    gsap.registerPlugin(ScrollTrigger)
-    
-    // Parallax effect: image moves slightly slower/faster than container
-    gsap.fromTo(image, 
-      { y: -40 }, 
-      {
-        y: 40,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: container,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: true
-        }
-      }
-    )
-  }, [])
+// ── Reveal-on-scroll ──────────────────────────────────────────────────────────
+function Reveal({ children, delay = 0, className = '' }: {
+  children: React.ReactNode; delay?: number; className?: string
+}) {
+  const ref    = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, margin: '-50px' })
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      initial={{ opacity: 0, y: 14 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 1.0, delay, ease: [0.76, 0, 0.24, 1] }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+// ── Gallery photo — frame respects each image's natural ratio, no captions ────
+function GalleryPhoto({ img, onOpen }: {
+  img: ModelImage; onOpen: (src: string, alt: string) => void
+}) {
+  const ref    = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, margin: '-70px' })
 
   return (
-    <div 
-      ref={containerRef}
-      className="relative w-full overflow-hidden cursor-zoom-in group mb-12 md:mb-20"
-      style={{ aspectRatio: aspectFor[img.orientation], backgroundColor: 'var(--glass-bg)' }}
+    <motion.figure
+      ref={ref}
+      className="group relative w-full overflow-hidden cursor-zoom-in mb-3 md:mb-4"
+      style={{
+        aspectRatio: aspectFor[img.orientation],
+        background: 'rgba(8,7,5,0.6)',
+      }}
+      initial={{ opacity: 0, y: 26 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 1.1, ease: [0.76, 0, 0.24, 1] }}
       onClick={() => onOpen(url(img.src), img.alt)}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        ref={imageRef}
         src={url(img.src)}
         alt={img.alt}
-        className="absolute top-[-40px] left-0 w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.03]"
-        style={{ height: 'calc(100% + 80px)', objectPosition: img.position ?? 'center center' }}
+        className="absolute inset-0 w-full h-full transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+        style={{
+          objectFit: img.fit ?? 'cover',
+          objectPosition: img.position ?? 'center center',
+          filter: 'saturate(0.92) brightness(0.97)',
+        }}
+        onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.filter = 'saturate(1.0) brightness(1.04)' }}
+        onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.filter = 'saturate(0.92) brightness(0.97)' }}
         loading="lazy"
       />
-    </div>
+    </motion.figure>
   )
 }
 
+// ── Credit block ──────────────────────────────────────────────────────────────
+function CreditBlock({ client, campaign, year, credits }: {
+  client: string; campaign?: string; year: string
+  credits: { role: string; name: string }[]
+}) {
+  return (
+    <Reveal>
+      <div className="py-8" style={{ borderTop: `1px solid ${LINE}` }}>
+        <div className="flex items-baseline justify-between mb-5">
+          <div>
+            <p className="text-base tracking-[0.05em]" style={{ fontFamily: SERIF, fontWeight: 400, color: TEXT }}>
+              {client}
+            </p>
+            {campaign && (
+              <p className="text-[11px] mt-0.5 italic" style={{ fontFamily: SERIF, color: MUTED }}>
+                {campaign}
+              </p>
+            )}
+          </div>
+          <p className="font-mono text-[8px] tracking-[0.4em]" style={{ color: DIM }}>{year}</p>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-2.5">
+          {credits.map(({ role, name }) => (
+            <div key={role} className="flex gap-2 items-baseline">
+              <span className="font-mono text-[7px] tracking-[0.3em] uppercase shrink-0" style={{ color: DIM, width: 56 }}>
+                {role}
+              </span>
+              <span className="text-[11px] leading-tight" style={{ color: MUTED }}>{name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Reveal>
+  )
+}
+
+// ── Page ──────────────────────────────────────────────────────────────────────
 export default function ModelPage() {
   const [lightboxSrc, setLightboxSrc] = useState('')
   const [lightboxAlt, setLightboxAlt] = useState('')
-  const allImages = [heroImage, ...galleryImages]
+
+  const openLightbox = (src: string, alt: string) => {
+    setLightboxSrc(src)
+    setLightboxAlt(alt)
+  }
 
   return (
     <>
-      <main className="min-h-screen relative z-10 px-6 md:px-12 pt-24 md:pt-32 pb-24 max-w-[1400px] mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-10 gap-12 md:gap-24">
-          
-          {/* Left Column: 30% Sticky */}
-          <div className="md:col-span-3">
-            <div className="sticky top-32">
-              <motion.div
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.1, ease: [0.76, 0, 0.24, 1] }}
+      <main
+        className="relative mx-auto min-h-screen w-full max-w-[1180px] px-7 md:px-12 lg:px-16 pt-24 pb-20 md:pt-28 md:pb-28"
+        style={{ zIndex: 1 }}
+      >
+        {/* ── HERO — contained editorial frame (never full-bleed) ─────────── */}
+        <section className="pb-10 md:pb-16">
+          <div className="mx-auto">
+
+            {/* Name + minimal meta, ABOVE the image — never over the face */}
+            <motion.div
+              className="flex items-end justify-between mb-6 md:mb-9"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.1, delay: 0.15, ease: [0.76, 0, 0.24, 1] }}
+            >
+              <h1
+                className="leading-[0.92]"
+                style={{
+                  fontFamily: SERIF,
+                  fontWeight: 300,
+                  fontSize: 'clamp(2.4rem, 6vw, 4.6rem)',
+                  letterSpacing: '-0.02em',
+                  color: TEXT,
+                }}
               >
-                <h1
-                  className="leading-[0.92] mb-4"
-                  style={{
-                    fontFamily: SERIF,
-                    fontWeight: 300,
-                    fontSize: 'clamp(3rem, 5vw, 4.6rem)',
-                    letterSpacing: '-0.02em',
-                    color: TEXT,
-                  }}
-                >
-                  Shusaku<br />Nishiura
-                </h1>
-                <p className="font-mono text-[9px] tracking-[0.32em] uppercase mb-12" style={{ color: DIM }}>
-                  Campaign · Editorial · Jewelry
-                </p>
+                Shusaku<br />Nishiura
+              </h1>
+              <p className="font-mono text-[8px] md:text-[9px] tracking-[0.32em] text-right pb-1" style={{ color: 'rgba(232,224,206,0.4)' }}>
+                Campaign · Editorial · Jewelry
+              </p>
+            </motion.div>
 
-                {/* Profile Details */}
-                <div className="flex flex-col gap-4 text-[12px] font-sans" style={{ color: MUTED }}>
-                  <div className="flex justify-between border-b pb-2" style={{ borderColor: LINE }}>
-                    <span>Agency</span>
-                    <span>bravo models</span>
-                  </div>
-                  <div className="flex justify-between border-b pb-2" style={{ borderColor: LINE }}>
-                    <span>Base</span>
-                    <span>Tokyo, Japan</span>
-                  </div>
-                  <div className="flex justify-between border-b pb-2" style={{ borderColor: LINE }}>
-                    <span>Active</span>
-                    <span>2018 — Present</span>
-                  </div>
-                </div>
+            {/* Contained hero image — max-height keeps the close-up elegant */}
+            <motion.div
+              className="relative w-full flex justify-center cursor-zoom-in"
+              initial={{ opacity: 0, scale: 0.985 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.3, delay: 0.3, ease: [0.76, 0, 0.24, 1] }}
+              onClick={() => openLightbox(url(heroImage.src), heroImage.alt)}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={url(heroImage.src)}
+                alt={heroImage.alt}
+                className="w-auto"
+                style={{
+                  maxHeight: '78vh',
+                  maxWidth: '100%',
+                  objectFit: 'contain',
+                  objectPosition: heroImage.position,
+                }}
+                loading="eager"
+              />
+            </motion.div>
+          </div>
+        </section>
 
-                {/* Credits / Selected Works */}
-                <div className="mt-12">
-                  <p className="font-mono text-[8px] tracking-[0.5em] uppercase mb-6" style={{ color: DIM }}>
-                    Selected Works
-                  </p>
-                  <div className="mb-6">
-                    <p className="text-sm tracking-wide" style={{ fontFamily: SERIF, color: TEXT }}>Van Cleef & Arpels</p>
-                    <p className="text-[10px] italic mt-1" style={{ fontFamily: SERIF, color: MUTED }}>スー レ ゼトワール〈星空の下で〉</p>
-                    <p className="font-mono text-[8px] mt-2" style={{ color: DIM }}>2024</p>
-                  </div>
-                  <div>
-                    <p className="text-sm tracking-wide" style={{ fontFamily: SERIF, color: TEXT }}>MIKIMOTO</p>
-                    <p className="text-[10px] italic mt-1" style={{ fontFamily: SERIF, color: MUTED }}>Lucky Arrows</p>
-                    <p className="font-mono text-[8px] mt-2" style={{ color: DIM }}>2024</p>
-                  </div>
+        {/* ── GALLERY — masonry columns, each image at its natural ratio ──── */}
+        <section className="pb-6">
+          <div
+            className="mx-auto [column-fill:_balance]"
+            style={{ columnGap: '0.75rem' }}
+          >
+            <style>{`
+              .model-masonry { columns: 1; }
+              @media (min-width: 768px) { .model-masonry { columns: 2; } }
+            `}</style>
+            <div className="model-masonry">
+              {galleryImages.map(img => (
+                <div key={img.id} className="break-inside-avoid">
+                  <GalleryPhoto img={img} onOpen={openLightbox} />
                 </div>
-              </motion.div>
+              ))}
             </div>
           </div>
+        </section>
 
-          {/* Right Column: 70% Scrolling Media */}
-          <div className="md:col-span-7 mt-12 md:mt-0">
-            {allImages.map((img, i) => (
-              <motion.div
-                key={img.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.1, delay: i * 0.1, ease: [0.76, 0, 0.24, 1] }}
+        {/* ── CREDITS ───────────────────────────────────────────────────── */}
+        <section className="pt-12 pb-10 mx-auto">
+          <Reveal>
+            <p className="font-mono text-[8px] tracking-[0.5em] uppercase mb-2" style={{ color: DIM }}>
+              Credits
+            </p>
+          </Reveal>
+
+          <CreditBlock
+            client="Van Cleef & Arpels"
+            campaign="スー レ ゼトワール〈星空の下で〉"
+            year="2024"
+            credits={[
+              { role: 'Photo',   name: 'Masanori Akao (white stout)' },
+              { role: 'Styling', name: 'Mika Nagasawa' },
+              { role: 'Hair',    name: 'Kenshin (epo tabo)' },
+              { role: 'Makeup',  name: 'Asami Taguchi (home agency)' },
+              { role: 'Realize', name: 'Shiho Amano' },
+              { role: 'Model',   name: 'Shusaku Nishiura (bravo)' },
+            ]}
+          />
+
+          <CreditBlock
+            client="MIKIMOTO"
+            campaign="Lucky Arrows"
+            year="2024"
+            credits={[
+              { role: 'Model', name: 'Shusaku Nishiura' },
+            ]}
+          />
+        </section>
+
+        {/* ── PROFILE ───────────────────────────────────────────────────── */}
+        <section
+          className="px-7 md:px-14 lg:px-18 py-16 mx-auto"
+          style={{ maxWidth: 1180, borderTop: `1px solid ${LINE}` }}
+        >
+          <Reveal>
+            <p className="font-mono text-[8px] tracking-[0.5em] uppercase mb-8" style={{ color: DIM }}>
+              Profile
+            </p>
+            <div className="max-w-xl">
+              {([
+                ['Name',       'Shusaku Nishiura'],
+                ['Agency',     'bravo models'],
+                ['Base',       'Tokyo, Japan'],
+                ['Active',     '2018 — Present'],
+                ['Markets',    'Japan · France · Italy'],
+                ['Categories', 'Campaign · Editorial · Runway'],
+              ] as [string, string][]).map(([label, value]) => (
+                <div key={label} className="flex gap-6 py-4" style={{ borderBottom: `1px solid ${LINE}` }}>
+                  <span className="font-mono text-[8px] tracking-[0.35em] uppercase shrink-0 pt-0.5" style={{ color: DIM, width: 80 }}>
+                    {label}
+                  </span>
+                  <span className="text-[13px] leading-relaxed" style={{ color: MUTED }}>{value}</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-9">
+              <a
+                href="mailto:shusaku.bbb@gmail.com"
+                className="font-mono text-[9px] tracking-[0.3em] transition-opacity duration-200 inline-block"
+                style={{ color: '#CBB783' }}
+                onMouseEnter={e => { e.currentTarget.style.opacity = '0.5' }}
+                onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
               >
-                <ParallaxImage img={img} onOpen={(src, alt) => { setLightboxSrc(src); setLightboxAlt(alt) }} />
-              </motion.div>
-            ))}
-          </div>
+                Contact ↗
+              </a>
+            </div>
+          </Reveal>
+        </section>
 
-        </div>
       </main>
 
       <AnimatePresence>

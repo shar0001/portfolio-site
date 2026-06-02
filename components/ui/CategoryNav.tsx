@@ -2,62 +2,72 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
+const LINKS = [
+  { href: '/',      label: 'About' },
+  { href: '/movie', label: 'Movie' },
+  { href: '/apps',  label: 'Apps'  },
+  { href: '/model', label: 'Model' },
+]
+
 export function CategoryNav() {
   const pathname = usePathname()
-  if (pathname.startsWith('/admin')) return null
 
-  const categories = [
-    { href: '/model', label: 'About' },
-    { href: '/movie', label: 'Movie' },
-    { href: '/apps',  label: 'Apps' },
-    { href: '/model', label: 'Model' },
-  ]
+  if (pathname.startsWith('/admin')) return null
 
   return (
     <nav
       className="fixed top-0 left-0 right-0 z-50 px-5 md:px-12 h-14 flex items-center justify-between"
-      style={{ pointerEvents: 'none' }}
+      style={{
+        background: 'linear-gradient(to bottom, rgba(8,12,26,0.88) 0%, rgba(8,12,26,0) 100%)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+      }}
     >
       {/* Logo */}
       <Link
         href="/"
-        className="font-mono text-[10px] tracking-[0.25em] uppercase text-[#8090c0] hover:text-[#f0f5ff] transition-colors"
-        style={{ pointerEvents: 'auto' }}
-        data-cursor="hover"
+        className="font-mono text-[11px] tracking-[0.28em] transition-colors duration-300"
+        style={{ color: '#8090c8' }}
+        onMouseEnter={e => { e.currentTarget.style.color = '#c8d8f8' }}
+        onMouseLeave={e => { e.currentTarget.style.color = '#8090c8' }}
       >
         SHR
       </Link>
 
-      {/* Nav Links */}
-      <div className="flex gap-6 md:gap-10 absolute left-1/2 -translate-x-1/2">
-        {categories.map((c) => {
-          // Check if active. Map 'About' and 'Model' to '/model' logically depending on user route.
-          const isActive = pathname === c.href
-          
+      {/* Links */}
+      <div className="flex items-center gap-1">
+        {LINKS.map(({ href, label }) => {
+          const isActive = pathname === href
           return (
             <Link
-              key={c.label}
-              href={c.href}
-              className="text-[10px] font-mono uppercase tracking-[0.2em] transition-all duration-300"
+              key={href}
+              href={href}
+              className="relative px-3.5 py-1.5 font-mono text-[10px] tracking-[0.18em] uppercase transition-all duration-300 rounded-full"
               style={{
-                color: isActive ? '#ffffff' : '#8090c0',
-                textShadow: isActive ? '0 0 12px rgba(154,184,255,0.4)' : 'none',
-                pointerEvents: 'auto',
+                color: isActive ? '#f0f5ff' : '#8090c0',
+                background: isActive ? 'rgba(154,184,255,0.12)' : 'transparent',
+                border: isActive ? '1px solid rgba(154,184,255,0.20)' : '1px solid transparent',
               }}
-              data-cursor="hover"
+              onMouseEnter={e => {
+                if (!isActive) e.currentTarget.style.color = '#c0d0f0'
+              }}
+              onMouseLeave={e => {
+                if (!isActive) e.currentTarget.style.color = '#8090c0'
+              }}
             >
-              {c.label}
+              {label}
             </Link>
           )
         })}
       </div>
 
-      {/* Contact */}
+      {/* Contact — right side */}
       <a
         href="mailto:shusaku.bbb@gmail.com"
-        className="font-mono text-[10px] tracking-[0.15em] text-[#8090c0] hover:text-[#f0f5ff] transition-colors"
-        style={{ pointerEvents: 'auto' }}
-        data-cursor="hover"
+        className="hidden md:block font-mono text-[9px] tracking-[0.25em] transition-colors duration-300"
+        style={{ color: '#6070a8' }}
+        onMouseEnter={e => { e.currentTarget.style.color = '#a0b4e0' }}
+        onMouseLeave={e => { e.currentTarget.style.color = '#6070a8' }}
       >
         Contact ↗
       </a>

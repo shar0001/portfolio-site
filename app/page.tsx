@@ -1,73 +1,123 @@
 'use client'
 import Link from 'next/link'
-import { useEffect, useRef } from 'react'
-import gsap from 'gsap'
+import { motion } from 'framer-motion'
 import { profile } from '@/content/profile'
+import { GlassHero } from '@/components/ui/GlassHero'
+
+const SERIF = 'var(--font-cormorant), "EB Garamond", Georgia, serif'
+
+const categories = [
+  { href: '/movie', label: 'Movie', desc: 'Motion design & visual effects' },
+  { href: '/apps',  label: 'Apps',  desc: 'iOS & web application development' },
+  { href: '/model', label: 'Model', desc: 'Campaign · editorial · jewelry' },
+]
 
 export default function Home() {
-  const containerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!containerRef.current) return
-    gsap.fromTo(
-      containerRef.current.children,
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out', delay: 0.1 }
-    )
-  }, [])
-
   return (
-    <main className="min-h-screen flex flex-col justify-center px-6 md:px-16 lg:px-32 pt-24 pb-16">
-      <div ref={containerRef} className="max-w-2xl">
-        {/* Title */}
-        <h1 
-          className="whitespace-nowrap mb-12"
-          style={{
-            fontFamily: 'var(--font-cormorant), serif',
-            fontWeight: 300,
-            fontSize: 'clamp(4rem, 10vw, 130px)',
-            letterSpacing: '-0.02em',
-            lineHeight: 0.9,
-            color: 'var(--text-primary)'
-          }}
-        >
-          Shusaku<br />Nishiura
-        </h1>
+    <main className="relative min-h-screen overflow-hidden">
+      {/* Pre-rendered glass visual — right side / softly behind the content */}
+      <GlassHero />
 
-        {/* Intro Text */}
-        <div className="mb-16 space-y-6">
-          <p className="text-[14px] md:text-[15px] leading-[2.2] tracking-wide text-[var(--text-secondary)] whitespace-pre-line">
-            モデルの感性、開発者の論理、PMの推進力。{'\n'}
-            異なる現場を渡り歩いた経験が、{'\n'}
-            作れるものの幅を広げてくれました。
-          </p>
-          <p className="text-[12px] md:text-[13px] leading-relaxed tracking-wider text-[var(--text-muted)] italic font-serif">
-            From the runway to the codebase — a non-linear path that turned out to be the point
-          </p>
-        </div>
+      {/* Content — max-width container, strong side margins, readable left column */}
+      <div
+        className="relative mx-auto flex min-h-screen w-full max-w-[1180px] flex-col justify-center px-7 md:px-12 lg:px-16 pt-24 pb-20 md:pt-28 md:pb-28"
+        style={{ zIndex: 2 }}
+      >
+        {/* ── Hero name ──────────────────────────────────────────────────── */}
+        <section className="mb-16 md:mb-20 max-w-[620px]">
+          <motion.p
+            className="font-mono text-[9px] tracking-[0.55em] uppercase mb-8"
+            style={{ color: '#5060a0' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.1 }}
+          >
+            Portfolio · 2025
+          </motion.p>
 
-        {/* Category List */}
-        <div className="w-full max-w-lg flex flex-col">
-          {[
-            { title: 'Movie', desc: 'Motion design & visual effects', href: '/movie' },
-            { title: 'Apps', desc: 'iOS & web application development', href: '/apps' },
-            { title: 'Model', desc: 'Campaign - editorial - jewelry', href: '/model' },
-          ].map((item, index) => (
-            <Link 
-              key={item.title} 
-              href={item.href}
-              className="group block py-6 border-b border-[var(--glass-border)] last:border-b transition-colors hover:border-[rgba(255,255,255,0.3)]"
-              data-cursor="hover"
+          <motion.h1
+            style={{
+              fontFamily: SERIF,
+              fontWeight: 300,
+              fontSize: 'clamp(3.8rem, 9.5vw, 8.5rem)',
+              lineHeight: 0.88,
+              letterSpacing: '-0.028em',
+              color: '#f5f8ff',
+            }}
+            initial={{ opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.1, delay: 0.18, ease: [0.76, 0, 0.24, 1] }}
+          >
+            Shusaku<br />
+            <span style={{ color: '#9ab8ff' }}>Nishiura</span>
+          </motion.h1>
+
+          <motion.p
+            className="mt-9 text-[14px] leading-[1.85] whitespace-pre-line"
+            style={{ color: '#a5b3d1', maxWidth: 360 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.55 }}
+          >
+            {profile.catchJa}
+          </motion.p>
+
+          <motion.p
+            className="mt-3 text-[12px] leading-relaxed italic"
+            style={{ color: '#5868a8', fontFamily: SERIF, maxWidth: 360 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.72 }}
+          >
+            {profile.catchEn}
+          </motion.p>
+        </section>
+
+        {/* ── Work categories ────────────────────────────────────────────── */}
+        <nav style={{ maxWidth: 480 }}>
+          {categories.map(({ href, label, desc }, i) => (
+            <motion.div
+              key={href}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.82 + i * 0.10, ease: [0.76, 0, 0.24, 1] }}
             >
-              <h2 className="font-serif text-3xl font-light mb-2 text-[var(--text-primary)] transition-colors group-hover:text-white">
-                {item.title}
-              </h2>
-              <p className="text-[11px] font-sans tracking-wide text-[var(--text-muted)] uppercase">
-                {item.desc}
-              </p>
-            </Link>
+              <Link
+                href={href}
+                className="group flex items-center justify-between py-5 md:py-6"
+                style={{ borderTop: '1px solid rgba(154,184,255,0.10)' }}
+              >
+                <div>
+                  <p
+                    className="leading-none mb-2 transition-colors duration-300"
+                    style={{
+                      fontFamily: SERIF,
+                      fontWeight: 300,
+                      fontSize: 'clamp(1.55rem, 3.8vw, 2.3rem)',
+                      letterSpacing: '-0.01em',
+                      color: '#c0d0f0',
+                    }}
+                    onMouseEnter={e => { (e.target as HTMLElement).style.color = '#eef4ff' }}
+                    onMouseLeave={e => { (e.target as HTMLElement).style.color = '#c0d0f0' }}
+                  >
+                    {label}
+                  </p>
+                  <p className="text-[11px]" style={{ color: '#5868a8' }}>
+                    {desc}
+                  </p>
+                </div>
+
+                <span
+                  className="font-mono text-[13px] opacity-0 group-hover:opacity-100 transition-all duration-400 translate-x-0 group-hover:translate-x-1"
+                  style={{ color: '#9ab8ff' }}
+                >
+                  ↗
+                </span>
+              </Link>
+            </motion.div>
           ))}
-        </div>
+          <div className="h-px" style={{ background: 'rgba(154,184,255,0.10)' }} />
+        </nav>
       </div>
     </main>
   )
