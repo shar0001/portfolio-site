@@ -128,24 +128,24 @@ export default function AppsPage() {
               {/* Highlight Features list */}
               <div className="space-y-4 py-2 border-y" style={{ borderColor: 'rgba(155,184,255,0.08)' }}>
                 <div className="flex gap-3">
-                  <span className="text-[#9bb8ff] font-mono text-xs mt-0.5">⚡</span>
+                  <span className="text-[#9bb8ff] font-mono text-xs mt-0.5">✨</span>
                   <div>
-                    <h4 className="text-xs font-semibold text-[#c9d1e6] uppercase tracking-wide">ワンタップ精算</h4>
-                    <p className="text-[11px] mt-0.5" style={{ color: '#7080a8' }}>グループ全体の複雑な貸し借りを自動相殺し、誰が誰にいくら送金すべきか最小ルートで算出します。</p>
+                    <h4 className="text-xs font-semibold text-[#c9d1e6] uppercase tracking-wide">「割り勘、もう迷わない。」相関図で可視化</h4>
+                    <p className="text-[11px] mt-0.5" style={{ color: '#7080a8' }}>誰が誰にいくら払うか、ひと目でわかる相関図。アイコンをドラッグして直感的に配置・確認でき、無駄な送金回数を自動で最小化します。</p>
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <span className="text-[#9bb8ff] font-mono text-xs mt-0.5">👥</span>
+                  <span className="text-[#9bb8ff] font-mono text-xs mt-0.5">👇</span>
                   <div>
-                    <h4 className="text-xs font-semibold text-[#c9d1e6] uppercase tracking-wide">グループ別管理</h4>
-                    <p className="text-[11px] mt-0.5" style={{ color: '#7080a8' }}>旅行や合宿、毎月の生活費など、イベントごとにメンバーを分けて複数の割り勘履歴をまとめて清算可能。</p>
+                    <h4 className="text-xs font-semibold text-[#c9d1e6] uppercase tracking-wide">タップでかんたん入力</h4>
+                    <p className="text-[11px] mt-0.5" style={{ color: '#7080a8' }}>誰の分か、誰が払ったかをタップするだけのスムーズ入力。メンバーを選ぶだけで、複雑な立て替えも割り勘もスムーズに登録完了。</p>
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <span className="text-[#9bb8ff] font-mono text-xs mt-0.5">📊</span>
+                  <span className="text-[#9bb8ff] font-mono text-xs mt-0.5">🏠</span>
                   <div>
-                    <h4 className="text-xs font-semibold text-[#c9d1e6] uppercase tracking-wide">カスタム比率 (傾斜) 対応</h4>
-                    <p className="text-[11px] mt-0.5" style={{ color: '#7080a8' }}>均等なワリカンだけでなく、「多めに払う人」「比率（パーセント）」など自由度の高い割り振りに対応。</p>
+                    <h4 className="text-xs font-semibold text-[#c9d1e6] uppercase tracking-wide">部屋を作ってすぐスタート</h4>
+                    <p className="text-[11px] mt-0.5" style={{ color: '#7080a8' }}>飲み会・旅行・同棲など、シーンに合わせてかんたん作成。招待コードを共有すれば、ダウンロード不要（Web版）でもすぐ集まれます。</p>
                   </div>
                 </div>
               </div>
@@ -244,76 +244,138 @@ export default function AppsPage() {
                   />
 
                   {/* App Screen Content (Mocked via pure CSS/HTML) */}
-                  <div className="w-full h-full rounded-[30px] overflow-hidden flex flex-col p-4 select-none"
+                  <div className="w-full h-full rounded-[30px] overflow-hidden flex flex-col justify-between select-none"
                     style={{
-                      background: 'radial-gradient(circle at top, #141c3a 0%, #0d1224 100%)'
+                      background: '#f4fcf9', // Light pastel mint background to match official app branding
+                      padding: '16px 12px 10px 12px'
                     }}
                   >
                     {/* Header */}
-                    <div className="flex justify-between items-center mt-4 mb-5 px-1">
-                      <span className="text-[9px] font-mono text-[#5a6490]">PITTANKO</span>
-                      <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-[#9bb8ff]/10 text-[#9bb8ff] font-mono">Active</span>
+                    <div className="flex justify-between items-center mt-4 px-1">
+                      <span className="text-[8px] text-[#8ea19c] font-medium flex items-center gap-0.5">
+                        <span className="inline-block" style={{ transform: 'rotate(90deg) scaleY(1.4)' }}>▾</span> 戻る
+                      </span>
+                      <div className="text-center">
+                        <span className="text-[10px] font-bold text-[#00bda6]">ピタンコ</span>
+                        <span className="text-[9px] text-[#8ea19c] ml-0.5">わりかん</span>
+                      </div>
+                      <span className="w-6" /> {/* Spacer */}
                     </div>
 
-                    {/* Total Amount Display */}
-                    <div className="text-center py-3 rounded-xl mb-4" style={{ background: 'rgba(155,184,255,0.03)', border: '1px solid rgba(155,184,255,0.06)' }}>
-                      <p className="text-[8px] font-mono uppercase tracking-widest text-[#5a6490]">Total Expenses</p>
-                      <p style={{ fontFamily: SERIF }} className="text-2xl font-light text-[#f0f4ff] mt-0.5">¥48,000</p>
+                    {/* Tab Selection */}
+                    <div className="flex justify-between items-center mt-2 px-1 gap-2">
+                      <div className="flex bg-[#edf3f0] p-0.5 rounded-lg flex-1">
+                        <div className="bg-white rounded-md text-[8px] font-bold text-[#333] py-1 px-3 text-center flex-1 shadow-[0_1px_2px_rgba(0,0,0,0.06)]">
+                          相関図
+                        </div>
+                        <div className="text-[8px] text-[#8ea19c] py-1 px-3 text-center flex-1">
+                          リスト
+                        </div>
+                      </div>
+                      <div className="border border-[#00bda6] bg-white text-[#00bda6] rounded-md text-[7px] font-bold py-1 px-2 flex items-center gap-0.5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] shrink-0">
+                        <span>📤</span> 結果をコピー
+                      </div>
                     </div>
 
-                    {/* Members List */}
-                    <div className="flex-1 space-y-2.5 overflow-hidden">
-                      <p className="text-[8px] font-mono uppercase tracking-widest text-[#5a6490] px-1">Split Details</p>
+                    {/* Split Diagram Card (Interactive Visual) */}
+                    <div className="relative bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-[#eaf2ee] flex-1 my-3 flex flex-col justify-between p-2.5 overflow-hidden">
                       
-                      {/* Member 1 */}
-                      <div className="flex justify-between items-center p-2.5 rounded-lg bg-[#141b36]/60 border border-[#1f2952]/40">
-                        <div className="flex items-center gap-2">
-                          <div className="w-5 h-5 rounded-full bg-[#9bb8ff]/20 flex items-center justify-center text-[10px] text-[#9bb8ff]">A</div>
-                          <span className="text-[11px] text-[#c9d1e6]">A-kun</span>
+                      {/* Interactive Diagram Space */}
+                      <div className="relative flex-1 w-full min-h-[190px]">
+                        
+                        {/* SVG Connection Arrows */}
+                        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 216 190">
+                          <defs>
+                            <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse">
+                              <path d="M 0 1.5 L 7 5 L 0 8.5 z" fill="#cbd5e1" />
+                            </marker>
+                          </defs>
+                          
+                          {/* タナ -> ホン */}
+                          <line x1="48" y1="36" x2="88" y2="120" stroke="#cbd5e1" strokeWidth="1.5" markerEnd="url(#arrow)" strokeDasharray="3 2" />
+                          {/* サト -> ホン */}
+                          <line x1="168" y1="46" x2="112" y2="120" stroke="#cbd5e1" strokeWidth="1.5" markerEnd="url(#arrow)" strokeDasharray="3 2" />
+                          {/* ホン -> スズ */}
+                          <line x1="108" y1="135" x2="152" y2="160" stroke="#cbd5e1" strokeWidth="1.5" markerEnd="url(#arrow)" strokeDasharray="3 2" />
+                        </svg>
+
+                        {/* Avatars */}
+                        {/* タナ */}
+                        <div className="absolute flex flex-col items-center" style={{ left: '30px', top: '15px' }}>
+                          <div className="w-7 h-7 rounded-full bg-[#ffe3e6] flex items-center justify-center text-[9px] font-bold text-[#ff4d6a] shadow-[0_2px_4px_rgba(255,77,106,0.12)]">
+                            タナ
+                          </div>
+                          <span className="text-[7px] text-[#6d7c78] mt-0.5 font-medium scale-90 origin-top">タナカ</span>
                         </div>
-                        <div className="text-right">
-                          <span className="text-[11px] font-mono text-[#f0f4ff]">¥16,000</span>
-                          <span className="block text-[8px] text-[#5a6490]">33.3%</span>
+
+                        {/* サト */}
+                        <div className="absolute flex flex-col items-center" style={{ right: '30px', top: '25px' }}>
+                          <div className="w-7 h-7 rounded-full bg-[#e3f0ff] flex items-center justify-center text-[9px] font-bold text-[#1a80ff] shadow-[0_2px_4px_rgba(26,128,255,0.12)]">
+                            サト
+                          </div>
+                          <span className="text-[7px] text-[#6d7c78] mt-0.5 font-medium scale-90 origin-top">サトウ</span>
                         </div>
+
+                        {/* ホン */}
+                        <div className="absolute flex flex-col items-center" style={{ left: '88px', top: '115px' }}>
+                          <div className="w-7 h-7 rounded-full bg-[#e3ffe8] flex items-center justify-center text-[9px] font-bold text-[#00b33c] shadow-[0_2px_4px_rgba(0,179,60,0.12)]">
+                            ホン
+                          </div>
+                          <span className="text-[7px] text-[#6d7c78] mt-0.5 font-medium scale-90 origin-top">ホンダ</span>
+                        </div>
+
+                        {/* スズ */}
+                        <div className="absolute flex flex-col items-center" style={{ right: '30px', top: '145px' }}>
+                          <div className="w-7 h-7 rounded-full bg-[#fff7e3] flex items-center justify-center text-[9px] font-bold text-[#ffaa00] shadow-[0_2px_4px_rgba(255,170,0,0.12)]">
+                            スズ
+                          </div>
+                          <span className="text-[7px] text-[#6d7c78] mt-0.5 font-medium scale-90 origin-top">スズキ</span>
+                        </div>
+
+                        {/* Amount Labels */}
+                        <div className="absolute bg-white px-1 py-0.5 rounded-full text-[6px] font-bold text-[#333] shadow-[0_1px_3px_rgba(0,0,0,0.1)] border border-[#e2e8f0] scale-90" style={{ left: '38px', top: '70px' }}>
+                          ¥10,000
+                        </div>
+                        <div className="absolute bg-white px-1 py-0.5 rounded-full text-[6px] font-bold text-[#333] shadow-[0_1px_3px_rgba(0,0,0,0.1)] border border-[#e2e8f0] scale-90" style={{ right: '52px', top: '80px' }}>
+                          ¥10,000
+                        </div>
+                        <div className="absolute bg-white px-1 py-0.5 rounded-full text-[6px] font-bold text-[#333] shadow-[0_1px_3px_rgba(0,0,0,0.1)] border border-[#e2e8f0] scale-90" style={{ left: '108px', top: '135px' }}>
+                          ¥10,000
+                        </div>
+
                       </div>
 
-                      {/* Member 2 */}
-                      <div className="flex justify-between items-center p-2.5 rounded-lg bg-[#141b36]/60 border border-[#1f2952]/40">
-                        <div className="flex items-center gap-2">
-                          <div className="w-5 h-5 rounded-full bg-[#c8b6ff]/20 flex items-center justify-center text-[10px] text-[#c8b6ff]">B</div>
-                          <span className="text-[11px] text-[#c9d1e6]">B-san</span>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-[11px] font-mono text-[#f0f4ff] font-medium" style={{ color: '#9bb8ff' }}>¥20,000</span>
-                          <span className="block text-[8px] text-[#9bb8ff]">41.7% (傾斜)</span>
-                        </div>
+                      {/* Helper texts */}
+                      <div className="text-center space-y-0.5 mt-1 border-t border-[#f4fcf9] pt-2">
+                        <p className="text-[6.5px] text-[#90a29d] flex items-center justify-center gap-0.5">
+                          <span className="inline-block border rounded-full w-2.5 h-2.5 leading-[9px] text-[6px]">?</span> アイコンをドラッグして自由に配置できます
+                        </p>
+                        <p className="text-[6.5px] text-[#00bda6] font-bold">
+                          矢印をタップして完了！
+                        </p>
                       </div>
 
-                      {/* Member 3 */}
-                      <div className="flex justify-between items-center p-2.5 rounded-lg bg-[#141b36]/60 border border-[#1f2952]/40">
-                        <div className="flex items-center gap-2">
-                          <div className="w-5 h-5 rounded-full bg-[#a7efff]/20 flex items-center justify-center text-[10px] text-[#a7efff]">C</div>
-                          <span className="text-[11px] text-[#c9d1e6]">C-kun</span>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-[11px] font-mono text-[#f0f4ff]">¥12,000</span>
-                          <span className="block text-[8px] text-[#5a6490]">25.0%</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Visual Chart Graphic (Pure CSS UI) */}
-                    <div className="h-10 flex items-center gap-1 mb-4 px-1">
-                      <div className="h-2 rounded-full flex-1" style={{ background: '#9bb8ff' }} />
-                      <div className="h-2 rounded-full flex-1" style={{ background: '#c8b6ff' }} />
-                      <div className="h-2 rounded-full flex-[0.7]" style={{ background: '#a7efff' }} />
                     </div>
 
                     {/* Bottom Tab Bar Mock */}
-                    <div className="border-t pt-3 flex justify-around items-center" style={{ borderColor: 'rgba(155,184,255,0.08)' }}>
-                      <span className="text-[9px] text-[#9bb8ff]">● 精算</span>
-                      <span className="text-[9px] text-[#4a5480]">履歴</span>
-                      <span className="text-[9px] text-[#4a5480]">設定</span>
+                    <div className="border-t pt-2 pb-0.5 flex justify-around items-center bg-white rounded-b-[16px]" style={{ borderColor: '#eaf2ee', margin: '0 -12px -10px -12px', padding: '8px 12px 6px 12px' }}>
+                      <div className="flex flex-col items-center gap-0.5 opacity-35 scale-90">
+                        <span className="text-[9px]">🏠</span>
+                        <span className="text-[6.5px] font-medium text-[#777]">ホーム</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-0.5 opacity-35 scale-90">
+                        <span className="text-[9px]">🖊️</span>
+                        <span className="text-[6.5px] font-medium text-[#777]">わりかん</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-0.5 text-[#00bda6] relative scale-90">
+                        <span className="text-[9px]">💵</span>
+                        <span className="text-[6.5px] font-bold">精算結果</span>
+                        <div className="absolute -bottom-1 w-0.5 h-0.5 rounded-full bg-[#00bda6]" />
+                      </div>
+                      <div className="flex flex-col items-center gap-0.5 opacity-35 scale-90">
+                        <span className="text-[9px]">⚙️</span>
+                        <span className="text-[6.5px] font-medium text-[#777]">設定</span>
+                      </div>
                     </div>
 
                   </div>
