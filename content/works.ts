@@ -105,6 +105,23 @@ export const defaultWorks: Work[] = [
     featured:    false,
     order:       3,
   },
+  {
+    id:          'movie-05',
+    title:       'テクノロジーの進化と聴覚的インパクト',
+    category:    'movie',
+    year:        '2026',
+    tag:         'Motion Graphics / AI',
+    role:        'Direction / Motion Design',
+    tools:       ['After Effects', 'Photoshop', 'Illustrator', 'Figma'],
+    description: '疾走感のあるビートと「一定の印象的な音」を持つ楽曲に合わせ、音と映像の究極のシンクロを目指したモーショングラフィックス作品。',
+    process:     'モデル経験で培った「構図の美しさ」を活かした静と動のコントラスト設計。生成AI動画素材をカラーグレーディング、マスク処理、タイムリマップでシームレスに統合し、クライマックスではキネティックタイポグラフィとトンネル効果で没入感を最大化しています。また、冒頭のあしらいにはExpressionによる制御を採用しました。',
+    mediaType:   'video',
+    mediaUrl:    'https://youtu.be/haIGEgohfM4?si=hKysMcJShMCjR6ST',
+    thumbnailUrl: 'https://img.youtube.com/vi/haIGEgohfM4/maxresdefault.jpg',
+    visible:     true,
+    featured:    false,
+    order:       4,
+  },
 
   // ── Apps ──────────────────────────────────────────────────────────────────
 

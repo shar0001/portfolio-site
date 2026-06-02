@@ -37,6 +37,20 @@ export function VideoModal({ src, title, tag, year, onClose }: Props) {
     onClose()
   }
 
+  const isYouTube = src && (src.includes('youtube.com') || src.includes('youtu.be'))
+  let embedUrl = ''
+  if (isYouTube && src) {
+    let videoId = ''
+    if (src.includes('youtu.be/')) {
+      videoId = src.split('youtu.be/')[1].split('?')[0]
+    } else if (src.includes('watch?v=')) {
+      videoId = src.split('watch?v=')[1].split('&')[0]
+    } else if (src.includes('embed/')) {
+      videoId = src.split('embed/')[1].split('?')[0]
+    }
+    embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`
+  }
+
   if (!mounted) return null
 
   return createPortal(
@@ -85,16 +99,27 @@ export function VideoModal({ src, title, tag, year, onClose }: Props) {
               </button>
             </div>
 
-            <video
-              ref={videoRef}
-              src={src ? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}${src}` : undefined}
-              controls
-              playsInline
-              className="w-full bg-black"
-              style={{ maxHeight: '75vh' }}
-            >
-              お使いのブラウザは動画再生に対応していません。
-            </video>
+            {isYouTube ? (
+              <iframe
+                src={embedUrl}
+                title={title || "YouTube Video"}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="w-full aspect-video bg-black"
+                style={{ maxHeight: '75vh', border: 0 }}
+              />
+            ) : (
+              <video
+                ref={videoRef}
+                src={src ? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}${src}` : undefined}
+                controls
+                playsInline
+                className="w-full bg-black"
+                style={{ maxHeight: '75vh' }}
+              >
+                お使いのブラウザは動画再生に対応していません。
+              </video>
+            )}
           </motion.div>
         </motion.div>
       )}
