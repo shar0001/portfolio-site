@@ -351,8 +351,9 @@ export default function AdminPage() {
       const path = 'content/works.json'
       const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
 
-      // 1. Get current file SHA
-      const getRes = await fetch(`${url}?ref=${branch}`, {
+      // 1. Get current file SHA (using cache busting to prevent "does not match" SHA conflict errors)
+      const getRes = await fetch(`${url}?ref=${branch}&_t=${Date.now()}`, {
+        cache: 'no-store',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/vnd.github+json',
