@@ -1,19 +1,20 @@
 /* ════════════════════════════════════════════════════════════════════════════
-   /studio — dark premium digital-studio theme (Immersive Garden-inspired).
+   /studio — light premium digital-studio theme.
+   Art direction: premium European interactive studio — spacious, minimal,
+   refined, editorial. Calm but impressive. No game/HUD/3D-demo language.
    Fully scoped under .studio-theme so the existing dark site is untouched.
    ════════════════════════════════════════════════════════════════════════════ */
 
 .studio-theme {
-  /* ── Dark premium palette ──────────────────────────────────────────────── */
-  --s-bg-main:   #060606;
-  --s-bg-soft:   #0e0e0e;
-  --s-text-main: #f0eeea;
-  --s-text-soft: #888884;
-  --s-text-muted:#5a5a56;
-  --s-line-soft: rgba(240, 238, 234, 0.10);
-  --s-line-faint:rgba(240, 238, 234, 0.04);
-  --s-accent:    #f0eeea;
-  --s-surface:   rgba(255, 255, 255, 0.06);
+  /* ── Light off-white palette (spec) ────────────────────────────────────── */
+  --s-bg-main:   #f4f3ef;
+  --s-bg-soft:   #ebe8e1;
+  --s-text-main: #121212;
+  --s-text-soft: #55534d;
+  --s-text-muted:#9a968c;
+  --s-line-soft: rgba(18, 18, 18, 0.12);
+  --s-line-faint:rgba(18, 18, 18, 0.06);
+  --s-surface:   rgba(255, 255, 255, 0.48);
 
   /* ── Editorial type stacks ─────────────────────────────────────────────── */
   --s-serif: var(--font-cormorant), "EB Garamond", Georgia, serif;
@@ -21,6 +22,7 @@
   --s-mono:  var(--font-geist-mono), ui-monospace, monospace;
 
   /* ── Layout tokens ─────────────────────────────────────────────────────── */
+  /* desktop 64–96px · tablet 40–56px · mobile 20–24px (handled by clamp) */
   --s-max:     1440px;
   --s-pad:     clamp(20px, 5vw, 96px);
 
@@ -32,7 +34,7 @@
   cursor: none;
 }
 
-/* Subtle noise grain on the dark field */
+/* Barely-there paper tooth on the off-white field */
 .studio-theme::before {
   content: "";
   position: fixed;
@@ -41,8 +43,8 @@
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 180px 180px;
-  opacity: 0.055;
-  mix-blend-mode: overlay;
+  opacity: 0.04;
+  mix-blend-mode: multiply;
 }
 
 .studio-theme a { cursor: none; }
@@ -63,10 +65,10 @@
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 40;
-  height: 72px;
+  height: 76px;
   display: flex;
   align-items: center;
-  mix-blend-mode: difference;
+  mix-blend-mode: difference; /* stays legible over light field & previews */
 }
 .studio-nav__inner {
   width: 100%;
@@ -76,7 +78,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #ffffff;
+  color: #ffffff; /* difference-blended → reads as dark on light bg */
 }
 .studio-nav__logo {
   font-family: var(--s-mono);
@@ -91,26 +93,30 @@
 .studio-nav__link {
   font-family: var(--s-mono);
   font-size: 11px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   position: relative;
   padding-block: 6px;
-  opacity: 0.55;
+  opacity: 0.62;
   transition: opacity 0.4s ease;
 }
-.studio-nav__link:hover,
-.studio-nav__link[data-active="true"] { opacity: 1; }
-.studio-nav__link[data-active="true"]::after {
+.studio-nav__link:hover { opacity: 1; }
+.studio-nav__link::after {
   content: "";
   position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: 1px;
+  left: 0; bottom: 0;
+  width: 100%; height: 1px;
   background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
+.studio-nav__link:hover::after { transform: scaleX(1); }
 @media (max-width: 640px) {
   .studio-nav { height: 60px; }
-  .studio-nav__links { gap: 16px; }
-  .studio-nav__link { font-size: 10px; letter-spacing: 0.12em; }
+  .studio-nav__links { gap: 14px; }
+  .studio-nav__link { font-size: 10px; letter-spacing: 0.1em; }
+  .studio-nav__link--hide-mobile { display: none; }
 }
 
 /* ── Hero ──────────────────────────────────────────────────────────────────── */
@@ -122,38 +128,38 @@
   flex-direction: column;
   justify-content: center;
   padding-top: 96px;
-  padding-bottom: 64px;
+  padding-bottom: 72px;
 }
 .studio-hero__eyebrow {
   font-family: var(--s-mono);
   font-size: 11px;
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: var(--s-text-soft);
+  color: var(--s-text-muted);
   margin-bottom: clamp(28px, 5vw, 56px);
 }
 .studio-hero__title {
   font-family: var(--s-serif);
   font-weight: 300;
-  font-size: clamp(3.4rem, 11vw, 11rem);
-  line-height: 0.92;
-  letter-spacing: -0.03em;
+  font-size: clamp(3rem, 10vw, 10rem);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
   color: var(--s-text-main);
-  max-width: 14ch;
+  max-width: 16ch;
 }
 .studio-hero__title em {
   font-style: italic;
   color: var(--s-text-soft);
 }
 .studio-hero__lead {
-  margin-top: clamp(32px, 5vw, 60px);
-  max-width: 46ch;
-  font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+  margin-top: clamp(32px, 5vw, 56px);
+  max-width: 44ch;
+  font-size: clamp(0.95rem, 1.3vw, 1.12rem);
   line-height: 1.75;
   color: var(--s-text-soft);
 }
 .studio-hero__scroll {
-  margin-top: clamp(48px, 7vw, 96px);
+  margin-top: clamp(44px, 7vw, 88px);
   font-family: var(--s-mono);
   font-size: 10px;
   letter-spacing: 0.3em;
@@ -164,17 +170,53 @@
   gap: 10px;
 }
 
+/* ── About ─────────────────────────────────────────────────────────────────── */
+.studio-about {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) 3fr;
+  gap: clamp(24px, 5vw, 80px);
+  padding-block: clamp(64px, 11vw, 160px);
+  border-top: 1px solid var(--s-line-soft);
+}
+.studio-about__label {
+  font-family: var(--s-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--s-text-muted);
+  padding-top: 0.5em;
+}
+.studio-about__body {
+  font-family: var(--s-serif);
+  font-weight: 300;
+  font-size: clamp(1.3rem, 2.6vw, 2.2rem);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--s-text-main);
+  max-width: 24ch;
+}
+.studio-about__body em {
+  font-style: italic;
+  color: var(--s-text-soft);
+}
+@media (max-width: 640px) {
+  .studio-about { grid-template-columns: 1fr; gap: 18px; }
+  .studio-about__body { max-width: none; }
+}
+
 /* ── Project index ─────────────────────────────────────────────────────────── */
 .studio-index {
   position: relative;
   z-index: 2;
-  padding-block: clamp(80px, 14vw, 220px);
+  padding-block: clamp(72px, 13vw, 200px);
 }
 .studio-index__head {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: clamp(36px, 6vw, 80px);
+  margin-bottom: clamp(28px, 5vw, 64px);
 }
 .studio-index__label {
   font-family: var(--s-mono);
@@ -186,10 +228,10 @@
 .studio-row {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(120px, 1fr) 3fr auto;
+  grid-template-columns: minmax(110px, 1fr) 3fr auto;
   align-items: center;
   gap: 24px;
-  padding-block: clamp(22px, 3.4vw, 40px);
+  padding-block: clamp(20px, 3vw, 36px);
   border-top: 1px solid var(--s-line-soft);
   text-decoration: none;
   color: inherit;
@@ -206,8 +248,8 @@
 .studio-row__title {
   font-family: var(--s-serif);
   font-weight: 300;
-  font-size: clamp(1.8rem, 4.4vw, 3.4rem);
-  line-height: 1.04;
+  font-size: clamp(1.7rem, 4.2vw, 3.2rem);
+  line-height: 1.05;
   letter-spacing: -0.02em;
   color: var(--s-text-main);
   transform: translateX(0);
@@ -221,65 +263,43 @@
   color: var(--s-text-muted);
   white-space: nowrap;
 }
+/* Calm hover: hovered title eases right, siblings dim softly. No prism. */
 @media (hover: hover) {
-  .studio-index[data-hovering="true"] .studio-row__title { opacity: 0.22; }
+  .studio-index[data-hovering="true"] .studio-row__title { opacity: 0.38; }
   .studio-row:hover .studio-row__title {
     opacity: 1;
-    transform: translateX(28px);
-    text-shadow:
-       0.022em 0     rgba(255, 30,  80, 0.75),
-      -0.022em 0     rgba(30,  160, 255, 0.75),
-       0       0.014em rgba(100, 255, 160, 0.5);
+    transform: translateX(26px);
   }
-  .studio-row:hover .studio-row__cat { color: var(--s-text-soft); }
+  .studio-row:hover .studio-row__cat { color: var(--s-text-main); }
 }
 
-/* Floating hover preview that follows the cursor.
-   3 channel-separated layers (R/G/B) screen-blended over black reconstruct
-   the full-colour image at rest, fringing into a prism as the cursor moves. */
+/* Floating hover preview — a single soft image that follows the cursor. */
 .studio-preview {
   position: fixed;
   top: 0; left: 0;
   z-index: 30;
-  width: clamp(260px, 30vw, 460px);
-  aspect-ratio: 3 / 4;
+  width: clamp(220px, 24vw, 360px);
+  aspect-ratio: 4 / 5;
   pointer-events: none;
   overflow: hidden;
-  border-radius: 2px;
-  background: #000;
-  isolation: isolate;
+  border-radius: 3px;
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.9);
-  transition: opacity 0.5s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.04);
+  transform: translate(-50%, -50%) scale(0.94);
+  transition: opacity 0.55s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 30px 80px rgba(18, 18, 18, 0.18);
   will-change: transform, opacity;
-  --sx: 0px;
-  --sy: 0px;
 }
 .studio-preview[data-show="true"] {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
-.studio-preview__layer {
-  position: absolute;
-  inset: 0;
-  will-change: transform;
-}
-.studio-preview__layer img {
+.studio-preview img {
   width: 100%; height: 100%;
   object-fit: cover;
   display: block;
-}
-.studio-preview__layer--g { filter: url(#s-green); }
-.studio-preview__layer--r {
-  filter: url(#s-red);
-  mix-blend-mode: screen;
-  transform: translate(var(--sx), var(--sy));
-}
-.studio-preview__layer--b {
-  filter: url(#s-blue);
-  mix-blend-mode: screen;
-  transform: translate(calc(var(--sx) * -1), calc(var(--sy) * -1));
+  /* gentle parallax inside the frame, driven by JS via --py */
+  transform: translateY(var(--py, 0px)) scale(1.08);
+  will-change: transform;
 }
 @media (hover: none) { .studio-preview { display: none; } }
 
@@ -311,48 +331,49 @@
   text-decoration: none;
   border-bottom: 1px solid var(--s-line-soft);
   padding-bottom: 3px;
-  transition: color 0.35s ease;
+  transition: color 0.35s ease, border-color 0.35s ease;
 }
-.studio-footer__contact:hover { color: var(--s-text-main); }
+.studio-footer__contact:hover {
+  color: var(--s-text-main);
+  border-color: var(--s-text-main);
+}
 
-/* ── Custom cursor — 3 RGB channel dots + lagging ring ─────────────────────── */
-/* On a dark background, screen-blending R+G+B dots produces white when
-   overlapping (resting) and separates into coloured fringes when moving — the
-   chromatic-aberration / prism cursor seen in Immersive Garden.              */
+/* ── Custom cursor — refined dot + lagging ring + soft haze ────────────────── */
 .studio-cursor {
   position: fixed;
   top: 0; left: 0;
-  z-index: 60;
   pointer-events: none;
   border-radius: 50%;
 }
-.studio-cursor--r {
-  width: 11px; height: 11px;
-  background: #ff2255;
-  mix-blend-mode: screen;
-}
-.studio-cursor--g {
-  width: 11px; height: 11px;
-  background: #22ff88;
-  mix-blend-mode: screen;
-}
-.studio-cursor--b {
-  width: 11px; height: 11px;
-  background: #2255ff;
-  mix-blend-mode: screen;
+.studio-cursor--dot {
+  z-index: 62;
+  width: 7px; height: 7px;
+  background: #1a1a1a;
+  transform: translate(-50%, -50%);
 }
 .studio-cursor--ring {
-  width: 44px; height: 44px;
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  mix-blend-mode: difference;
+  z-index: 61;
+  width: 42px; height: 42px;
+  border: 1px solid rgba(18, 18, 18, 0.45);
   transform: translate(-50%, -50%);
-  transition: width 0.30s ease, height 0.30s ease, opacity 0.30s ease;
+  transition: width 0.34s ease, height 0.34s ease, opacity 0.34s ease,
+              border-color 0.34s ease;
+}
+/* soft light haze that trails the cursor — the "calm" atmosphere touch */
+.studio-cursor--haze {
+  z-index: 29;
+  width: 280px; height: 280px;
+  background: radial-gradient(circle at 50% 50%,
+              rgba(255, 255, 255, 0.55) 0%, transparent 64%);
+  transform: translate(-50%, -50%);
+  mix-blend-mode: soft-light;
+  opacity: 0.8;
 }
 @media (hover: none) {
   .studio-cursor { display: none; }
 }
 
-/* ── Atmosphere (coloured drifting glows on dark) ──────────────────────────── */
+/* ── Atmosphere (pale, soft, slowly drifting organic forms) ────────────────── */
 .studio-atmos {
   position: fixed;
   inset: 0;
@@ -363,24 +384,24 @@
 .studio-atmos__blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
+  filter: blur(72px);
   will-change: transform;
-  opacity: 0.55;
+  opacity: 0.3;
 }
 
-/* ── Scroll reveal ─────────────────────────────────────────────────────────── */
+/* ── Scroll reveal primitive (GSAP toggles inline; CSS is the resting state) ── */
 .s-reveal {
   opacity: 0;
   transform: translateY(26px);
-  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .s-reveal[data-shown="true"] {
   opacity: 1;
   transform: translateY(0);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 @media (prefers-reduced-motion: reduce) {
-  .s-reveal { opacity: 1; transform: none; transition: none; }
+  .s-reveal { opacity: 1; transform: none; }
   .studio-theme { cursor: auto; }
   .studio-cursor { display: none; }
 }

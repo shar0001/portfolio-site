@@ -1,26 +1,52 @@
 'use client'
 import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ProjectIndex } from '@/components/studio/ProjectIndex'
 
 export default function StudioHome() {
-  const rootRef = useRef<HTMLDivElement>(null)
+  const heroRef  = useRef<HTMLElement>(null)
+  const aboutRef = useRef<HTMLElement>(null)
 
-  // Reveal hero blocks on mount (no scroll needed for the first view)
   useEffect(() => {
-    const root = rootRef.current
-    if (!root) return
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const els = Array.from(root.querySelectorAll('.s-reveal')) as HTMLElement[]
-    if (reduce) { els.forEach((e) => (e.dataset.shown = 'true')); return }
-    els.forEach((e, i) => {
-      window.setTimeout(() => { e.dataset.shown = 'true' }, 120 + i * 110)
+
+    // Hero reveals on mount (no scroll needed for the first view).
+    const hero = heroRef.current
+    if (hero) {
+      const els = Array.from(hero.querySelectorAll('.s-reveal')) as HTMLElement[]
+      if (reduce) {
+        els.forEach((e) => (e.dataset.shown = 'true'))
+      } else {
+        els.forEach((e, i) =>
+          window.setTimeout(() => { e.dataset.shown = 'true' }, 120 + i * 110))
+      }
+    }
+
+    // About reveals on scroll-in.
+    const about = aboutRef.current
+    if (!about) return
+    if (reduce) {
+      about.querySelectorAll('.s-reveal').forEach(
+        (e) => ((e as HTMLElement).dataset.shown = 'true'))
+      return
+    }
+    gsap.registerPlugin(ScrollTrigger)
+    const st = ScrollTrigger.create({
+      trigger: about,
+      start: 'top 82%',
+      once: true,
+      onEnter: () =>
+        about.querySelectorAll('.s-reveal').forEach(
+          (e) => ((e as HTMLElement).dataset.shown = 'true')),
     })
+    return () => { st.kill() }
   }, [])
 
   return (
-    <div ref={rootRef}>
+    <div>
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
-      <header className="studio-hero studio-container">
+      <header className="studio-hero studio-container" ref={heroRef}>
         <p className="studio-hero__eyebrow s-reveal">
           Shusaku Nishiura — Tokyo
         </p>
@@ -41,6 +67,17 @@ export default function StudioHome() {
           Scroll
         </span>
       </header>
+
+      {/* ── About ─────────────────────────────────────────────────────────── */}
+      <section className="studio-about studio-container" id="about" ref={aboutRef}>
+        <span className="studio-about__label s-reveal">About</span>
+        <p className="studio-about__body s-reveal" style={{ transitionDelay: '80ms' }}>
+          A Tokyo-based practice working across <em>body</em>, <em>image</em>,
+          {' '}<em>product</em> and <em>motion</em> — modelling, motion design and
+          app development held to a single, production-minded standard. Every
+          project is treated as a considered visual system rather than a one-off.
+        </p>
+      </section>
 
       {/* ── Project index ─────────────────────────────────────────────────── */}
       <ProjectIndex />
