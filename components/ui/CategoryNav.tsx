@@ -44,9 +44,8 @@ export function CategoryNav() {
               href={href}
               className="relative px-3.5 py-1.5 font-mono text-[10px] tracking-[0.18em] uppercase transition-all duration-300 rounded-full"
               style={{
-                color: isActive ? '#f0f5ff' : '#8090c0',
-                background: isActive ? 'rgba(154,184,255,0.12)' : 'transparent',
-                border: isActive ? '1px solid rgba(154,184,255,0.20)' : '1px solid transparent',
+                color: isActive ? '#ffffff' : '#8090c0',
+                textShadow: isActive ? '0 0 12px rgba(154,184,255,0.4)' : 'none',
               }}
               onMouseEnter={e => {
                 if (!isActive) e.currentTarget.style.color = '#c0d0f0'

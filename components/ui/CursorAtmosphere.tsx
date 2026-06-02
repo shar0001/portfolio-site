@@ -193,6 +193,12 @@ export function CursorAtmosphere() {
           g2.addColorStop(1,   'rgba(220,234,255,0)')
           ctx.beginPath(); ctx.arc(hx, hy, 42, 0, Math.PI * 2)
           ctx.fillStyle = g2; ctx.fill()
+
+          // Subtle glowing edge (cursor border)
+          ctx.beginPath(); ctx.arc(hx, hy, 16, 0, Math.PI * 2)
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)'
+          ctx.lineWidth = 1
+          ctx.stroke()
         }
       }
 
