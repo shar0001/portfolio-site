@@ -3,6 +3,7 @@ import { useEffect, type ReactNode } from 'react'
 import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { AmbientBackground } from '@/components/ui/AmbientBackground'
 import { SimpleCursor }  from '@/components/ui/SimpleCursor'
 import { CursorAtmosphere }  from '@/components/ui/CursorAtmosphere'
 
@@ -31,6 +32,8 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <>
+      {/* Global atmosphere — sits behind all page content (z-index 0) */}
+      <AmbientBackground />
       {/* Background particle effects */}
       <CursorAtmosphere />
       {/* Simple dot cursor as requested */}
