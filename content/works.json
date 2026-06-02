@@ -62,7 +62,7 @@
   },
   {
     "id": "apps-02",
-    "title": "ピッタンコ",
+    "title": "ピタンコ わりかん",
     "category": "apps",
     "year": "2024",
     "tag": "iOS App",
@@ -76,8 +76,9 @@
     "process": "複雑な比率計算もワンタップで完結するUXを追求。PMとして仕様を自分で決め、エンジニアとして実装まで担った経験が凝縮されている。",
     "mediaType": "placeholder",
     "visible": true,
-    "featured": false,
+    "featured": true,
     "order": 1,
-    "status": "Released"
+    "status": "Released",
+    "storeUrl": "https://apps.apple.com/jp/app/%E3%83%94%E3%82%BF%E3%83%B3%E3%82%B3-%E3%82%8F%E3%82%8A%E3%81%8B%E3%82%93/id6766440728"
   }
 ]
