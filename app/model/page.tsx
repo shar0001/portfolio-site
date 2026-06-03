@@ -29,6 +29,8 @@ function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: ()
     }
   }, [onClose])
 
+  const isVideo = src.endsWith('.mp4')
+
   return (
     <motion.div
       className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-10"
@@ -39,18 +41,35 @@ function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: ()
       transition={{ duration: 0.28 }}
       onClick={onClose}
     >
-      <motion.img
-        // eslint-disable-next-line @next/next/no-img-element
-        src={src}
-        alt={alt}
-        className="max-w-full max-h-full"
-        style={{ objectFit: 'contain', boxShadow: '0 0 90px rgba(0,0,0,0.85)' }}
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.96 }}
-        transition={{ duration: 0.32, ease: [0.76, 0, 0.24, 1] }}
-        onClick={e => e.stopPropagation()}
-      />
+      {isVideo ? (
+        <motion.video
+          src={src}
+          className="max-w-full max-h-full"
+          controls
+          autoPlay
+          loop
+          muted
+          style={{ objectFit: 'contain', boxShadow: '0 0 90px rgba(0,0,0,0.85)' }}
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.96 }}
+          transition={{ duration: 0.32, ease: [0.76, 0, 0.24, 1] }}
+          onClick={e => e.stopPropagation()}
+        />
+      ) : (
+        <motion.img
+          // eslint-disable-next-line @next/next/no-img-element
+          src={src}
+          alt={alt}
+          className="max-w-full max-h-full"
+          style={{ objectFit: 'contain', boxShadow: '0 0 90px rgba(0,0,0,0.85)' }}
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.96 }}
+          transition={{ duration: 0.32, ease: [0.76, 0, 0.24, 1] }}
+          onClick={e => e.stopPropagation()}
+        />
+      )}
       <button
         className="absolute top-5 right-6 font-mono text-[10px] tracking-[0.35em] uppercase transition-colors duration-200"
         style={{ color: 'rgba(232,224,206,0.42)' }}
@@ -89,6 +108,7 @@ function GalleryPhoto({ img, onOpen }: {
 }) {
   const ref    = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-70px' })
+  const isVideo = img.type === 'video'
 
   return (
     <motion.figure
@@ -103,20 +123,36 @@ function GalleryPhoto({ img, onOpen }: {
       transition={{ duration: 1.1, ease: [0.76, 0, 0.24, 1] }}
       onClick={() => onOpen(url(img.src), img.alt)}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={url(img.src)}
-        alt={img.alt}
-        className="absolute inset-0 w-full h-full transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-        style={{
-          objectFit: img.fit ?? 'cover',
-          objectPosition: img.position ?? 'center center',
-          filter: 'saturate(0.92) brightness(0.97)',
-        }}
-        onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.filter = 'saturate(1.0) brightness(1.04)' }}
-        onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.filter = 'saturate(0.92) brightness(0.97)' }}
-        loading="lazy"
-      />
+      {isVideo ? (
+        <video
+          src={url(img.src)}
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{
+            filter: 'saturate(0.92) brightness(0.97)',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.filter = 'saturate(1.0) brightness(1.04)' }}
+          onMouseLeave={e => { e.currentTarget.style.filter = 'saturate(0.92) brightness(0.97)' }}
+        />
+      ) : (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src={url(img.src)}
+          alt={img.alt}
+          className="absolute inset-0 w-full h-full transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+          style={{
+            objectFit: img.fit ?? 'cover',
+            objectPosition: img.position ?? 'center center',
+            filter: 'saturate(0.92) brightness(0.97)',
+          }}
+          onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.filter = 'saturate(1.0) brightness(1.04)' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.filter = 'saturate(0.92) brightness(0.97)' }}
+          loading="lazy"
+        />
+      )}
     </motion.figure>
   )
 }

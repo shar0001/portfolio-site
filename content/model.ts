@@ -26,6 +26,7 @@ export interface ModelImage {
   fit?: Fit
   position?: string
   layout?: Layout
+  type?: 'image' | 'video'
 }
 
 // ── Hero ─────────────────────────────────────────────────────────────────────
@@ -47,7 +48,7 @@ export const heroImage: ModelImage = {
 export const galleryImages: ModelImage[] = [
   {
     id: 'vca-editorial',
-    src: '/media/ELLE JAPON×Van Cleef & Arpels.jpg', // 1439×1949 portrait
+    src: '/media/ELLE JAPON×Van Cleef & Arpels.jpg',
     alt: 'Van Cleef & Arpels — editorial',
     orientation: 'portrait',
     fit: 'cover',
@@ -55,8 +56,32 @@ export const galleryImages: ModelImage[] = [
     layout: 'grid',
   },
   {
+    id: 'nishiura-video-01',
+    src: '/media/nishiura_video_01.mp4',
+    alt: 'Runway Video',
+    orientation: 'fullbody',
+    type: 'video',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-01',
+    src: '/media/nishiura_01.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'fullbody',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-02',
+    src: '/media/nishiura_02.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'portrait',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
     id: 'mikimoto',
-    src: '/media/MIKIMOTO.jpg', // 1440×1018 landscape
+    src: '/media/MIKIMOTO.jpg',
     alt: 'MIKIMOTO — Lucky Arrows',
     orientation: 'landscape',
     fit: 'cover',
@@ -64,8 +89,152 @@ export const galleryImages: ModelImage[] = [
     layout: 'grid',
   },
   {
+    id: 'nishiura-03',
+    src: '/media/nishiura_03.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'fullbody',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-04',
+    src: '/media/nishiura_04.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'landscape',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-05',
+    src: '/media/nishiura_05.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'fullbody',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-06',
+    src: '/media/nishiura_06.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'fullbody',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-07',
+    src: '/media/nishiura_07.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'fullbody',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-08',
+    src: '/media/nishiura_08.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'fullbody',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-09',
+    src: '/media/nishiura_09.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'fullbody',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-10',
+    src: '/media/nishiura_10.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'fullbody',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-11',
+    src: '/media/nishiura_11.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'portrait',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-12',
+    src: '/media/nishiura_12.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'landscape',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-13',
+    src: '/media/nishiura_13.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'fullbody',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-14',
+    src: '/media/nishiura_14.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'fullbody',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-15',
+    src: '/media/nishiura_15.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'fullbody',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-16',
+    src: '/media/nishiura_16.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'portrait',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-17',
+    src: '/media/nishiura_17.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'portrait',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-18',
+    src: '/media/nishiura_18.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'portrait',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-19',
+    src: '/media/nishiura_19.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'fullbody',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'nishiura-20',
+    src: '/media/nishiura_20.jpg',
+    alt: 'Shusaku Nishiura',
+    orientation: 'portrait',
+    fit: 'cover',
+    layout: 'grid',
+  },
+  {
     id: 'korea',
-    src: '/media/韓国.jpeg', // 3072×4608 tall portrait / full body
+    src: '/media/韓国.jpeg',
     alt: 'Editorial — full look',
     orientation: 'fullbody',
     fit: 'cover',
@@ -74,7 +243,7 @@ export const galleryImages: ModelImage[] = [
   },
   {
     id: 'material',
-    src: '/media/素材01.jpg', // 3000×3000 square
+    src: '/media/素材01.jpg',
     alt: 'Editorial',
     orientation: 'square',
     fit: 'cover',
