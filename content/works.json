@@ -20,7 +20,7 @@
   },
   {
     "id": "movie-05",
-    "title": "Motion reel2025",
+    "title": "Motion ree2025",
     "category": "movie",
     "year": "2026",
     "tag": "Motion Graphics / AI",
@@ -62,9 +62,9 @@
   },
   {
     "id": "apps-02",
-    "title": "ピタンコ わりかん",
+    "title": "ピッタンコ",
     "category": "apps",
-    "year": "2026",
+    "year": "2024",
     "tag": "iOS App",
     "role": "Design / Development",
     "tools": [
@@ -72,35 +72,12 @@
       "SwiftUI",
       "Firebase"
     ],
-    "description": "「割り勘、もう迷わない。」グループの割り勘をかんたん・正確に計算し、誰が誰にいくら？を相関図でひと目で可視化するiOSアプリ。複雑な立て替えもタップだけでスムーズに登録できます。",
-    "process": "「毎回計算が面倒」という実体験に基づき、PMとして企画・仕様策定からUI/UX設計（Figma）、SwiftUIによるフロントエンド実装、App Storeリリースまで一気通貫で担当。誰が誰にいくら送金すべきかを最小ルートで可視化する相関図UXなど、直感的で心地よいデザインと機能性を追求しました。",
+    "description": "割り勘をサクッと計算するアプリ。グループ管理・カスタム比率・精算まで一気通貫。「毎回計算が面倒」という友人の一言がきっかけ。",
+    "process": "複雑な比率計算もワンタップで完結するUXを追求。PMとして仕様を自分で決め、エンジニアとして実装まで担った経験が凝縮されている。",
     "mediaType": "placeholder",
-    "mediaUrl": "/ピタンコ画像",
-    "visible": true,
-    "featured": true,
-    "order": 1,
-    "status": "Released",
-    "storeUrl": "https://apps.apple.com/jp/app/%E3%83%94%E3%82%BF%E3%83%B3%E3%82%B3-%E3%82%8F%E3%82%8A%E3%81%8B%E3%82%93/id6766440728"
-  },
-  {
-    "id": "apps-03",
-    "title": "かけいぼ - すごくシンプルなおかねのきろく",
-    "category": "apps",
-    "year": "2025",
-    "tag": "iOS App",
-    "role": "Design / Development",
-    "tools": [
-      "Swift",
-      "SwiftUI"
-    ],
-    "description": "日々の支出と収入を直感的に記録できる超シンプルな家計簿アプリ。余計な機能を徹底的に削ぎ落とし、お財布を開く感覚でパッと支出を記録できます。",
-    "process": "お金の記録を極限までシンプルにし、挫折せず続けられることを第一に考えてUI/UXを設計。SwiftUIを用いて、軽量で片手でも素早く入力できる操作性を実現しました。",
-    "mediaType": "placeholder",
-    "mediaUrl": "/家計簿アプリ画像",
     "visible": true,
     "featured": false,
-    "order": 2,
-    "status": "Released",
-    "storeUrl": "https://apps.apple.com/jp/app/%E3%81%8B%E3%81%91%E3%81%84%E3%81%BC-%E3%81%99%E3%81%94%E3%81%8F%E3%82%B7%E3%83%B3%E3%83%97%E3%83%AB%E3%81%AA%E3%81%8A%E3%81%8B%E3%81%AD%E3%81%AE%E3%81%8D%E3%82%8D%E3%81%8F/id6763545334"
+    "order": 1,
+    "status": "Released"
   }
 ]
