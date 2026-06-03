@@ -130,7 +130,7 @@ function AppShowcase({ app, isFirst, onSelect }: { app: Work; isFirst: boolean; 
           >
             <motion.img 
               key={activeTab}
-              src={`${folder}/%230${activeTab + 1}.${ext}`}
+              src={`${folder}/0${activeTab + 1}.${ext}`}
               alt={`${app.title} 画面 ${activeTab + 1}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
