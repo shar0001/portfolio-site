@@ -284,8 +284,8 @@ export default function ModelPage() {
                 <div className="space-y-1">
                   {([
                     ['Markets', 'Paris · Milan · Seoul · Hong Kong · Tokyo'],
-                    ['Agency',  'bravo models'],
-                    ['Active',  '2018 — Present'],
+                    ['Agency',  'Bravo, BANANAS, The lab, Primo, Directors'],
+                    ['Active',  '2018 — 2025'],
                   ] as [string, string][]).map(([label, value]) => (
                     <div key={label} className="flex gap-6 py-3.5" style={{ borderBottom: `1px solid ${LINE}` }}>
                       <span className="font-mono text-[8px] tracking-[0.35em] uppercase shrink-0 pt-0.5" style={{ color: DIM, width: 80 }}>
