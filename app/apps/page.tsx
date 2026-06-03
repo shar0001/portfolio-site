@@ -23,7 +23,7 @@ function AppShowcase({ app, isFirst, onSelect }: { app: Work; isFirst: boolean; 
     return () => clearInterval(timer)
   }, [])
 
-  const folder = app.mediaUrl || '/ピタンコ画像'
+  const folder = app.mediaUrl || '/pitanko'
   const ext = app.id === 'apps-03' ? 'webp' : 'png'
 
   return (
