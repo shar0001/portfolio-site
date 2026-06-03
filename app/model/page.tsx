@@ -196,9 +196,6 @@ export default function ModelPage() {
               >
                 Shusaku<br />Nishiura
               </h1>
-              <p className="font-mono text-[8px] md:text-[9px] tracking-[0.32em] text-right pb-1" style={{ color: 'rgba(232,224,206,0.4)' }}>
-                Campaign · Editorial · Jewelry
-              </p>
             </motion.div>
 
             {/* Contained hero image — max-height keeps the close-up elegant */}
