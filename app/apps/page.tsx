@@ -23,7 +23,8 @@ function AppShowcase({ app, isFirst, onSelect }: { app: Work; isFirst: boolean; 
     return () => clearInterval(timer)
   }, [])
 
-  const folder = app.mediaUrl || '/アプリ画像'
+  const folder = app.mediaUrl || '/ピタンコ画像'
+  const ext = app.id === 'apps-03' ? 'webp' : 'png'
 
   return (
     <motion.div
@@ -106,7 +107,7 @@ function AppShowcase({ app, isFirst, onSelect }: { app: Work; isFirst: boolean; 
             <button
               onClick={() => onSelect(toWorkDetail(app))}
               className="font-mono text-[9px] tracking-widest uppercase py-3 px-6 rounded-full transition-colors"
-              style={{ border: '1px solid rgba(155,184,255,0.12)', color: '#9bb8ff' }}
+              style={{ border: '1px solid rgba(155, 184, 255, 0.12)', color: '#9bb8ff' }}
               onMouseEnter={e => {
                 e.currentTarget.style.background = 'rgba(155,184,255,0.05)'
                 e.currentTarget.style.color = '#ffffff'
@@ -129,7 +130,7 @@ function AppShowcase({ app, isFirst, onSelect }: { app: Work; isFirst: boolean; 
           >
             <motion.img 
               key={activeTab}
-              src={`${folder}/%230${activeTab + 1}.png`}
+              src={`${folder}/%230${activeTab + 1}.${ext}`}
               alt={`${app.title} 画面 ${activeTab + 1}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
