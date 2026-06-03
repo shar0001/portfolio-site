@@ -12,10 +12,7 @@ function toWorkDetail(w: Work): WorkDetail {
   return { ...w, type: 'photo', tools: w.tools, insight: w.process }
 }
 
-export default function AppsPage() {
-  const [selected, setSelected] = useState<WorkDetail | null>(null)
-  
-  // Active slide index for Pitanko Wari-kan showcase (0: Top/Bear, 1: Diagram, 2: RoomDetail, 3: RoomCreate, 4: Input)
+function AppShowcase({ app, isFirst, onSelect }: { app: Work; isFirst: boolean; onSelect: (w: WorkDetail) => void }) {
   const [activeTab, setActiveTab] = useState(0)
 
   // Auto rotate screen every 10 seconds
@@ -26,13 +23,151 @@ export default function AppsPage() {
     return () => clearInterval(timer)
   }, [])
 
+  const folder = app.mediaUrl || '/アプリ画像'
+
+  return (
+    <motion.div
+      className="relative mb-16 p-8 md:p-12 lg:p-14 overflow-hidden rounded-2xl"
+      style={{
+        background: 'linear-gradient(145deg, rgba(20,28,58,0.4) 0%, rgba(13,18,36,0.7) 100%)',
+        border: '1px solid rgba(155, 184, 255, 0.08)',
+        boxShadow: '0 30px 60px -15px rgba(5,8,20,0.8)'
+      }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.9, delay: isFirst ? 0.6 : 0.2, ease: [0.76, 0, 0.24, 1] }}
+    >
+      {/* Subtle Ambient Background Light */}
+      <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full blur-[140px] pointer-events-none opacity-40" style={{ background: '#9bb8ff' }} />
+      <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full blur-[140px] pointer-events-none opacity-20" style={{ background: '#c8b6ff' }} />
+
+      <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        
+        {/* Left Column: Product Information */}
+        <div className="lg:col-span-7 space-y-6">
+          <div>
+            <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: '#9bb8ff' }}>
+              Featured iOS App · {app.year}
+            </span>
+            <h2 
+              style={{ 
+                fontFamily: SANS_POP, 
+                fontWeight: 800, 
+                fontSize: 'clamp(2rem, 4.5vw, 3.2rem)',
+                color: '#f0f4ff',
+                letterSpacing: '-0.02em',
+                cursor: 'pointer'
+              }}
+              className="mt-2 mb-4 leading-tight tracking-tight hover:text-[#00bda6] transition-colors duration-300"
+              onClick={() => setActiveTab(0)}
+              title="トップ画面を表示"
+            >
+              {app.title}
+            </h2>
+            <p className="text-sm md:text-[15px] leading-relaxed" style={{ color: '#a0aed0', lineHeight: 1.85 }}>
+              {app.description}
+            </p>
+          </div>
+
+          {/* Metadata (Role Only) */}
+          <div className="pt-4 border-t" style={{ borderColor: 'rgba(155,184,255,0.08)' }}>
+            <p className="font-mono text-[8px] uppercase tracking-widest mb-1" style={{ color: '#5a6490' }}>Role</p>
+            <p className="text-xs text-[#b0bcd8]">{app.role}</p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center gap-4 pt-4">
+            {app.storeUrl && (
+              <a
+                href={app.storeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 px-6 py-3 font-mono text-[10px] tracking-widest uppercase transition-all duration-300 rounded-full"
+                style={{
+                  background: 'linear-gradient(135deg, #18264d, #253366)',
+                  border: '1px solid rgba(155,184,255,0.3)',
+                  color: '#ffffff',
+                  boxShadow: '0 4px 20px rgba(24,38,77,0.4)'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-2px)'
+                  e.currentTarget.style.boxShadow = '0 6px 24px rgba(24,38,77,0.6)'
+                  e.currentTarget.style.borderColor = 'rgba(155,184,255,0.5)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(24,38,77,0.4)'
+                  e.currentTarget.style.borderColor = 'rgba(155,184,255,0.3)'
+                }}
+              >
+                <span> App Store で入手</span>
+              </a>
+            )}
+            <button
+              onClick={() => onSelect(toWorkDetail(app))}
+              className="font-mono text-[9px] tracking-widest uppercase py-3 px-6 rounded-full transition-colors"
+              style={{ border: '1px solid rgba(155,184,255,0.12)', color: '#9bb8ff' }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'rgba(155,184,255,0.05)'
+                e.currentTarget.style.color = '#ffffff'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'transparent'
+                e.currentTarget.style.color = '#9bb8ff'
+              }}
+            >
+              制作詳細・プロセス →
+            </button>
+          </div>
+        </div>
+
+        {/* Right Column: Simple Auto-sliding Screenshot Display */}
+        <div className="lg:col-span-5 flex justify-center">
+          <div 
+            className="relative w-[280px] aspect-[9/19.5] rounded-[32px] overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] border border-white/10 bg-[#090d1a] select-none cursor-pointer"
+            onClick={() => setActiveTab((prev) => (prev + 1) % 5)}
+          >
+            <motion.img 
+              key={activeTab}
+              src={`${folder}/%230${activeTab + 1}.png`}
+              alt={`${app.title} 画面 ${activeTab + 1}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, ease: 'easeInOut' }}
+              className="w-full h-full object-cover object-top"
+              onError={(e) => {
+                // If screenshots are not ready yet, hide the broken img icon nicely
+                e.currentTarget.style.opacity = '0'
+              }}
+            />
+
+            {/* Simple Dot Indicators */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10 bg-black/40 px-3 py-1.5 rounded-full backdrop-blur-sm">
+              {[0, 1, 2, 3, 4].map((idx) => (
+                <div
+                  key={idx}
+                  className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                    activeTab === idx ? 'bg-white scale-110' : 'bg-white/40'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </motion.div>
+  )
+}
+
+export default function AppsPage() {
+  const [selected, setSelected] = useState<WorkDetail | null>(null)
+
   const allWorks = defaultWorks
     .filter(w => w.category === 'apps' && w.visible)
     .sort((a, b) => a.order - b.order)
 
-  // Find featured app ("ピタンコ わりかん" or fallback)
-  const featured = allWorks.find(w => w.featured) ?? allWorks[0]
-  const rest      = allWorks.filter(w => w.id !== featured?.id)
+  const rest = allWorks.filter(w => !w.featured)
 
   return (
     <main
@@ -83,136 +218,12 @@ export default function AppsPage() {
         </motion.p>
       </div>
 
-      {/* ── 1. Featured App Showplace ("ピタンコ わりかん") ── */}
-      {featured && (
-        <motion.div
-          className="relative mb-16 p-8 md:p-12 lg:p-14 overflow-hidden rounded-2xl"
-          style={{
-            background: 'linear-gradient(145deg, rgba(20,28,58,0.4) 0%, rgba(13,18,36,0.7) 100%)',
-            border: '1px solid rgba(155, 184, 255, 0.08)',
-            boxShadow: '0 30px 60px -15px rgba(5,8,20,0.8)'
-          }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.6, ease: [0.76, 0, 0.24, 1] }}
-        >
-          {/* Subtle Ambient Background Light */}
-          <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full blur-[140px] pointer-events-none opacity-40" style={{ background: '#9bb8ff' }} />
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full blur-[140px] pointer-events-none opacity-20" style={{ background: '#c8b6ff' }} />
-
-          <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            
-            {/* Left Column: Product Information */}
-            <div className="lg:col-span-7 space-y-6">
-              <div>
-                <span className="font-mono text-[9px] uppercase tracking-[0.3em]" style={{ color: '#9bb8ff' }}>
-                  Featured iOS App · {featured.year}
-                </span>
-                <h2 
-                  style={{ 
-                    fontFamily: SANS_POP, 
-                    fontWeight: 800, 
-                    fontSize: 'clamp(2rem, 4.5vw, 3.2rem)',
-                    color: '#f0f4ff',
-                    letterSpacing: '-0.02em',
-                    cursor: 'pointer'
-                  }}
-                  className="mt-2 mb-4 leading-tight tracking-tight hover:text-[#00bda6] transition-colors duration-300"
-                  onClick={() => setActiveTab(0)}
-                  title="トップ（キャラクター画面）を表示"
-                >
-                  {featured.title}
-                </h2>
-                <p className="text-sm md:text-[15px] leading-relaxed" style={{ color: '#a0aed0', lineHeight: 1.85 }}>
-                  {featured.description}
-                </p>
-              </div>
-
-              {/* Metadata (Role Only - Removed Technology) */}
-              <div className="pt-4 border-t" style={{ borderColor: 'rgba(155,184,255,0.08)' }}>
-                <p className="font-mono text-[8px] uppercase tracking-widest mb-1" style={{ color: '#5a6490' }}>Role</p>
-                <p className="text-xs text-[#b0bcd8]">{featured.role}</p>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-4 pt-4">
-                {featured.storeUrl && (
-                  <a
-                    href={featured.storeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2.5 px-6 py-3 font-mono text-[10px] tracking-widest uppercase transition-all duration-300 rounded-full"
-                    style={{
-                      background: 'linear-gradient(135deg, #18264d, #253366)',
-                      border: '1px solid rgba(155,184,255,0.3)',
-                      color: '#ffffff',
-                      boxShadow: '0 4px 20px rgba(24,38,77,0.4)'
-                    }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.transform = 'translateY(-2px)'
-                      e.currentTarget.style.boxShadow = '0 6px 24px rgba(24,38,77,0.6)'
-                      e.currentTarget.style.borderColor = 'rgba(155,184,255,0.5)'
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.transform = 'translateY(0)'
-                      e.currentTarget.style.boxShadow = '0 4px 20px rgba(24,38,77,0.4)'
-                      e.currentTarget.style.borderColor = 'rgba(155,184,255,0.3)'
-                    }}
-                  >
-                    <span> App Store で入手</span>
-                  </a>
-                )}
-                <button
-                  onClick={() => setSelected(toWorkDetail(featured))}
-                  className="font-mono text-[9px] tracking-widest uppercase py-3 px-6 rounded-full transition-colors"
-                  style={{ border: '1px solid rgba(155,184,255,0.12)', color: '#9bb8ff' }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.background = 'rgba(155,184,255,0.05)'
-                    e.currentTarget.style.color = '#ffffff'
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.background = 'transparent'
-                    e.currentTarget.style.color = '#9bb8ff'
-                  }}
-                >
-                  制作詳細・プロセス →
-                </button>
-              </div>
-            </div>
-
-            {/* Right Column: Simple Auto-sliding Screenshot Display */}
-            <div className="lg:col-span-5 flex justify-center">
-              <div 
-                className="relative w-[280px] aspect-[9/19.5] rounded-[32px] overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] border border-white/10 bg-[#090d1a] select-none cursor-pointer"
-                onClick={() => setActiveTab((prev) => (prev + 1) % 5)}
-              >
-                <motion.img 
-                  key={activeTab}
-                  src={`/アプリ画像/%230${activeTab + 1}.png`}
-                  alt={`ピタンコ わりかん 画面 ${activeTab + 1}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6, ease: 'easeInOut' }}
-                  className="w-full h-full object-cover object-top"
-                />
-
-                {/* Simple Dot Indicators */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10 bg-black/40 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                  {[0, 1, 2, 3, 4].map((idx) => (
-                    <div
-                      key={idx}
-                      className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                        activeTab === idx ? 'bg-white scale-110' : 'bg-white/40'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </motion.div>
-      )}
+      {/* ── 1. App Showcases ── */}
+      <div className="space-y-12 mb-16">
+        {allWorks.map((app, i) => (
+          <AppShowcase key={app.id} app={app} isFirst={i === 0} onSelect={setSelected} />
+        ))}
+      </div>
 
       {/* ── 2. Other Products and PM Skills Grid (Bottom Section) ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
