@@ -283,7 +283,7 @@ export default function ModelPage() {
                 </p>
                 <div className="space-y-1">
                   {([
-                    ['Markets', 'Paris · Milan · Seoul · Hong Kong · Tokyo'],
+                    ['Markets', 'Tokyo · Paris · Milan · Hong Kong · Seoul'],
                     ['Agency',  'Bravo, BANANAS, The lab, Primo, Directors'],
                     ['Active',  '2018 — 2025'],
                   ] as [string, string][]).map(([label, value]) => (
