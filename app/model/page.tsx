@@ -246,65 +246,59 @@ export default function ModelPage() {
           </div>
         </section>
 
-        {/* ── CREDITS ───────────────────────────────────────────────────── */}
-        <section className="pt-12 pb-10 mx-auto">
-          <Reveal>
-            <p className="font-mono text-[8px] tracking-[0.5em] uppercase mb-2" style={{ color: DIM }}>
-              Credits
-            </p>
-          </Reveal>
-
-          <CreditBlock
-            client="Van Cleef & Arpels"
-            campaign="スー レ ゼトワール〈星空の下で〉"
-            year="2024"
-            credits={[
-              { role: 'Photo',   name: 'Masanori Akao (white stout)' },
-              { role: 'Styling', name: 'Mika Nagasawa' },
-              { role: 'Hair',    name: 'Kenshin (epo tabo)' },
-              { role: 'Makeup',  name: 'Asami Taguchi (home agency)' },
-              { role: 'Realize', name: 'Shiho Amano' },
-              { role: 'Model',   name: 'Shusaku Nishiura (bravo)' },
-            ]}
-          />
-
-          <CreditBlock
-            client="MIKIMOTO"
-            campaign="Lucky Arrows"
-            year="2024"
-            credits={[
-              { role: 'Model', name: 'Shusaku Nishiura' },
-            ]}
-          />
-        </section>
-
         {/* ── PROFILE ───────────────────────────────────────────────────── */}
-        <section
-          className="px-7 md:px-14 lg:px-18 py-16 mx-auto"
-          style={{ maxWidth: 1180, borderTop: `1px solid ${LINE}` }}
-        >
+        <section className="pt-12 pb-10 mx-auto" style={{ borderTop: `1px solid ${LINE}` }}>
           <Reveal>
             <p className="font-mono text-[8px] tracking-[0.5em] uppercase mb-8" style={{ color: DIM }}>
               Profile
             </p>
-            <div className="max-w-xl">
-              {([
-                ['Name',       'Shusaku Nishiura'],
-                ['Agency',     'bravo models'],
-                ['Base',       'Tokyo, Japan'],
-                ['Active',     '2018 — Present'],
-                ['Markets',    'Japan · France · Italy'],
-                ['Categories', 'Campaign · Editorial · Runway'],
-              ] as [string, string][]).map(([label, value]) => (
-                <div key={label} className="flex gap-6 py-4" style={{ borderBottom: `1px solid ${LINE}` }}>
-                  <span className="font-mono text-[8px] tracking-[0.35em] uppercase shrink-0 pt-0.5" style={{ color: DIM, width: 80 }}>
-                    {label}
-                  </span>
-                  <span className="text-[13px] leading-relaxed" style={{ color: MUTED }}>{value}</span>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 py-4">
+              {/* Left Column: Measurements */}
+              <div>
+                <p className="font-mono text-[8px] tracking-[0.4em] uppercase mb-6" style={{ color: DIM }}>
+                  Measurements
+                </p>
+                <div className="space-y-1">
+                  {([
+                    ['Height', '186 cm'],
+                    ['Bust',   '88 cm'],
+                    ['Waist',  '72 cm'],
+                    ['Hip',    '95 cm'],
+                  ] as [string, string][]).map(([label, value]) => (
+                    <div key={label} className="flex gap-6 py-3.5" style={{ borderBottom: `1px solid ${LINE}` }}>
+                      <span className="font-mono text-[8px] tracking-[0.35em] uppercase shrink-0 pt-0.5" style={{ color: DIM, width: 80 }}>
+                        {label}
+                      </span>
+                      <span className="text-[13px] leading-relaxed" style={{ color: MUTED }}>{value}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+
+              {/* Right Column: Markets & Agency */}
+              <div>
+                <p className="font-mono text-[8px] tracking-[0.4em] uppercase mb-6" style={{ color: DIM }}>
+                  Markets & Details
+                </p>
+                <div className="space-y-1">
+                  {([
+                    ['Markets', 'Paris · Milan · Seoul · Hong Kong · Tokyo'],
+                    ['Agency',  'bravo models'],
+                    ['Active',  '2018 — Present'],
+                  ] as [string, string][]).map(([label, value]) => (
+                    <div key={label} className="flex gap-6 py-3.5" style={{ borderBottom: `1px solid ${LINE}` }}>
+                      <span className="font-mono text-[8px] tracking-[0.35em] uppercase shrink-0 pt-0.5" style={{ color: DIM, width: 80 }}>
+                        {label}
+                      </span>
+                      <span className="text-[13px] leading-relaxed" style={{ color: MUTED }}>{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="mt-9">
+
+            <div className="mt-12">
               <a
                 href="mailto:shusaku.bbb@gmail.com"
                 className="font-mono text-[9px] tracking-[0.3em] transition-opacity duration-200 inline-block"
