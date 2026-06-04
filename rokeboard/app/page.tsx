@@ -42,21 +42,21 @@ export default function HomePage() {
   }, {} as Record<ProjectStatus, number>)
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#F2F2F7]">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200">
+      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-[#E5E5EA]">
         <div className="max-w-5xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center">
+            <div className="w-7 h-7 bg-[#007AFF] rounded-lg flex items-center justify-center">
               <svg width="14" height="14" viewBox="0 0 16 16" fill="white">
                 <path d="M8 0a5 5 0 0 0-5 5c0 4 5 11 5 11s5-7 5-11a5 5 0 0 0-5-5zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" />
               </svg>
             </div>
-            <span className="font-bold text-slate-900 text-[17px]">ロケボード</span>
+            <span className="font-bold text-[#1D1D1F] text-[17px]">ロケボード</span>
           </div>
           <button
             onClick={() => setShowNewModal(true)}
-            className="h-9 px-4 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors flex items-center gap-1.5"
+            className="h-9 px-4 bg-[#007AFF] text-white text-[13px] font-medium rounded-xl hover:bg-[#0051D4] transition-colors flex items-center gap-1.5"
           >
             <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
               <path d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2z" />
@@ -71,13 +71,13 @@ export default function HomePage() {
         {state.projects.length > 0 && (
           <div className="mb-6 grid grid-cols-4 gap-3">
             {[
-              { label: '進行中', count: state.projects.filter(p => !['shot','archived'].includes(p.status)).length, color: 'text-blue-600' },
-              { label: '仮キープ', count: state.locations.filter(l => l.status === 'hold').length, color: 'text-purple-600' },
-              { label: '返信待ち', count: state.locations.filter(l => l.status === 'waiting').length, color: 'text-amber-600' },
-              { label: '未タスク', count: state.tasks.filter(t => t.status === 'todo').length, color: 'text-slate-600' },
+              { label: '進行中', count: state.projects.filter(p => !['shot','archived'].includes(p.status)).length, color: '#007AFF' },
+              { label: '仮キープ', count: state.locations.filter(l => l.status === 'hold').length, color: '#AF52DE' },
+              { label: '返信待ち', count: state.locations.filter(l => l.status === 'waiting').length, color: '#FF9500' },
+              { label: '未タスク', count: state.tasks.filter(t => t.status === 'todo').length, color: '#3C3C43' },
             ].map(s => (
-              <div key={s.label} className="bg-white rounded-xl border border-slate-200 p-3 text-center">
-                <div className={`text-xl font-bold leading-none ${s.color}`}>{s.count}</div>
+              <div key={s.label} className="bg-white rounded-xl border border-[#E5E5EA] p-3 text-center">
+                <div className="text-xl font-bold leading-none" style={{ color: s.color }}>{s.count}</div>
                 <div className="text-[11px] text-slate-500 mt-1">{s.label}</div>
               </div>
             ))}
