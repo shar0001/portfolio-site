@@ -1,7 +1,7 @@
 'use client'
-import { useState, use } from 'react'
+import { useState, Suspense } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useStore, useProject, useProjectLocations, useProjectTasks } from '@/lib/store'
 import { useToast } from '@/components/ui/Toast'
 import { Modal, ConfirmDialog } from '@/components/ui/Modal'
@@ -20,15 +20,18 @@ import type { LocationStatus, Location, Task, DateAvailability } from '@/lib/typ
 
 type Tab = 'overview' | 'locations' | 'dates' | 'tasks' | 'share'
 
-interface PageProps {
-  params: Promise<{ id: string }>
+export default function ProjectDetailPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50" />}>
+      <ProjectDetail />
+    </Suspense>
+  )
 }
 
-export default function ProjectDetailPage({ params }: PageProps) {
-  const { id } = use(params)
+function ProjectDetail() {
+  const id = useSearchParams().get('id') ?? ''
   const { dispatch } = useStore()
   const { addToast } = useToast()
-  const router = useRouter()
   const project = useProject(id)
   const locations = useProjectLocations(id)
   const tasks = useProjectTasks(id)

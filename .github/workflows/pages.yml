@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, claude/portfolio-site-access-bBN91]
+    branches: [main, claude/portfolio-site-access-bBN91, claude/new-app-project-vdH0J]
   workflow_dispatch:
 
 permissions:
@@ -27,9 +27,22 @@ jobs:
 
       - uses: actions/configure-pages@v5
 
+      # ── 本体ポートフォリオをビルド（/portfolio-site/） → ./out ──
       - run: npm ci
 
       - run: npm run build
+
+      # ── ロケボードをビルドして /portfolio-site/rokeboard/ に配置 ──
+      - name: Build rokeboard
+        working-directory: rokeboard
+        run: |
+          npm ci
+          npm run build
+
+      - name: Place rokeboard under /rokeboard
+        run: |
+          mkdir -p out/rokeboard
+          cp -r rokeboard/out/. out/rokeboard/
 
       - uses: actions/upload-pages-artifact@v3
         with:

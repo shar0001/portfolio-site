@@ -22,7 +22,7 @@ export function ProjectCard({ project, locations, tasks }: ProjectCardProps) {
   })
 
   return (
-    <Link href={`/projects/${project.id}`} className="block">
+    <Link href={`/project?id=${project.id}`} className="block">
       <div className="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md hover:border-slate-300 transition-all group">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 mb-3">
