@@ -11,17 +11,17 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  primary:   'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800',
-  secondary: 'bg-slate-100 text-slate-700 hover:bg-slate-200 active:bg-slate-300',
-  ghost:     'bg-transparent text-slate-600 hover:bg-slate-100 active:bg-slate-200',
-  danger:    'bg-red-50 text-red-600 hover:bg-red-100 active:bg-red-200 border border-red-200',
-  outline:   'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50',
+  primary:   'bg-[#007AFF] text-white hover:bg-[#0062CC] active:bg-[#0051D4] shadow-[0_1px_2px_rgba(0,0,0,0.08)]',
+  secondary: 'bg-[#F2F2F7] text-[#007AFF] hover:bg-[#E5E5EA] active:bg-[#D7D7DC]',
+  ghost:     'bg-transparent text-[#007AFF] hover:bg-[#007AFF]/[0.08] active:bg-[#007AFF]/[0.14]',
+  danger:    'bg-[#FF3B30] text-white hover:bg-[#E5352B] active:bg-[#CB2E25] shadow-[0_1px_2px_rgba(0,0,0,0.08)]',
+  outline:   'bg-white text-[#1D1D1F] border border-[#D1D1D6] hover:bg-[#F2F2F7] active:bg-[#E5E5EA]',
 }
 
 const sizeClasses: Record<Size, string> = {
-  sm: 'h-8 px-3 text-[13px] gap-1.5',
-  md: 'h-10 px-4 text-sm gap-2',
-  lg: 'h-11 px-5 text-sm gap-2',
+  sm: 'h-9 px-3.5 text-[13px] gap-1.5 rounded-[9px]',
+  md: 'h-11 px-5 text-[15px] gap-2 rounded-[11px]',
+  lg: 'h-[50px] px-6 text-[16px] gap-2 rounded-[13px]',
 }
 
 export function Button({
@@ -36,7 +36,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`inline-flex items-center justify-center rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={`inline-flex items-center justify-center font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       disabled={disabled || loading}
       {...props}
     >
@@ -57,7 +57,7 @@ export function IconButton({
   return (
     <button
       title={title}
-      className={`w-8 h-8 flex items-center justify-center rounded-md text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors disabled:opacity-40 ${className}`}
+      className={`w-8 h-8 flex items-center justify-center rounded-[8px] text-[#8E8E93] hover:text-[#1D1D1F] hover:bg-[#F2F2F7] transition-colors disabled:opacity-40 ${className}`}
       {...props}
     >
       {children}

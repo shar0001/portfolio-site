@@ -45,12 +45,12 @@ function ToastItem({ toast }: { toast: ToastItem }) {
     info: 'i',
   }
   const colors: Record<ToastType, string> = {
-    success: 'bg-emerald-600',
-    error: 'bg-red-600',
-    info: 'bg-blue-600',
+    success: 'bg-[#34C759]',
+    error: 'bg-[#FF3B30]',
+    info: 'bg-[#007AFF]',
   }
   return (
-    <div className="animate-slide-in flex items-center gap-3 bg-slate-900 text-white text-sm px-4 py-3 rounded-xl shadow-lg pointer-events-auto max-w-xs">
+    <div className="animate-slide-in flex items-center gap-2.5 bg-[#1D1D1F]/95 backdrop-blur-xl text-white text-[14px] font-medium px-4 py-3 rounded-[14px] shadow-[0_8px_30px_rgba(0,0,0,0.25)] pointer-events-auto max-w-xs">
       <span className={`w-5 h-5 rounded-full ${colors[toast.type]} flex items-center justify-center text-[11px] font-bold shrink-0`}>
         {icons[toast.type]}
       </span>

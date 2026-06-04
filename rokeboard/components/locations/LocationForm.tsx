@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import type { Location, LocationStatus, FacilityStatus, RainSupport, SoundAllowed, LocationPhoto, PhotoLabel } from '@/lib/types'
 import { LOCATION_STATUS_LABELS, PHOTO_LABELS } from '@/lib/types'
-import { Input, Textarea, Select, ToggleGroup, SectionHeader } from '@/components/ui/FormField'
+import { Input, Textarea, Select, ToggleGroup, SectionHeader, DateField } from '@/components/ui/FormField'
 import { Button } from '@/components/ui/Button'
 import { generateId } from '@/lib/utils'
 
@@ -248,24 +248,24 @@ export function LocationForm({ initial, onSubmit, onCancel, submitLabel = '追�
         {photos.length > 0 && (
           <div className="space-y-2">
             {photos.map((photo, idx) => (
-              <div key={photo.id} className="flex items-center gap-3 p-2 bg-slate-50 rounded-lg border border-slate-200">
+              <div key={photo.id} className="flex items-center gap-3 p-2 bg-[#F2F2F7] rounded-[10px] border border-[#E5E5EA]">
                 <img
                   src={photo.url}
                   alt={photo.label}
-                  className="w-16 h-11 rounded object-cover bg-slate-200 shrink-0"
+                  className="w-16 h-11 rounded-[6px] object-cover bg-[#E5E5EA] shrink-0"
                   onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = '0.3' }}
                 />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-[11px] font-medium text-slate-600 bg-slate-200 px-1.5 py-0.5 rounded">{photo.label}</span>
-                    {photo.caption && <span className="text-xs text-slate-500 truncate">{photo.caption}</span>}
+                    <span className="text-[11px] font-medium text-[#3C3C43] bg-[#E5E5EA] px-1.5 py-0.5 rounded">{photo.label}</span>
+                    {photo.caption && <span className="text-xs text-[#8E8E93] truncate">{photo.caption}</span>}
                   </div>
-                  <p className="text-[11px] text-slate-400 truncate">{photo.url}</p>
+                  <p className="text-[11px] text-[#B0B0B5] truncate">{photo.url}</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => removePhoto(idx)}
-                  className="shrink-0 w-6 h-6 flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors"
+                  className="shrink-0 w-6 h-6 flex items-center justify-center text-[#8E8E93] hover:text-[#FF3B30] transition-colors"
                   aria-label="削除"
                 >
                   <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
@@ -276,7 +276,7 @@ export function LocationForm({ initial, onSubmit, onCancel, submitLabel = '追�
             ))}
           </div>
         )}
-        <div className="p-3 bg-slate-50 rounded-lg border border-dashed border-slate-300 space-y-3">
+        <div className="p-3.5 bg-[#F2F2F7] rounded-[12px] border border-dashed border-[#C6C6C8] space-y-3">
           <Input
             label="写真URL"
             value={newPhotoUrl}
@@ -310,22 +310,14 @@ export function LocationForm({ initial, onSubmit, onCancel, submitLabel = '追�
           ))}
         </Select>
         <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-slate-700">最終連絡日</label>
-            <input type="date" value={lastContactDate} onChange={e => setLastContactDate(e.target.value)}
-              className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-slate-700">次回確認日</label>
-            <input type="date" value={nextFollowUpDate} onChange={e => setNextFollowUpDate(e.target.value)}
-              className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
+          <DateField label="最終連絡日" value={lastContactDate} onChange={e => setLastContactDate(e.target.value)} />
+          <DateField label="次回確認日" value={nextFollowUpDate} onChange={e => setNextFollowUpDate(e.target.value)} />
         </div>
         <Textarea label="メモ" value={memo} onChange={e => setMemo(e.target.value)} placeholder="自由メモ" rows={3} />
       </section>
 
       {/* Actions */}
-      <div className="flex gap-3 pt-2 sticky bottom-0 bg-white py-4 border-t border-slate-100 -mx-6 px-6 -mb-6">
+      <div className="flex gap-3 pt-2 sticky bottom-0 bg-white/95 backdrop-blur-xl py-4 border-t border-[#E5E5EA] -mx-6 px-6 -mb-6">
         <Button type="button" variant="secondary" onClick={onCancel} className="flex-1">
           キャンセル
         </Button>

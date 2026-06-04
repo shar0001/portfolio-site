@@ -10,10 +10,10 @@ interface ModalProps {
 }
 
 const sizeClasses = {
-  sm: 'max-w-sm',
-  md: 'max-w-lg',
-  lg: 'max-w-2xl',
-  xl: 'max-w-3xl',
+  sm: 'sm:max-w-sm',
+  md: 'sm:max-w-lg',
+  lg: 'sm:max-w-2xl',
+  xl: 'sm:max-w-3xl',
 }
 
 export function Modal({ open, onClose, title, children, size = 'md' }: ModalProps) {
@@ -40,21 +40,26 @@ export function Modal({ open, onClose, title, children, size = 'md' }: ModalProp
       aria-modal
     >
       <div
-        className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/30 backdrop-blur-[2px] animate-fade-in"
         onClick={onClose}
       />
       <div
-        className={`animate-modal-in relative bg-white w-full ${sizeClasses[size]} rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[92dvh] sm:max-h-[85vh]`}
+        className={`animate-modal-in relative bg-white w-full ${sizeClasses[size]} rounded-t-2xl sm:rounded-[16px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.35)] flex flex-col max-h-[94dvh] sm:max-h-[88vh] overflow-hidden`}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0">
-          <h2 className="text-base font-semibold text-slate-900">{title}</h2>
+        {/* Mobile grabber */}
+        <div className="sm:hidden flex justify-center pt-2.5 pb-1 shrink-0">
+          <div className="w-9 h-1 bg-[#C6C6C8] rounded-full" />
+        </div>
+
+        <div className="flex items-center justify-between gap-3 px-5 sm:px-6 py-3.5 border-b border-[#E5E5EA] shrink-0">
+          <h2 className="text-[17px] font-semibold text-[#1D1D1F] truncate">{title}</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+            className="w-7 h-7 flex items-center justify-center rounded-full bg-[#E8E8ED] text-[#8E8E93] hover:bg-[#DCDCE1] hover:text-[#3C3C43] transition-colors shrink-0"
             aria-label="閉じる"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M3 3L13 13M13 3L3 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+              <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
           </button>
         </div>
@@ -76,6 +81,7 @@ interface ConfirmDialogProps {
   danger?: boolean
 }
 
+// Faithful iOS alert — frosted vibrancy surface, centered text, split action row.
 export function ConfirmDialog({
   open,
   title,
@@ -87,21 +93,23 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   if (!open) return null
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onCancel} />
-      <div className="animate-modal-in relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
-        <h3 className="text-base font-semibold text-slate-900 mb-2">{title}</h3>
-        <p className="text-sm text-slate-600 mb-6">{message}</p>
-        <div className="flex gap-3 justify-end">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-6" role="dialog" aria-modal>
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px] animate-fade-in" onClick={onCancel} />
+      <div className="animate-modal-in relative w-full max-w-[272px] rounded-[14px] overflow-hidden bg-white/85 backdrop-blur-2xl shadow-[0_20px_60px_-12px_rgba(0,0,0,0.4)]">
+        <div className="px-5 pt-5 pb-4 text-center">
+          <h3 className="text-[17px] font-semibold text-[#1D1D1F] leading-snug">{title}</h3>
+          <p className="mt-1.5 text-[13px] text-[#3C3C43] leading-relaxed">{message}</p>
+        </div>
+        <div className="grid grid-cols-2 border-t border-[#3C3C43]/15 divide-x divide-[#3C3C43]/15">
           <button
             onClick={onCancel}
-            className="h-9 px-4 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+            className="h-11 text-[17px] text-[#007AFF] hover:bg-black/[0.03] active:bg-black/[0.06] transition-colors"
           >
             キャンセル
           </button>
           <button
             onClick={onConfirm}
-            className={`h-9 px-4 text-sm font-medium rounded-lg transition-colors ${danger ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+            className={`h-11 text-[17px] font-semibold hover:bg-black/[0.03] active:bg-black/[0.06] transition-colors ${danger ? 'text-[#FF3B30]' : 'text-[#007AFF]'}`}
           >
             {confirmLabel}
           </button>

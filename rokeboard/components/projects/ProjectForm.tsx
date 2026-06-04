@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import type { Project, CandidateDate, ProjectStatus } from '@/lib/types'
 import { PROJECT_STATUS_LABELS } from '@/lib/types'
-import { Input, Textarea, Select } from '@/components/ui/FormField'
+import { Input, Textarea, Select, DateField } from '@/components/ui/FormField'
 import { Button } from '@/components/ui/Button'
 import { generateId } from '@/lib/utils'
 
@@ -68,7 +68,7 @@ export function ProjectForm({ initial, onSubmit, onCancel, submitLabel = '作成
     <form onSubmit={handleSubmit} className="p-6 space-y-6">
       {/* 基本情報 */}
       <section className="space-y-4">
-        <h3 className="text-sm font-semibold text-slate-900 pb-2 border-b border-slate-100">基本情報</h3>
+        <h3 className="text-[15px] font-semibold text-[#1D1D1F] pb-2.5 border-b border-[#E5E5EA]">基本情報</h3>
         <Input
           label="案件名"
           required
@@ -105,15 +105,14 @@ export function ProjectForm({ initial, onSubmit, onCancel, submitLabel = '作成
 
       {/* 撮影候補日 */}
       <section className="space-y-3">
-        <h3 className="text-sm font-semibold text-slate-900 pb-2 border-b border-slate-100">撮影候補日</h3>
+        <h3 className="text-[15px] font-semibold text-[#1D1D1F] pb-2.5 border-b border-[#E5E5EA]">撮影候補日</h3>
         <div className="flex gap-2">
-          <input
-            type="date"
+          <DateField
             value={newDate}
             onChange={e => setNewDate(e.target.value)}
-            className="h-10 flex-1 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1"
           />
-          <Button type="button" variant="secondary" onClick={addDate} size="md">
+          <Button type="button" variant="secondary" onClick={addDate} size="md" className="shrink-0">
             追加
           </Button>
         </div>
@@ -123,9 +122,9 @@ export function ProjectForm({ initial, onSubmit, onCancel, submitLabel = '作成
               const dt = new Date(d.date)
               const label = `${dt.getMonth() + 1}/${dt.getDate()}（${['日','月','火','水','木','金','土'][dt.getDay()]}）`
               return (
-                <span key={d.id} className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 text-sm px-3 py-1 rounded-full border border-blue-200">
+                <span key={d.id} className="inline-flex items-center gap-1.5 bg-[#007AFF]/10 text-[#0066CC] text-[13px] font-medium pl-3 pr-2 py-1 rounded-full border border-[#007AFF]/15">
                   {label}
-                  <button type="button" onClick={() => removeDate(d.id)} className="text-blue-400 hover:text-blue-600">×</button>
+                  <button type="button" onClick={() => removeDate(d.id)} className="text-[#007AFF]/50 hover:text-[#007AFF] text-[15px] leading-none">×</button>
                 </span>
               )
             })}
@@ -135,7 +134,7 @@ export function ProjectForm({ initial, onSubmit, onCancel, submitLabel = '作成
 
       {/* 制作情報 */}
       <section className="space-y-4">
-        <h3 className="text-sm font-semibold text-slate-900 pb-2 border-b border-slate-100">制作情報</h3>
+        <h3 className="text-[15px] font-semibold text-[#1D1D1F] pb-2.5 border-b border-[#E5E5EA]">制作情報</h3>
         <div className="grid grid-cols-2 gap-4">
           <Input
             label="担当PM"

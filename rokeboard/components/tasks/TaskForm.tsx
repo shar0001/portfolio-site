@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import type { Task, TaskCategory, TaskStatus } from '@/lib/types'
 import { TASK_CATEGORY_LABELS, TASK_STATUS_LABELS } from '@/lib/types'
-import { Input, Textarea, Select } from '@/components/ui/FormField'
+import { Input, Textarea, Select, DateField } from '@/components/ui/FormField'
 import { Button } from '@/components/ui/Button'
 
 type TaskFormData = Omit<Task, 'id' | 'projectId' | 'createdAt' | 'updatedAt'>
@@ -62,15 +62,11 @@ export function TaskForm({ initial, onSubmit, onCancel, submitLabel = '追加す
           onChange={e => setAssignee(e.target.value)}
           placeholder="例：田中 美咲"
         />
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-slate-700">期限</label>
-          <input
-            type="date"
-            value={dueDate}
-            onChange={e => setDueDate(e.target.value)}
-            className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+        <DateField
+          label="期限"
+          value={dueDate}
+          onChange={e => setDueDate(e.target.value)}
+        />
       </div>
       <Textarea
         label="メモ"

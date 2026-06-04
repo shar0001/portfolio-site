@@ -11,16 +11,26 @@ interface FieldWrapperProps {
 export function FieldWrapper({ label, required, hint, error, children }: FieldWrapperProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-sm font-medium text-slate-700">
+      <label className="text-[13px] font-medium text-[#1D1D1F]">
         {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
+        {required && <span className="text-[#FF3B30] ml-1">*</span>}
       </label>
       {children}
-      {hint && !error && <p className="text-xs text-slate-500">{hint}</p>}
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {hint && !error && <p className="text-[12px] text-[#8E8E93] leading-snug">{hint}</p>}
+      {error && <p className="text-[12px] text-[#FF3B30] leading-snug">{error}</p>}
     </div>
   )
 }
+
+// Shared Apple-style field classes — crisp white field, visible separator border,
+// 44px height (touch target), 15px text (prevents iOS focus-zoom), blue focus glow.
+const fieldBase =
+  'w-full rounded-[10px] border bg-white text-[15px] text-[#1D1D1F] placeholder:text-[#B0B0B5] ' +
+  'focus:outline-none transition-[border-color,box-shadow] duration-150'
+const fieldBorder = (error?: string) =>
+  error
+    ? 'border-[#FF3B30] focus:border-[#FF3B30] focus:ring-[3px] focus:ring-[#FF3B30]/15'
+    : 'border-[#D1D1D6] focus:border-[#007AFF] focus:ring-[3px] focus:ring-[#007AFF]/18'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
@@ -32,7 +42,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 export function Input({ label, required, hint, error, className = '', ...props }: InputProps) {
   const input = (
     <input
-      className={`h-10 w-full rounded-lg border ${error ? 'border-red-400' : 'border-slate-200'} bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${className}`}
+      className={`${fieldBase} ${fieldBorder(error)} h-11 px-3.5 ${className}`}
       {...props}
     />
   )
@@ -54,7 +64,7 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 export function Textarea({ label, required, hint, error, className = '', ...props }: TextareaProps) {
   const textarea = (
     <textarea
-      className={`w-full rounded-lg border ${error ? 'border-red-400' : 'border-slate-200'} bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none ${className}`}
+      className={`${fieldBase} ${fieldBorder(error)} px-3.5 py-3 leading-relaxed resize-none ${className}`}
       {...props}
     />
   )
@@ -75,12 +85,21 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 
 export function Select({ label, required, hint, error, className = '', children, ...props }: SelectProps) {
   const select = (
-    <select
-      className={`h-10 w-full rounded-lg border ${error ? 'border-red-400' : 'border-slate-200'} bg-white px-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${className}`}
-      {...props}
-    >
-      {children}
-    </select>
+    <div className="relative">
+      <select
+        className={`${fieldBase} ${fieldBorder(error)} h-11 pl-3.5 pr-9 appearance-none cursor-pointer ${className}`}
+        {...props}
+      >
+        {children}
+      </select>
+      {/* Apple-style up/down chevron */}
+      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#8E8E93]">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M5 6.5 8 3.5l3 3" />
+          <path d="M5 9.5 8 12.5l3-3" />
+        </svg>
+      </span>
+    </div>
   )
   if (!label) return select
   return (
@@ -98,23 +117,27 @@ interface ToggleGroupProps {
   hint?: string
 }
 
+// Faithful iOS segmented control — translucent track, white selected segment with shadow.
 export function ToggleGroup({ label, value, onChange, options, hint }: ToggleGroupProps) {
   const group = (
-    <div className="flex gap-1 flex-wrap">
-      {options.map(opt => (
-        <button
-          key={opt.value}
-          type="button"
-          onClick={() => onChange(opt.value)}
-          className={`h-8 px-3 text-sm rounded-lg border transition-colors font-medium ${
-            value === opt.value
-              ? 'bg-blue-600 text-white border-blue-600'
-              : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-          }`}
-        >
-          {opt.label}
-        </button>
-      ))}
+    <div className="inline-flex w-full bg-[#EFEFF0] rounded-[9px] p-[2px] gap-[2px]">
+      {options.map(opt => {
+        const active = value === opt.value
+        return (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => onChange(opt.value)}
+            className={`flex-1 h-8 px-2 text-[13px] rounded-[7px] font-medium transition-all whitespace-nowrap ${
+              active
+                ? 'bg-white text-[#1D1D1F] shadow-[0_1px_3px_rgba(0,0,0,0.10),0_1px_1px_rgba(0,0,0,0.04)]'
+                : 'text-[#3C3C43] hover:text-[#1D1D1F]'
+            }`}
+          >
+            {opt.label}
+          </button>
+        )
+      })}
     </div>
   )
   if (!label) return group
@@ -132,9 +155,30 @@ interface SectionHeaderProps {
 
 export function SectionHeader({ title, description }: SectionHeaderProps) {
   return (
-    <div className="mb-4">
-      <h3 className="text-sm font-semibold text-slate-900 mb-0.5">{title}</h3>
-      {description && <p className="text-xs text-slate-500">{description}</p>}
+    <div className="mb-3">
+      <h3 className="text-[15px] font-semibold text-[#1D1D1F]">{title}</h3>
+      {description && <p className="text-[12px] text-[#8E8E93] mt-0.5 leading-snug">{description}</p>}
     </div>
+  )
+}
+
+// Apple-styled native date input — reuse across forms for consistency.
+interface DateFieldProps extends InputHTMLAttributes<HTMLInputElement> {
+  label?: string
+}
+
+export function DateField({ label, className = '', ...props }: DateFieldProps) {
+  const input = (
+    <input
+      type="date"
+      className={`${fieldBase} ${fieldBorder()} h-11 px-3.5 min-w-0 ${className}`}
+      {...props}
+    />
+  )
+  if (!label) return input
+  return (
+    <FieldWrapper label={label}>
+      {input}
+    </FieldWrapper>
   )
 }

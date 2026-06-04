@@ -78,7 +78,7 @@ export default function HomePage() {
             ].map(s => (
               <div key={s.label} className="bg-white rounded-xl border border-[#E5E5EA] p-3 text-center">
                 <div className="text-xl font-bold leading-none" style={{ color: s.color }}>{s.count}</div>
-                <div className="text-[11px] text-slate-500 mt-1">{s.label}</div>
+                <div className="text-[11px] text-[#8E8E93] mt-1">{s.label}</div>
               </div>
             ))}
           </div>
@@ -89,7 +89,7 @@ export default function HomePage() {
           <div className="mb-4 flex gap-1.5 flex-wrap">
             <button
               onClick={() => setStatusFilter('all')}
-              className={`h-7 px-3 text-xs rounded-full border transition-colors ${statusFilter === 'all' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+              className={`h-7 px-3 text-[12px] font-medium rounded-full border transition-colors ${statusFilter === 'all' ? 'bg-[#1D1D1F] text-white border-[#1D1D1F]' : 'bg-white text-[#3C3C43] border-[#E5E5EA] hover:bg-[#F2F2F7]'}`}
             >
               すべて（{state.projects.length}）
             </button>
@@ -99,7 +99,7 @@ export default function HomePage() {
                 <button
                   key={s}
                   onClick={() => setStatusFilter(s)}
-                  className={`h-7 px-3 text-xs rounded-full border transition-colors ${statusFilter === s ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+                  className={`h-7 px-3 text-[12px] font-medium rounded-full border transition-colors ${statusFilter === s ? 'bg-[#1D1D1F] text-white border-[#1D1D1F]' : 'bg-white text-[#3C3C43] border-[#E5E5EA] hover:bg-[#F2F2F7]'}`}
                 >
                   {PROJECT_STATUS_LABELS[s]}（{statusCounts[s]}）
                 </button>
@@ -116,14 +116,14 @@ export default function HomePage() {
             action={
               <button
                 onClick={() => setShowNewModal(true)}
-                className="h-10 px-6 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors"
+                className="h-11 px-6 bg-[#007AFF] text-white text-[15px] font-semibold rounded-[12px] hover:bg-[#0062CC] active:bg-[#0051D4] transition-colors"
               >
                 最初の案件を作成
               </button>
             }
           />
         ) : sorted.length === 0 ? (
-          <p className="text-center text-sm text-slate-500 py-12">このフィルターに該当する案件はありません</p>
+          <p className="text-center text-[13px] text-[#8E8E93] py-12">このフィルターに該当する案件はありません</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {sorted.map(project => (
@@ -135,7 +135,7 @@ export default function HomePage() {
                 />
                 <button
                   onClick={() => setDeleteTarget(project)}
-                  className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-md text-slate-300 hover:text-red-500 hover:bg-red-50 transition-colors opacity-0 group-hover:opacity-100"
+                  className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-[8px] text-[#C6C6C8] hover:text-[#FF3B30] hover:bg-[#FFF0EE] transition-colors opacity-0 group-hover:opacity-100"
                   title="案件を削除"
                 >
                   <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">

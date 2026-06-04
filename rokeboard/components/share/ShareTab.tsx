@@ -60,15 +60,15 @@ export function ShareTab({ project, locations }: ShareTabProps) {
   return (
     <div className="p-4 md:p-6 space-y-4">
       {/* Sub tabs */}
-      <div className="flex gap-1 flex-wrap">
+      <div className="flex gap-1.5 flex-wrap">
         {tabs.map(t => (
           <button
             key={t.id}
             onClick={() => setActiveTab(t.id)}
-            className={`h-9 px-3.5 text-sm rounded-xl border transition-colors ${
+            className={`h-9 px-3.5 text-[13px] font-medium rounded-[10px] border transition-colors ${
               activeTab === t.id
-                ? 'bg-slate-900 text-white border-slate-900'
-                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                ? 'bg-[#1D1D1F] text-white border-[#1D1D1F]'
+                : 'bg-white text-[#3C3C43] border-[#E5E5EA] hover:bg-[#F2F2F7]'
             }`}
           >
             {t.icon} {t.label}
@@ -78,20 +78,20 @@ export function ShareTab({ project, locations }: ShareTabProps) {
 
       {/* AI文面 options */}
       {activeTab === 'ai' && (
-        <div className="space-y-3 p-4 bg-blue-50 rounded-xl border border-blue-200">
-          <p className="text-xs font-semibold text-blue-800">ロケ地を選択</p>
+        <div className="space-y-3 p-4 bg-[#007AFF]/[0.06] rounded-[14px] border border-[#007AFF]/15">
+          <p className="text-[12px] font-semibold text-[#0066CC]">ロケ地を選択</p>
           {locations.length === 0 ? (
-            <p className="text-sm text-slate-500">ロケ地が登録されていません</p>
+            <p className="text-[13px] text-[#8E8E93]">ロケ地が登録されていません</p>
           ) : (
             <div className="flex flex-wrap gap-2">
               {locations.map(l => (
                 <button
                   key={l.id}
                   onClick={() => setSelectedLocationId(l.id)}
-                  className={`text-sm px-3 py-1.5 rounded-lg border transition-colors ${
+                  className={`text-[13px] font-medium px-3 py-1.5 rounded-[9px] border transition-colors ${
                     selectedLocationId === l.id
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                      ? 'bg-[#007AFF] text-white border-[#007AFF]'
+                      : 'bg-white text-[#3C3C43] border-[#E5E5EA] hover:bg-[#F2F2F7]'
                   }`}
                 >
                   {l.name}
@@ -99,7 +99,7 @@ export function ShareTab({ project, locations }: ShareTabProps) {
               ))}
             </div>
           )}
-          <p className="text-xs font-semibold text-blue-800 mt-3">文面の種類</p>
+          <p className="text-[12px] font-semibold text-[#0066CC] mt-3">文面の種類</p>
           <div className="grid grid-cols-2 gap-2">
             {[
               { id: 'inquiry' as const, label: '問い合わせメール' },
@@ -110,17 +110,17 @@ export function ShareTab({ project, locations }: ShareTabProps) {
               <button
                 key={opt.id}
                 onClick={() => setAiType(opt.id)}
-                className={`h-9 text-sm rounded-lg border transition-colors ${
+                className={`h-9 text-[13px] font-medium rounded-[9px] border transition-colors ${
                   aiType === opt.id
-                    ? 'bg-blue-600 text-white border-blue-600'
-                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                    ? 'bg-[#007AFF] text-white border-[#007AFF]'
+                    : 'bg-white text-[#3C3C43] border-[#E5E5EA] hover:bg-[#F2F2F7]'
                 }`}
               >
                 {opt.label}
               </button>
             ))}
           </div>
-          <p className="text-[11px] text-blue-700">
+          <p className="text-[11px] text-[#0066CC]/80">
             ✨ 現在はテンプレート生成です。OpenAI/Claude APIに差し替え可能な構造になっています。
           </p>
         </div>
@@ -128,13 +128,13 @@ export function ShareTab({ project, locations }: ShareTabProps) {
 
       {/* Content area */}
       <div className="relative">
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-800 font-mono leading-relaxed whitespace-pre-wrap min-h-48 max-h-96 overflow-y-auto">
-          {content || <span className="text-slate-400">内容がありません</span>}
+        <div className="bg-[#F2F2F7] border border-[#E5E5EA] rounded-[14px] p-4 text-[13px] text-[#1D1D1F] font-mono leading-relaxed whitespace-pre-wrap min-h-48 max-h-96 overflow-y-auto">
+          {content || <span className="text-[#B0B0B5]">内容がありません</span>}
         </div>
         <button
           onClick={handleCopy}
           disabled={!content}
-          className="absolute top-3 right-3 flex items-center gap-1.5 h-8 px-3 text-xs font-medium bg-white text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-40"
+          className="absolute top-3 right-3 flex items-center gap-1.5 h-8 px-3 text-[12px] font-medium bg-white text-[#007AFF] border border-[#E5E5EA] rounded-[9px] hover:bg-[#F2F2F7] transition-colors disabled:opacity-40 shadow-sm"
         >
           <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
             <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
@@ -148,7 +148,7 @@ export function ShareTab({ project, locations }: ShareTabProps) {
       <button
         onClick={handleCopy}
         disabled={!content}
-        className="w-full h-12 flex items-center justify-center gap-2 bg-slate-900 text-white text-sm font-medium rounded-xl hover:bg-slate-800 transition-colors disabled:opacity-40"
+        className="w-full h-12 flex items-center justify-center gap-2 bg-[#007AFF] text-white text-[15px] font-semibold rounded-[12px] hover:bg-[#0062CC] active:bg-[#0051D4] transition-colors disabled:opacity-40"
       >
         <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
           <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
@@ -158,7 +158,7 @@ export function ShareTab({ project, locations }: ShareTabProps) {
       </button>
 
       {activeTab === 'line' && (
-        <p className="text-xs text-slate-500 text-center">
+        <p className="text-[12px] text-[#8E8E93] text-center">
           コピー後、LINEやSlackにそのまま貼り付けて使えます
         </p>
       )}
