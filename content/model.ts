@@ -217,14 +217,6 @@ export const galleryImages: ModelImage[] = [
     layout: 'grid',
   },
   {
-    id: 'nishiura-19',
-    src: '/media/nishiura_19.jpg',
-    alt: 'Shusaku Nishiura',
-    orientation: 'fullbody',
-    fit: 'cover',
-    layout: 'grid',
-  },
-  {
     id: 'nishiura-20',
     src: '/media/nishiura_20.jpg',
     alt: 'Shusaku Nishiura',
