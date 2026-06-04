@@ -50,6 +50,17 @@ export interface ContactHistory {
   content: string
 }
 
+export type PhotoLabel = '外観' | '内観' | '控室' | '駐車場' | '搬入導線' | '雨天避難' | '周辺' | 'その他'
+
+export const PHOTO_LABELS: PhotoLabel[] = ['外観', '内観', '控室', '駐車場', '搬入導線', '雨天避難', '周辺', 'その他']
+
+export interface LocationPhoto {
+  id: string
+  url: string
+  label: PhotoLabel
+  caption: string
+}
+
 export interface Location {
   id: string
   projectId: string
@@ -84,6 +95,7 @@ export interface Location {
   lastContactDate: string
   nextFollowUpDate: string
   memo: string
+  photos?: LocationPhoto[]
   contactHistory: ContactHistory[]
   createdAt: string
   updatedAt: string

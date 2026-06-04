@@ -76,7 +76,16 @@ export function DateTable({ candidateDates, locations, onUpdate }: DateTableProp
             {locations.map(loc => (
               <tr key={loc.id} className="hover:bg-slate-50/50 transition-colors">
                 <td className="py-3 pr-4 sticky left-0 bg-white/90 backdrop-blur-sm">
-                  <div className="text-sm font-medium text-slate-800 truncate max-w-32">{loc.name}</div>
+                  <div className="flex items-center gap-2">
+                    {(loc.photos ?? []).length > 0 && (
+                      <img
+                        src={(loc.photos ?? [])[0].url}
+                        alt={(loc.photos ?? [])[0].label}
+                        className="w-9 h-6 rounded object-cover shrink-0 bg-slate-200"
+                      />
+                    )}
+                    <div className="text-sm font-medium text-slate-800 truncate max-w-[7rem]">{loc.name}</div>
+                  </div>
                 </td>
                 {sortedDates.map(d => {
                   const availability = loc.dateAvailability[d.id] ?? 'unknown'

@@ -1,4 +1,4 @@
-import type { Project, Location, Task } from './types'
+import type { Project, Location, Task, LocationPhoto } from './types'
 
 export const sampleProjects: Project[] = [
   {
@@ -64,6 +64,11 @@ export const sampleLocations: Location[] = [
     lastContactDate: '2025-05-25',
     nextFollowUpDate: '2025-06-01',
     memo: '夕景のゴールデンアワーが最も美しい。ただし17:30以降は追加料金が発生する可能性あり。',
+    photos: [
+      { id: 'ph-1', url: 'https://picsum.photos/seed/onjuku-garden/800/500', label: '外観', caption: 'ガーデン全景' },
+      { id: 'ph-2', url: 'https://picsum.photos/seed/onjuku-house/800/500', label: '内観', caption: '古民家内部' },
+      { id: 'ph-3', url: 'https://picsum.photos/seed/onjuku-park/800/500', label: '駐車場', caption: '機材車スペース' },
+    ] as LocationPhoto[],
     contactHistory: [
       {
         id: 'ch-1',
@@ -120,6 +125,11 @@ export const sampleLocations: Location[] = [
     lastContactDate: '2025-05-22',
     nextFollowUpDate: '2025-05-30',
     memo: '返信がまだない。もう一度連絡が必要。',
+    photos: [
+      { id: 'ph-4', url: 'https://picsum.photos/seed/blanc-front/800/500', label: '外観', caption: 'エントランス' },
+      { id: 'ph-5', url: 'https://picsum.photos/seed/blanc-studio/800/500', label: '内観', caption: 'メインスタジオ' },
+      { id: 'ph-6', url: 'https://picsum.photos/seed/blanc-makeup/800/500', label: '控室', caption: 'メイクルーム' },
+    ] as LocationPhoto[],
     contactHistory: [
       {
         id: 'ch-3',
@@ -170,6 +180,10 @@ export const sampleLocations: Location[] = [
     lastContactDate: '',
     nextFollowUpDate: '',
     memo: '控室・電源なし。雨天時の代替が必要。夕景は非常に美しい。許可申請に2週間かかる可能性あり。',
+    photos: [
+      { id: 'ph-7', url: 'https://picsum.photos/seed/kamakura-ocean/800/500', label: '外観', caption: '材木座海岸の眺め' },
+      { id: 'ph-8', url: 'https://picsum.photos/seed/kamakura-sunset/800/500', label: '周辺', caption: '夕景イメージ' },
+    ] as LocationPhoto[],
     contactHistory: [],
     createdAt: '2025-05-24T09:00:00.000Z',
     updatedAt: '2025-05-24T09:00:00.000Z',

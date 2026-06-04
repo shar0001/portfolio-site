@@ -11,11 +11,14 @@ interface LocationCardProps {
   onEdit: () => void
   onDelete: () => void
   onStatusChange: (status: LocationStatus) => void
+  onSelect?: () => void
 }
 
-export function LocationCard({ location, onEdit, onDelete, onStatusChange }: LocationCardProps) {
+export function LocationCard({ location, onEdit, onDelete, onStatusChange, onSelect }: LocationCardProps) {
   const [showStatusMenu, setShowStatusMenu] = useState(false)
   const [expanded, setExpanded] = useState(false)
+  const photos = location.photos ?? []
+  const mainPhoto = photos[0]
 
   const statuses: LocationStatus[] = ['none', 'inquired', 'waiting', 'hold', 'confirmed', 'ng', 'pending']
 
@@ -29,18 +32,45 @@ export function LocationCard({ location, onEdit, onDelete, onStatusChange }: Loc
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-sm transition-shadow">
+      {/* Photo hero */}
+      {mainPhoto && (
+        <button
+          onClick={onSelect}
+          className="block w-full relative overflow-hidden bg-slate-100"
+          style={{ aspectRatio: '16/9' }}
+        >
+          <img
+            src={mainPhoto.url}
+            alt={mainPhoto.label}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
+          <span className="absolute bottom-2 left-2 bg-black/50 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+            {mainPhoto.label}
+          </span>
+          {photos.length > 1 && (
+            <span className="absolute bottom-2 right-2 bg-black/50 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+              +{photos.length - 1}
+            </span>
+          )}
+        </button>
+      )}
+
       {/* Card Header */}
       <div className="p-4 pb-3">
         <div className="flex items-start gap-3">
-          <div className="flex-1 min-w-0">
+          <button
+            className={`flex-1 min-w-0 text-left ${onSelect ? 'cursor-pointer' : 'cursor-default'}`}
+            onClick={onSelect}
+          >
             <div className="flex items-center gap-2 flex-wrap mb-1">
-              <h3 className="font-semibold text-slate-900 text-[15px]">{location.name}</h3>
+              <h3 className="font-semibold text-slate-900 text-[15px] hover:text-blue-600 transition-colors">{location.name}</h3>
               <LocationStatusBadge status={location.status} />
             </div>
             {location.address && (
               <p className="text-xs text-slate-500 truncate">{location.address}</p>
             )}
-          </div>
+          </button>
           {/* Action buttons */}
           <div className="flex items-center gap-0.5 shrink-0">
             <IconButton title="ステータス変更" onClick={() => setShowStatusMenu(!showStatusMenu)}>

@@ -8,6 +8,7 @@ import { Modal, ConfirmDialog } from '@/components/ui/Modal'
 import { ProjectForm } from '@/components/projects/ProjectForm'
 import { LocationCard } from '@/components/locations/LocationCard'
 import { LocationForm } from '@/components/locations/LocationForm'
+import { LocationDetailPanel } from '@/components/locations/LocationDetailPanel'
 import { TaskList } from '@/components/tasks/TaskList'
 import { TaskForm } from '@/components/tasks/TaskForm'
 import { DateTable } from '@/components/dates/DateTable'
@@ -43,6 +44,8 @@ function ProjectDetail() {
   const [showAddLocation, setShowAddLocation] = useState(false)
   const [editLocation, setEditLocation] = useState<Location | null>(null)
   const [deleteLocation, setDeleteLocation] = useState<Location | null>(null)
+  const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null)
+  const selectedLocation = locations.find(l => l.id === selectedLocationId) ?? null
   const [showAddTask, setShowAddTask] = useState(false)
   const [editTask, setEditTask] = useState<Task | null>(null)
   const [deleteTaskId, setDeleteTaskId] = useState<string | null>(null)
@@ -345,6 +348,7 @@ function ProjectDetail() {
                     onEdit={() => setEditLocation(loc)}
                     onDelete={() => setDeleteLocation(loc)}
                     onStatusChange={status => handleLocationStatusChange(loc.id, status)}
+                    onSelect={() => setSelectedLocationId(loc.id)}
                   />
                 ))}
               </div>
@@ -383,6 +387,22 @@ function ProjectDetail() {
           </div>
         )}
       </main>
+
+      {/* ── Location Detail Panel ──────────────────────────────── */}
+
+      {selectedLocation && (
+        <LocationDetailPanel
+          location={selectedLocation}
+          onClose={() => setSelectedLocationId(null)}
+          onEdit={() => {
+            setEditLocation(selectedLocation)
+            setSelectedLocationId(null)
+          }}
+          onStatusChange={status => {
+            handleLocationStatusChange(selectedLocation.id, status)
+          }}
+        />
+      )}
 
       {/* ── Modals ─────────────────────────────────────────────── */}
 
