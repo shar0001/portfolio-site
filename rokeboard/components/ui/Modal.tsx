@@ -44,18 +44,18 @@ export function Modal({ open, onClose, title, children, size = 'md' }: ModalProp
         onClick={onClose}
       />
       <div
-        className={`animate-modal-in relative bg-white w-full ${sizeClasses[size]} rounded-t-2xl sm:rounded-[16px] shadow-[0_20px_60px_-12px_rgba(0,0,0,0.35)] flex flex-col max-h-[94dvh] sm:max-h-[88vh] overflow-hidden`}
+        className={`animate-modal-in relative bg-white w-full ${sizeClasses[size]} rounded-t-[20px] sm:rounded-[20px] shadow-[0_24px_70px_-10px_rgba(0,0,0,0.40)] flex flex-col max-h-[96dvh] sm:max-h-[90vh] overflow-hidden`}
       >
         {/* Mobile grabber */}
-        <div className="sm:hidden flex justify-center pt-2.5 pb-1 shrink-0">
-          <div className="w-9 h-1 bg-[#C6C6C8] rounded-full" />
+        <div className="sm:hidden flex justify-center pt-3 pb-0 shrink-0">
+          <div className="w-10 h-1 bg-[#C6C6C8]/70 rounded-full" />
         </div>
 
-        <div className="flex items-center justify-between gap-3 px-5 sm:px-6 py-3.5 border-b border-[#E5E5EA] shrink-0">
-          <h2 className="text-[17px] font-semibold text-[#1D1D1F] truncate">{title}</h2>
+        <div className="flex items-center justify-between gap-3 px-5 sm:px-6 pt-4 pb-3 shrink-0">
+          <h2 className="text-[20px] font-bold text-[#1D1D1F] truncate">{title}</h2>
           <button
             onClick={onClose}
-            className="w-7 h-7 flex items-center justify-center rounded-full bg-[#E8E8ED] text-[#8E8E93] hover:bg-[#DCDCE1] hover:text-[#3C3C43] transition-colors shrink-0"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-[#E8E8ED] text-[#8E8E93] hover:bg-[#DCDCE1] hover:text-[#3C3C43] transition-colors shrink-0"
             aria-label="閉じる"
           >
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
@@ -63,7 +63,8 @@ export function Modal({ open, onClose, title, children, size = 'md' }: ModalProp
             </svg>
           </button>
         </div>
-        <div className="overflow-y-auto flex-1 overscroll-contain">
+        {/* flex-1 + overflow-hidden so children that want to self-scroll can do so */}
+        <div className="flex-1 min-h-0 flex flex-col">
           {children}
         </div>
       </div>

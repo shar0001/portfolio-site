@@ -2,8 +2,6 @@
 import { useState } from 'react'
 import type { Project, CandidateDate, ProjectStatus } from '@/lib/types'
 import { PROJECT_STATUS_LABELS } from '@/lib/types'
-import { Input, Textarea, Select, DateField } from '@/components/ui/FormField'
-import { Button } from '@/components/ui/Button'
 import { generateId } from '@/lib/utils'
 
 type ProjectFormData = Omit<Project, 'id' | 'createdAt' | 'updatedAt'>
@@ -14,6 +12,10 @@ interface ProjectFormProps {
   onCancel?: () => void
   submitLabel?: string
 }
+
+const STATUS_ORDER: ProjectStatus[] = [
+  'preparing', 'location_search', 'on_hold', 'location_fixed', 'pre_shoot', 'shot', 'archived'
+]
 
 export function ProjectForm({ initial, onSubmit, onCancel, submitLabel = '作成する' }: ProjectFormProps) {
   const [title, setTitle] = useState(initial?.title ?? '')
@@ -36,152 +38,209 @@ export function ProjectForm({ initial, onSubmit, onCancel, submitLabel = '作成
     setNewDate('')
   }
 
-  const removeDate = (id: string) => {
-    setCandidateDates(prev => prev.filter(d => d.id !== id))
-  }
+  const removeDate = (id: string) => setCandidateDates(prev => prev.filter(d => d.id !== id))
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!title.trim()) {
-      setError('案件名は必須です')
-      return
-    }
+    if (!title.trim()) { setError('案件名を入力してください'); return }
     setError('')
     onSubmit({
-      title: title.trim(),
-      clientName,
-      shootDescription,
-      shootDates: [],
-      candidateDates,
-      budget,
-      requirements,
-      pmName,
-      directorName,
-      memo,
-      status,
+      title: title.trim(), clientName, shootDescription,
+      shootDates: [], candidateDates,
+      budget, requirements, pmName, directorName, memo, status,
     })
   }
 
   const sortedDates = [...candidateDates].sort((a, b) => a.date.localeCompare(b.date))
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 space-y-6">
-      {/* 基本情報 */}
-      <section className="space-y-4">
-        <h3 className="text-[15px] font-semibold text-[#1D1D1F] pb-2.5 border-b border-[#E5E5EA]">基本情報</h3>
-        <Input
-          label="案件名"
-          required
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-          placeholder="例：男性アイドル MV、コスメSNS広告、企業VP撮影"
-          error={error}
-        />
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="クライアント名"
-            value={clientName}
-            onChange={e => setClientName(e.target.value)}
-            placeholder="例：スターレコード株式会社"
-          />
-          <Select
-            label="ステータス"
-            value={status}
-            onChange={e => setStatus(e.target.value as ProjectStatus)}
-          >
-            {(Object.keys(PROJECT_STATUS_LABELS) as ProjectStatus[]).map(s => (
-              <option key={s} value={s}>{PROJECT_STATUS_LABELS[s]}</option>
-            ))}
-          </Select>
-        </div>
-        <Textarea
-          label="撮影内容"
-          value={shootDescription}
-          onChange={e => setShootDescription(e.target.value)}
-          placeholder="例：前向きで軽快な新曲のMV。屋外・自然光・開放感のあるロケーションを検討。"
-          rows={3}
-        />
-      </section>
+    <form onSubmit={handleSubmit} className="flex flex-col h-full">
+      {/* Scrollable fields */}
+      <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-5 space-y-7">
 
-      {/* 撮影候補日 */}
-      <section className="space-y-3">
-        <h3 className="text-[15px] font-semibold text-[#1D1D1F] pb-2.5 border-b border-[#E5E5EA]">撮影候補日</h3>
-        <div className="flex gap-2">
-          <DateField
-            value={newDate}
-            onChange={e => setNewDate(e.target.value)}
-            className="flex-1"
+        {/* ── 案件名 ─────────────────────────────────── */}
+        <Section label="案件名" required>
+          <input
+            autoFocus
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            placeholder="例：男性アイドル MV・コスメSNS広告"
+            className={`ios-input ${error ? 'border-[#FF3B30]' : ''}`}
           />
-          <Button type="button" variant="secondary" onClick={addDate} size="md" className="shrink-0">
-            追加
-          </Button>
-        </div>
-        {sortedDates.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {sortedDates.map(d => {
-              const dt = new Date(d.date)
-              const label = `${dt.getMonth() + 1}/${dt.getDate()}（${['日','月','火','水','木','金','土'][dt.getDay()]}）`
-              return (
-                <span key={d.id} className="inline-flex items-center gap-1.5 bg-[#007AFF]/10 text-[#0066CC] text-[13px] font-medium pl-3 pr-2 py-1 rounded-full border border-[#007AFF]/15">
-                  {label}
-                  <button type="button" onClick={() => removeDate(d.id)} className="text-[#007AFF]/50 hover:text-[#007AFF] text-[15px] leading-none">×</button>
-                </span>
-              )
-            })}
+          {error && <p className="text-[12px] text-[#FF3B30] mt-1.5">{error}</p>}
+        </Section>
+
+        {/* ── 基本情報 ────────────────────────────────── */}
+        <Section label="基本情報">
+          <GroupedRows>
+            <LabelRow label="クライアント名">
+              <input
+                value={clientName}
+                onChange={e => setClientName(e.target.value)}
+                placeholder="例：スターレコード株式会社"
+                className="ios-inline-input"
+              />
+            </LabelRow>
+            <LabelRow label="ステータス" last>
+              <select
+                value={status}
+                onChange={e => setStatus(e.target.value as ProjectStatus)}
+                className="ios-inline-select"
+              >
+                {STATUS_ORDER.map(s => (
+                  <option key={s} value={s}>{PROJECT_STATUS_LABELS[s]}</option>
+                ))}
+              </select>
+            </LabelRow>
+          </GroupedRows>
+        </Section>
+
+        {/* ── 撮影内容 ────────────────────────────────── */}
+        <Section label="撮影内容">
+          <textarea
+            value={shootDescription}
+            onChange={e => setShootDescription(e.target.value)}
+            placeholder="例：前向きで軽快な新曲のMV。屋外・自然光・開放感のあるロケーションを検討。"
+            rows={3}
+            className="ios-textarea"
+          />
+        </Section>
+
+        {/* ── 撮影候補日 ──────────────────────────────── */}
+        <Section label="撮影候補日">
+          <div className="flex gap-2">
+            <input
+              type="date"
+              value={newDate}
+              onChange={e => setNewDate(e.target.value)}
+              className="ios-input flex-1 min-w-0"
+            />
+            <button
+              type="button"
+              onClick={addDate}
+              className="shrink-0 h-11 px-4 bg-[#007AFF] text-white text-[15px] font-medium rounded-[10px] hover:bg-[#0062CC] active:bg-[#0051D4] transition-colors"
+            >
+              追加
+            </button>
           </div>
-        )}
-      </section>
+          {sortedDates.length > 0 && (
+            <div className="mt-2.5 flex flex-wrap gap-2">
+              {sortedDates.map(d => {
+                const dt = new Date(d.date)
+                const label = `${dt.getMonth() + 1}/${dt.getDate()}（${['日','月','火','水','木','金','土'][dt.getDay()]}）`
+                return (
+                  <span key={d.id} className="inline-flex items-center gap-1.5 bg-[#007AFF]/10 text-[#0066CC] text-[13px] font-medium pl-3 pr-2 py-1.5 rounded-full">
+                    {label}
+                    <button type="button" onClick={() => removeDate(d.id)} className="text-[#007AFF]/50 hover:text-[#007AFF] w-4 h-4 flex items-center justify-center text-base leading-none">×</button>
+                  </span>
+                )
+              })}
+            </div>
+          )}
+        </Section>
 
-      {/* 制作情報 */}
-      <section className="space-y-4">
-        <h3 className="text-[15px] font-semibold text-[#1D1D1F] pb-2.5 border-b border-[#E5E5EA]">制作情報</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="担当PM"
-            value={pmName}
-            onChange={e => setPmName(e.target.value)}
-            placeholder="例：田中 美咲"
-          />
-          <Input
-            label="監督"
-            value={directorName}
-            onChange={e => setDirectorName(e.target.value)}
-            placeholder="例：鈴木 大輔"
-          />
-        </div>
-        <Input
-          label="予算感"
-          value={budget}
-          onChange={e => setBudget(e.target.value)}
-          placeholder="例：200万円、応相談"
-        />
-        <Textarea
-          label="必要条件"
-          value={requirements}
-          onChange={e => setRequirements(e.target.value)}
-          placeholder="例：夕景、控室あり、車両2台、音出し確認、雨天時の代替案"
-          rows={2}
-        />
-        <Textarea
-          label="メモ"
-          value={memo}
-          onChange={e => setMemo(e.target.value)}
-          placeholder="自由メモ"
-          rows={2}
-        />
-      </section>
+        {/* ── 制作情報 ────────────────────────────────── */}
+        <Section label="制作情報">
+          <GroupedRows>
+            <LabelRow label="担当PM">
+              <input
+                value={pmName}
+                onChange={e => setPmName(e.target.value)}
+                placeholder="例：田中 美咲"
+                className="ios-inline-input"
+              />
+            </LabelRow>
+            <LabelRow label="監督">
+              <input
+                value={directorName}
+                onChange={e => setDirectorName(e.target.value)}
+                placeholder="例：鈴木 大輔"
+                className="ios-inline-input"
+              />
+            </LabelRow>
+            <LabelRow label="予算感" last>
+              <input
+                value={budget}
+                onChange={e => setBudget(e.target.value)}
+                placeholder="例：200万円、応相談"
+                className="ios-inline-input"
+              />
+            </LabelRow>
+          </GroupedRows>
+        </Section>
 
-      {/* Actions */}
-      <div className="flex gap-3 pt-2">
+        {/* ── 必要条件 ────────────────────────────────── */}
+        <Section label="必要条件">
+          <textarea
+            value={requirements}
+            onChange={e => setRequirements(e.target.value)}
+            placeholder="例：夕景、控室あり、車両2台、音出し確認、雨天時の代替案"
+            rows={2}
+            className="ios-textarea"
+          />
+        </Section>
+
+        {/* ── メモ ────────────────────────────────────── */}
+        <Section label="メモ">
+          <textarea
+            value={memo}
+            onChange={e => setMemo(e.target.value)}
+            placeholder="自由メモ"
+            rows={2}
+            className="ios-textarea"
+          />
+        </Section>
+
+      </div>
+
+      {/* Sticky footer */}
+      <div className="shrink-0 px-5 py-4 border-t border-[#E5E5EA] flex gap-3 bg-white/95 backdrop-blur-xl">
         {onCancel && (
-          <Button type="button" variant="secondary" onClick={onCancel} className="flex-1">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="flex-1 h-12 rounded-[12px] bg-[#F2F2F7] text-[#007AFF] text-[15px] font-semibold hover:bg-[#E5E5EA] transition-colors"
+          >
             キャンセル
-          </Button>
+          </button>
         )}
-        <Button type="submit" className="flex-1">
+        <button
+          type="submit"
+          className="flex-1 h-12 rounded-[12px] bg-[#007AFF] text-white text-[15px] font-semibold hover:bg-[#0062CC] active:bg-[#0051D4] transition-colors shadow-[0_2px_8px_rgba(0,122,255,0.35)]"
+        >
           {submitLabel}
-        </Button>
+        </button>
       </div>
     </form>
+  )
+}
+
+// ── Sub-components ───────────────────────────────────────────────────────────
+
+function Section({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+  return (
+    <div>
+      <p className="text-[12px] font-semibold text-[#6E6E73] uppercase tracking-wider mb-2 px-1">
+        {label}{required && <span className="text-[#FF3B30] ml-0.5">*</span>}
+      </p>
+      {children}
+    </div>
+  )
+}
+
+function GroupedRows({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="bg-white rounded-[12px] border border-[#E5E5EA] overflow-hidden divide-y divide-[#F2F2F7]">
+      {children}
+    </div>
+  )
+}
+
+function LabelRow({ label, children, last }: { label: string; children: React.ReactNode; last?: boolean }) {
+  return (
+    <div className={`flex items-center gap-3 px-4 h-12 ${!last ? '' : ''}`}>
+      <span className="w-24 shrink-0 text-[14px] font-medium text-[#1D1D1F]">{label}</span>
+      <div className="flex-1 min-w-0">{children}</div>
+    </div>
   )
 }

@@ -15,103 +15,97 @@ export function ProjectCard({ project, locations, tasks }: ProjectCardProps) {
   const waitingCount = locations.filter(l => l.status === 'waiting').length
   const confirmedCount = locations.filter(l => l.status === 'confirmed').length
   const incompleteTasks = tasks.filter(t => t.status !== 'done' && t.status !== 'unnecessary').length
+  const hasAlert = waitingCount > 0 || incompleteTasks > 0
 
-  const dates = project.candidateDates.map(d => {
-    const d_ = new Date(d.date)
-    return `${d_.getMonth() + 1}/${d_.getDate()}`
-  })
+  const candidateDates = [...project.candidateDates]
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(0, 4)
+    .map(d => {
+      const dt = new Date(d.date)
+      return `${dt.getMonth() + 1}/${dt.getDate()}(${['日','月','火','水','木','金','土'][dt.getDay()]})`
+    })
 
   return (
-    <Link href={`/project?id=${project.id}`} className="block">
-      <div className="bg-white rounded-[14px] border border-[#E5E5EA] p-5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:border-[#D1D1D6] transition-all group">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-[#1D1D1F] text-[15px] group-hover:text-[#007AFF] transition-colors truncate">
-              {project.title}
-            </h3>
-            {project.clientName && (
-              <p className="text-[12px] text-[#8E8E93] mt-0.5 truncate">{project.clientName}</p>
-            )}
-          </div>
-          <ProjectStatusBadge status={project.status} />
-        </div>
+    <Link href={`/project?id=${project.id}`} className="block group">
+      <div className="bg-white rounded-[16px] border border-[#E5E5EA] overflow-hidden hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:border-[#C6C6C8] transition-all duration-200">
 
-        {/* Dates */}
-        {dates.length > 0 && (
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-[#C6C6C8]">
-              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M5 1a1 1 0 0 1 1 1v1h4V2a1 1 0 1 1 2 0v1h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h1V2a1 1 0 0 1 1-1zm7 4H4v1h8V5z" />
+        {/* Main row */}
+        <div className="px-5 pt-4.5 pb-3" style={{ paddingTop: '18px' }}>
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-[17px] font-semibold text-[#1D1D1F] group-hover:text-[#007AFF] transition-colors leading-snug truncate">
+                {project.title}
+              </h3>
+              {project.clientName && (
+                <p className="text-[13px] text-[#8E8E93] mt-0.5 truncate">{project.clientName}</p>
+              )}
+            </div>
+            <div className="shrink-0 mt-0.5">
+              <ProjectStatusBadge status={project.status} />
+            </div>
+          </div>
+
+          {/* Candidate dates */}
+          {candidateDates.length > 0 && (
+            <div className="flex items-center gap-2 mb-3">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="#C6C6C8">
+                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
               </svg>
-            </span>
-            <span className="text-[12px] text-[#6E6E73] font-medium">候補日：{dates.join('・')}</span>
-          </div>
-        )}
+              <span className="text-[12px] text-[#6E6E73]">{candidateDates.join('・')}</span>
+            </div>
+          )}
 
-        {/* Stats */}
-        <div className="grid grid-cols-4 gap-2 mb-3">
-          <StatChip label="ロケ地" value={locations.length} color="blue" />
-          <StatChip label="仮キープ" value={holdCount} color="purple" />
-          <StatChip label="返信待ち" value={waitingCount} color="amber" highlight={waitingCount > 0} />
-          <StatChip label="タスク" value={incompleteTasks} color="slate" highlight={incompleteTasks > 0} />
+          {/* Stats row */}
+          <div className="flex items-center gap-4">
+            <Stat label="ロケ地" value={locations.length} color="#007AFF" />
+            {holdCount > 0 && <Stat label="仮キープ" value={holdCount} color="#AF52DE" />}
+            {confirmedCount > 0 && <Stat label="決定" value={confirmedCount} color="#34C759" />}
+            {waitingCount > 0 && <Stat label="返信待ち" value={waitingCount} color="#FF9500" alert />}
+            {incompleteTasks > 0 && <Stat label="タスク未完" value={incompleteTasks} color="#3C3C43" />}
+          </div>
         </div>
 
-        {/* Alerts */}
-        {(waitingCount > 0 || incompleteTasks > 0) && (
-          <div className="flex flex-wrap gap-1.5">
+        {/* Alert bar */}
+        {hasAlert && (
+          <div className="border-t border-[#F2F2F7] px-5 py-2.5 bg-[#FAFAFA] flex items-center gap-3 flex-wrap">
             {waitingCount > 0 && (
-              <span className="text-[11px] font-medium bg-[#FF9500]/12 text-[#9A5E00] rounded-md px-2 py-0.5">
-                ⏳ 返信待ち {waitingCount}件
+              <span className="flex items-center gap-1.5 text-[12px] font-medium text-[#9A5E00]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FF9500]" />
+                返信待ち {waitingCount}件
               </span>
             )}
             {incompleteTasks > 0 && (
-              <span className="text-[11px] font-medium bg-[#8E8E93]/12 text-[#6E6E73] rounded-md px-2 py-0.5">
-                ✓ 未完了タスク {incompleteTasks}件
+              <span className="flex items-center gap-1.5 text-[12px] font-medium text-[#6E6E73]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#8E8E93]" />
+                未完了タスク {incompleteTasks}件
               </span>
+            )}
+            <span className="ml-auto text-[11px] text-[#B0B0B5]">{formatDate(project.updatedAt)}</span>
+          </div>
+        )}
+
+        {/* Footer (no alert) */}
+        {!hasAlert && (
+          <div className="border-t border-[#F2F2F7] px-5 py-2.5 flex items-center justify-between">
+            <span className="text-[11px] text-[#B0B0B5]">{formatDate(project.updatedAt)}</span>
+            {confirmedCount > 0 && (
+              <span className="text-[12px] font-medium text-[#1F8F3B]">✓ {confirmedCount}件決定</span>
             )}
           </div>
         )}
 
-        {/* Footer */}
-        <div className="mt-3 pt-3 border-t border-[#F2F2F7] flex items-center justify-between">
-          <span className="text-[11px] text-[#B0B0B5]">
-            更新：{formatDate(project.updatedAt)}
-          </span>
-          {confirmedCount > 0 && (
-            <span className="text-[11px] text-[#1F8F3B] font-medium">
-              ✓ {confirmedCount}件決定
-            </span>
-          )}
-        </div>
       </div>
     </Link>
   )
 }
 
-function StatChip({
-  label,
-  value,
-  color,
-  highlight,
-}: {
-  label: string
-  value: number
-  color: string
-  highlight?: boolean
-}) {
-  const colorMap: Record<string, string> = {
-    blue: 'text-[#007AFF]',
-    purple: 'text-[#AF52DE]',
-    amber: 'text-[#FF9500]',
-    slate: 'text-[#3C3C43]',
-  }
+function Stat({ label, value, color, alert }: { label: string; value: number; color: string; alert?: boolean }) {
   return (
-    <div className={`flex flex-col items-center bg-[#F2F2F7] rounded-[10px] py-1.5 ${highlight ? 'ring-1 ring-[#FF9500]/30' : ''}`}>
-      <span className={`text-[17px] font-bold leading-none ${colorMap[color] || 'text-[#3C3C43]'}`}>
+    <div className="flex items-baseline gap-1">
+      <span className={`text-[20px] font-bold leading-none ${alert ? 'tabular-nums' : ''}`} style={{ color }}>
         {value}
       </span>
-      <span className="text-[10px] text-[#8E8E93] mt-0.5">{label}</span>
+      <span className="text-[11px] text-[#8E8E93]">{label}</span>
     </div>
   )
 }
