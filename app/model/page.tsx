@@ -188,11 +188,12 @@ function GalleryPhoto({ img, onOpen }: {
               filter: 'saturate(0.92) brightness(0.97)',
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.filter = 'saturate(1.0) brightness(1.04)' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.filter = 'saturate(0.92) brightness(0.97)' }}
-          loading="lazy"
-        />
-      )}
-    </motion.figure>
+            onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.filter = 'saturate(0.92) brightness(0.97)' }}
+            loading="lazy"
+          />
+        )}
+      </motion.figure>
+    </>
   )
 }
 
