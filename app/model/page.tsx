@@ -52,8 +52,9 @@ function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: ()
           style={{ 
             objectFit: 'contain', 
             boxShadow: '0 0 90px rgba(0,0,0,0.85)',
-            maxHeight: '85vh',
-            maxWidth: '90vw'
+            maxHeight: '60vh',
+            maxWidth: '70vw',
+            margin: 'auto'
           }}
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -69,8 +70,9 @@ function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: ()
           style={{ 
             objectFit: 'contain', 
             boxShadow: '0 0 90px rgba(0,0,0,0.85)',
-            maxHeight: '85vh',
-            maxWidth: '90vw'
+            maxHeight: '60vh',
+            maxWidth: '70vw',
+            margin: 'auto'
           }}
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -122,7 +124,7 @@ function GalleryPhoto({ img, onOpen }: {
   return (
     <motion.figure
       ref={ref}
-      className="group relative w-full overflow-hidden cursor-zoom-in mb-3 md:mb-4"
+      className={`group relative w-full overflow-hidden mb-3 md:mb-4 ${isVideo ? 'cursor-pointer' : ''}`}
       style={{
         aspectRatio: aspectFor[img.orientation],
         background: 'rgba(8,7,5,0.6)',
@@ -130,7 +132,11 @@ function GalleryPhoto({ img, onOpen }: {
       initial={{ opacity: 0, y: 26 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 1.1, ease: [0.76, 0, 0.24, 1] }}
-      onClick={() => onOpen(url(img.src), img.alt)}
+      onClick={() => {
+        if (isVideo) {
+          onOpen(url(img.src), img.alt)
+        }
+      }}
     >
       {isVideo ? (
         <video
