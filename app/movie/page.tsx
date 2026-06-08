@@ -78,7 +78,7 @@ export default function MoviePage() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.5 }}
         >
-          After Effects を中心とした映像制作。モーショングラフィックス、VFX、タイトルシーケンス。
+          After Effects を中心とした映像制作。
         </motion.p>
       </div>
 

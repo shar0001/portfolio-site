@@ -114,6 +114,14 @@ export const galleryImages: ModelImage[] = [
     layout: 'grid',
   },
   {
+    id: 'cm-1',
+    src: '/media/13499855696761.mp4',
+    alt: 'CM',
+    orientation: 'portrait',
+    type: 'video',
+    layout: 'grid',
+  },
+  {
     id: 'nishiura-09',
     src: '/media/nishiura_09.jpg',
     alt: 'Shusaku Nishiura',
@@ -143,6 +151,14 @@ export const galleryImages: ModelImage[] = [
     alt: 'Shusaku Nishiura',
     orientation: 'fullbody',
     fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'cm-2',
+    src: '/media/13785102639664.mp4',
+    alt: 'CM',
+    orientation: 'portrait',
+    type: 'video',
     layout: 'grid',
   },
 
@@ -189,6 +205,14 @@ export const galleryImages: ModelImage[] = [
     layout: 'grid',
   },
   {
+    id: 'cm-3',
+    src: '/media/RPReplay_Final1575853687.MOV',
+    alt: 'CM',
+    orientation: 'portrait',
+    type: 'video',
+    layout: 'grid',
+  },
+  {
     id: 'nishiura-15',
     src: '/media/nishiura_15.jpg',
     alt: 'Shusaku Nishiura',
@@ -218,6 +242,14 @@ export const galleryImages: ModelImage[] = [
     alt: 'Shusaku Nishiura',
     orientation: 'portrait',
     fit: 'cover',
+    layout: 'grid',
+  },
+  {
+    id: 'cm-4',
+    src: '/media/RPReplay_Final1575854781.MOV',
+    alt: 'CM',
+    orientation: 'portrait',
+    type: 'video',
     layout: 'grid',
   },
   {

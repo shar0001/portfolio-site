@@ -52,25 +52,7 @@ export default function Home() {
             <span style={{ color: '#9ab8ff' }}>Nishiura</span>
           </motion.h1>
 
-          <motion.p
-            className="mt-9 text-[14px] leading-[1.85] whitespace-pre-line"
-            style={{ color: '#a5b3d1', maxWidth: 360 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.55 }}
-          >
-            {profile.catchJa}
-          </motion.p>
 
-          <motion.p
-            className="mt-3 text-[12px] leading-relaxed italic"
-            style={{ color: '#5868a8', fontFamily: SERIF, maxWidth: 360 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.72 }}
-          >
-            {profile.catchEn}
-          </motion.p>
         </section>
 
         {/* ── Work categories ────────────────────────────────────────────── */}

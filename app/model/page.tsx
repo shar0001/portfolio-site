@@ -29,7 +29,7 @@ function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: ()
     }
   }, [onClose])
 
-  const isVideo = src.endsWith('.mp4')
+  const isVideo = src.endsWith('.mp4') || src.toLowerCase().endsWith('.mov')
 
   return (
     <motion.div
