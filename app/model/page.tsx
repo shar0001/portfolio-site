@@ -118,51 +118,76 @@ function GalleryPhoto({ img, onOpen }: {
   const ref    = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-70px' })
   const isVideo = img.type === 'video'
+  const [isActive, setIsActive] = useState(false)
 
   return (
-    <motion.figure
-      ref={ref}
-      className={`group relative w-full overflow-hidden mb-3 md:mb-4 ${isVideo ? 'cursor-pointer' : ''}`}
-      style={{
-        aspectRatio: aspectFor[img.orientation],
-        background: 'rgba(8,7,5,0.6)',
-      }}
-      initial={{ opacity: 0, y: 26 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 1.1, ease: [0.76, 0, 0.24, 1] }}
-      onClick={() => {
-        if (isVideo) {
-          onOpen(url(img.src), img.alt)
-        }
-      }}
-    >
-      {isVideo ? (
-        <motion.video
-          layoutId={`media-${url(img.src)}`}
-          src={url(img.src)}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-          autoPlay
-          loop
-          muted
-          playsInline
-          style={{
-            filter: 'saturate(0.92) brightness(0.97)',
-          }}
-          onMouseEnter={e => { e.currentTarget.style.filter = 'saturate(1.0) brightness(1.04)' }}
-          onMouseLeave={e => { e.currentTarget.style.filter = 'saturate(0.92) brightness(0.97)' }}
-        />
-      ) : (
-        /* eslint-disable-next-line @next/next/no-img-element */
-        <img
-          src={url(img.src)}
-          alt={img.alt}
-          className="absolute inset-0 w-full h-full transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-          style={{
-            objectFit: img.fit ?? 'cover',
-            objectPosition: img.position ?? 'center center',
-            filter: 'saturate(0.92) brightness(0.97)',
-          }}
-          onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.filter = 'saturate(1.0) brightness(1.04)' }}
+    <>
+      <AnimatePresence>
+        {isActive && (
+          <motion.div
+            className="fixed inset-0 z-[50]"
+            style={{ background: 'rgba(3,4,8,0.85)', backdropFilter: 'blur(8px)' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => setIsActive(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <motion.figure
+        ref={ref}
+        className={`group w-full overflow-hidden mb-3 md:mb-4 ${
+          isVideo ? (isActive ? 'relative z-[60]' : 'relative cursor-pointer z-0') : 'relative z-0'
+        }`}
+        style={{
+          aspectRatio: aspectFor[img.orientation],
+          background: 'rgba(8,7,5,0.6)',
+        }}
+        initial={{ opacity: 0, y: 26 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 1.1, ease: [0.76, 0, 0.24, 1] }}
+        onClick={() => {
+          if (isVideo && !isActive) {
+            setIsActive(true)
+          }
+        }}
+      >
+        {isVideo ? (
+          <video
+            src={url(img.src)}
+            className={`absolute inset-0 w-full h-full transition-transform duration-700 ease-out ${
+              !isActive ? 'object-cover group-hover:scale-[1.03]' : 'object-contain bg-black'
+            }`}
+            autoPlay
+            loop
+            muted={!isActive}
+            controls={isActive}
+            playsInline
+            style={{
+              filter: isActive ? 'none' : 'saturate(0.92) brightness(0.97)',
+            }}
+            onMouseEnter={e => { if (!isActive) e.currentTarget.style.filter = 'saturate(1.0) brightness(1.04)' }}
+            onMouseLeave={e => { if (!isActive) e.currentTarget.style.filter = 'saturate(0.92) brightness(0.97)' }}
+            onClick={(e) => {
+              if (isActive) {
+                e.stopPropagation()
+              }
+            }}
+          />
+        ) : (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={url(img.src)}
+            alt={img.alt}
+            className="absolute inset-0 w-full h-full transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            style={{
+              objectFit: img.fit ?? 'cover',
+              objectPosition: img.position ?? 'center center',
+              filter: 'saturate(0.92) brightness(0.97)',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.filter = 'saturate(1.0) brightness(1.04)' }}
           onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.filter = 'saturate(0.92) brightness(0.97)' }}
           loading="lazy"
         />
