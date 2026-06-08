@@ -44,12 +44,17 @@ function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: ()
       {isVideo ? (
         <motion.video
           src={src}
-          className="max-w-full max-h-full"
           controls
           autoPlay
           loop
           muted
-          style={{ objectFit: 'contain', boxShadow: '0 0 90px rgba(0,0,0,0.85)' }}
+          playsInline
+          style={{ 
+            objectFit: 'contain', 
+            boxShadow: '0 0 90px rgba(0,0,0,0.85)',
+            maxHeight: '85vh',
+            maxWidth: '90vw'
+          }}
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.96 }}
@@ -61,8 +66,12 @@ function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: ()
           // eslint-disable-next-line @next/next/no-img-element
           src={src}
           alt={alt}
-          className="max-w-full max-h-full"
-          style={{ objectFit: 'contain', boxShadow: '0 0 90px rgba(0,0,0,0.85)' }}
+          style={{ 
+            objectFit: 'contain', 
+            boxShadow: '0 0 90px rgba(0,0,0,0.85)',
+            maxHeight: '85vh',
+            maxWidth: '90vw'
+          }}
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.96 }}
