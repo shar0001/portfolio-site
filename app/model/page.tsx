@@ -43,6 +43,7 @@ function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: ()
     >
       {isVideo ? (
         <motion.video
+          layoutId={`media-${src}`}
           src={src}
           controls
           autoPlay
@@ -56,10 +57,7 @@ function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: ()
             maxWidth: '70vw',
             margin: 'auto'
           }}
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.96 }}
-          transition={{ duration: 0.32, ease: [0.76, 0, 0.24, 1] }}
+          transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
           onClick={e => e.stopPropagation()}
         />
       ) : (
@@ -139,7 +137,8 @@ function GalleryPhoto({ img, onOpen }: {
       }}
     >
       {isVideo ? (
-        <video
+        <motion.video
+          layoutId={`media-${url(img.src)}`}
           src={url(img.src)}
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
           autoPlay
