@@ -117,6 +117,7 @@ function GalleryPhoto({ img, onOpen }: {
 }) {
   const ref    = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-70px' })
+  const videoInView = useInView(ref, { once: false, margin: '300px' })
   const isVideo = img.type === 'video'
   const [isActive, setIsActive] = useState(false)
 
@@ -156,15 +157,16 @@ function GalleryPhoto({ img, onOpen }: {
       >
         {isVideo ? (
           <video
-            src={url(img.src)}
+            src={videoInView || isActive ? url(img.src) : undefined}
             className={`absolute inset-0 w-full h-full transition-transform duration-700 ease-out ${
               !isActive ? 'object-cover group-hover:scale-[1.03]' : 'object-contain bg-black'
             }`}
-            autoPlay
+            autoPlay={videoInView}
             loop
             muted={!isActive}
             controls={isActive}
             playsInline
+            preload="none"
             style={{
               filter: isActive ? 'none' : 'saturate(0.92) brightness(0.97)',
             }}
